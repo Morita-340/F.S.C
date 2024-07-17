@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\morit\\MiniRepository\\F.S.C\\Assembly-CSharp.csproj",
+      "projectUniqueName": "C:\\Users\\morit\\F.S.C\\F.S.C\\Assembly-CSharp.csproj",
       "projectName": "Assembly-CSharp",
-      "projectPath": "C:\\Users\\morit\\MiniRepository\\F.S.C\\Assembly-CSharp.csproj",
+      "projectPath": "C:\\Users\\morit\\F.S.C\\F.S.C\\Assembly-CSharp.csproj",
       "packagesPath": "C:\\Users\\morit\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\morit\\MiniRepository\\F.S.C\\obj\\",
+      "outputPath": "C:\\Users\\morit\\F.S.C\\F.S.C\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\morit\\AppData\\Roaming\\NuGet\\NuGet.Config",

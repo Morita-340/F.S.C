@@ -34,12 +34,14 @@ public class PlayerUnitManagementScript : MonoBehaviour
     /// </summary>
     void AutoDrive(){
         Vector2 forward = transform.right;
+        //Debug.Log("VelX:"+ rigidbody2D.velocity.x +"forX"+forward.x*drive_minimum_speed_factor + "\nVelY:"+ rigidbody2D.velocity.y + "forY"+forward.y*drive_minimum_speed_factor);
         //transform.Translate(Vector2.right *drive_speed * Time.deltaTime);
         //rigidbody2D.MovePosition(rigidbody2D.position + forward*drive_speed*Time.deltaTime);
         if(Input.GetKey(KeyCode.A)){
             Decelerate(forward);
         }else{
             rigidbody2D.velocity = forward * drive_speed;
+            //Debug.Log("c");
         }
     }
     /// <summary>
@@ -47,11 +49,14 @@ public class PlayerUnitManagementScript : MonoBehaviour
     /// </summary>
     void Decelerate(Vector2 forward){
         //rigidbody2D.velocity = new Vector2(0,0);
-        if((Mathf.Abs(rigidbody2D.velocity.x)>forward.x*drive_minimum_speed_factor
-        &&Mathf.Abs(rigidbody2D.velocity.y)>forward.y*drive_minimum_speed_factor)
-        ||rigidbody2D.velocity.x==0||rigidbody2D.velocity.y==0){
+        if(Mathf.Abs(rigidbody2D.velocity.x)>=Mathf.Abs(forward.x*drive_minimum_speed_factor)
+        &&Mathf.Abs(rigidbody2D.velocity.y)>=Mathf.Abs(forward.y*drive_minimum_speed_factor)
+        ){
+            //Debug.Log("aaaaa");
             rigidbody2D.velocity -= forward * 0.1f;
+            //Debug.Log("VelX:"+ rigidbody2D.velocity.x +"forX"+forward.x*drive_minimum_speed_factor + "\nVelY:"+ rigidbody2D.velocity.y + "forY"+forward.y*drive_minimum_speed_factor);
         }
+        //Debug.Log("b");
     }
     /// <summary>
     /// このオブジェクトの加速減速旋回の入力を受け付けて処理する
