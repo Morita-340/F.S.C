@@ -9,8 +9,7 @@ using UnityEngine;
 public class SnapToGrid : MonoBehaviour
 {
     public Transform gridOrigin; // グリッドの起点（中心）オブジェクト[SerializeField]に書き換えても問題ない
-    [SerializeField]
-    Transform Origin;//プレビューで補正する対象のオブジェクト
+    public Transform Origin;//プレビューで補正する対象のオブジェクト
     public float cellSize; // グリッドのセルのサイズ（正方形）
     public bool snapRotation = true; // 回転もスナップするかどうか
 
@@ -38,7 +37,7 @@ public class SnapToGrid : MonoBehaviour
         float snappedY = Mathf.Round(localPosition.y / cellSize) * cellSize;
         //float snappedZ = Mathf.Round(localPosition.z / cellSize) * cellSize;
 
-        Vector3 snappedLocalPosition = new Vector3(snappedX, snappedY, 7);
+        Vector3 snappedLocalPosition = new Vector3(snappedX, snappedY, 0);
         
         // グリッドのワールド座標に変換
         transform.position = gridOrigin.TransformPoint(snappedLocalPosition);

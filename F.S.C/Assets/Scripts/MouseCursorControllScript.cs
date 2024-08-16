@@ -14,8 +14,21 @@ public class MouseCursorControllScript : MonoBehaviour
     PlayerUnitSimulateScript playerUnitSimulateScript;
     [SerializeField]
     GameObject PreviewUnit;
+    [SerializeField]
+    GameObject Unit1;
+    [SerializeField]
+    GameObject Unit2;
+    [SerializeField]
+    GameObject Unit3;
+    [SerializeField]
+    GameObject PlayerUnit;
     GameObject ParentObject = null;
     private Vector3 target;
+    List<Vector3> positionList = new List<Vector3>();
+    List<Quaternion> rotationList = new List<Quaternion>();
+    List<GameObject> previewObjectList =   new List<GameObject>(); 
+        //プレビューオブジェクトを格納する。接合判定に利用する
+    List<string> CopyObjectNameList = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
@@ -36,42 +49,37 @@ public class MouseCursorControllScript : MonoBehaviour
     /// Unitを右クリックしたら離すまでドラッグし続ける
     /// </summary>
     void CursorDragClick(float wheelInput){
+        //Rayを照射する
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
         //Debug.Log(hit2D.collider.gameObject.name);
-        List<Vector3> positionList = new List<Vector3>();
-        List<Quaternion> rotationList = new List<Quaternion>();
         if(Input.GetMouseButtonDown(0)){
+            //Rayを照射した先にあるオブジェクトを登録
             ParentObject = hit2D.collider.gameObject.transform.root.gameObject;
+            //オブジェクトが撃破後Unitであるなら
             if(hit2D.collider.tag == "DestroyedUnit"/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
-                //子オブジェクトのtransformを取得する
+                snapToGrid.Origin = ParentObject.transform;
+                //子オブジェクトのlocalPositionとlocalRotationを取得してリストに格納
                 for(int i = 0;i < ParentObject.transform.childCount;i++){
                         //Transform child = ParentObject.transform.GetChild(i);
                     Vector3 position = ParentObject.transform.GetChild(i).localPosition;
                     Quaternion rotation = ParentObject.transform.GetChild(i).localRotation;
+                    string ObjectName = ParentObject.transform.GetChild(i).name;
                     //position = snapToGrid.SnapPositon(position);
                     //rotation = snapToGrid.SnapRotation(rotation);
+                    CopyObjectNameList.Add(ObjectName);
                     positionList.Add(position);
                     rotationList.Add(rotation);
-                        //child.position = snapToGrid.SnapPositon(child.position);
-                        //child.rotation = snapToGrid.SnapRotation(child.rotation);
-                        //ChildrenList.Add(child);
                 }
-                Debug.Log("bbbA" + UnitSimulater.transform.position);
+                //Debug.Log("bbbA" + UnitSimulater.transform.position);
+                //PreviewユニットをSimulaterの子オブジェクトとして生成する
                 for(int i = 0;i < positionList.Count;i++){
+                    //Instantiateのオーバーライドで引数を別のにすると挙動が変わってしまうので注意
                     GameObject Preview = Instantiate(PreviewUnit,positionList[i],rotationList[i]);
                     Preview.transform.SetParent(UnitSimulater.transform,false);
+                    previewObjectList.Add(Preview);
                 }
-                //InstantiateでSimulaterの子オブジェクトとしてprafabのプレビュー用オブジェクトを配置する
-                /*
-                foreach(Transform child in ChildrenList){
-                Instantiate(PrviewUnit,child.position,child.rotation,UnitSimulater.transform);
-                }
-                */
-                //PlayerUnitSimulaterがプレビュー表示するためにオブジェクト情報をコピーしてSimulater側で複製する
-
-                //Rotationは0、座標は原点中心とする
-                Debug.Log("bbbA"+ ParentObject.transform.position);
+                //Debug.Log("bbbA"+ ParentObject.transform.position);
             }
         }
         if(Input.GetMouseButton(0)){
@@ -89,6 +97,7 @@ public class MouseCursorControllScript : MonoBehaviour
                 enemyUnitManagementScript.MovePosition(target);
                 //マウスに追従するようにするMovePosition関数を呼び出す
                 enemyUnitManagementScript.Spin(wheelInput);
+                //プレビューオブジェクトを走査して
                 Debug.Log("ccc");
                 }
             }
@@ -100,7 +109,25 @@ public class MouseCursorControllScript : MonoBehaviour
             }
             //PlayerUnitに複製する
             ParentObject = null;
-            Debug.Log("ddd");
+            if(playerUnitSimulateScript.GetIsPlunderable() == true){
+                for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
+                Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
+                }
+                Debug.Log("EEE");
+            }
+            //positionList.Clear();
+            //rotationList.Clear();
+            //CopyObjectNameList.Clear();
+            previewObjectList.Clear();
+            
+        }
+    }
+    void Plunder(string copyName,Vector3 Position, Quaternion Rotation){
+        Debug.Log("Name" + copyName);
+        switch(copyName){
+            case "Unit1": Instantiate(Unit1,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
+            case "Unit2":Instantiate(Unit2,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
+            case "Unit3":Instantiate(Unit3,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
         }
     }
     /// <summary>
