@@ -28,6 +28,10 @@ public class SnapToGrid : MonoBehaviour
             Debug.LogWarning("Grid origin is not assigned.");
             return;
         }
+        if(Origin == null){
+            Debug.Log("Origin is not assigned.");
+            return;
+        }
 
         // グリッドのローカル座標に変換
         Vector3 localPosition = gridOrigin.InverseTransformPoint(Origin.transform.position);
@@ -69,7 +73,7 @@ public class SnapToGrid : MonoBehaviour
         float snappedY = Mathf.Round(localPosition.y / cellSize) * cellSize;
         //float snappedZ = Mathf.Round(localPosition.z / cellSize) * cellSize;
 
-        Vector3 snappedLocalPosition = new Vector3(snappedX, snappedY, 7);
+        Vector3 snappedLocalPosition = new Vector3(snappedX, snappedY, 0);
         
         // グリッドのワールド座標に変換
         return gridOrigin.TransformPoint(snappedLocalPosition);

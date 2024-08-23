@@ -25,6 +25,12 @@ public class PlayerUnitSimulateScript : MonoBehaviour
                     IsPlunderable = false;
                     break;
                 }else{IsPlunderable = true;}
+                /*
+                if(previewUnitManagerScript.GetIsCovered() == false){
+                    IsPlunderable = true;
+                    break;
+                }else{IsPlunderable = false;}
+                */
             }
         }
         Debug.Log("IsPlunderable" + IsPlunderable);

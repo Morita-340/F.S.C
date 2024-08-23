@@ -53,11 +53,11 @@ public class MouseCursorControllScript : MonoBehaviour
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
         //Debug.Log(hit2D.collider.gameObject.name);
-        if(Input.GetMouseButtonDown(0)){
+        if(Input.GetMouseButtonDown(0)&&hit2D){
             //Rayを照射した先にあるオブジェクトを登録
-            ParentObject = hit2D.collider.gameObject.transform.root.gameObject;
             //オブジェクトが撃破後Unitであるなら
             if(hit2D.collider.tag == "DestroyedUnit"/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
+                ParentObject = hit2D.collider.gameObject.transform.root.gameObject;
                 snapToGrid.Origin = ParentObject.transform;
                 //子オブジェクトのlocalPositionとlocalRotationを取得してリストに格納
                 for(int i = 0;i < ParentObject.transform.childCount;i++){
@@ -83,12 +83,12 @@ public class MouseCursorControllScript : MonoBehaviour
             }
         }
         if(Input.GetMouseButton(0)){
-            Debug.Log("bbbB"+ ParentObject.name + ParentObject.transform.position);
             Debug.Log("aaa");
             if(ParentObject == null){
                 Debug.LogWarning("Clicked Parent Object is null!");
             }
             else{
+                Debug.Log("bbbB"+ ParentObject.name + ParentObject.transform.position);
                 EnemyUnitManagementScript enemyUnitManagementScript = ParentObject.GetComponent<EnemyUnitManagementScript>();
                 if(enemyUnitManagementScript == null){
                     Debug.LogWarning("enemyUnitManagementScript is null" + ParentObject.name);
@@ -108,22 +108,23 @@ public class MouseCursorControllScript : MonoBehaviour
                 Destroy(UnitSimulater.transform.GetChild(i).gameObject);
             }
             //PlayerUnitに複製する
-            ParentObject = null;
             if(playerUnitSimulateScript.GetIsPlunderable() == true){
                 for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
                 Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
                 }
                 Debug.Log("EEE");
-            }
-            //positionList.Clear();
-            //rotationList.Clear();
-            //CopyObjectNameList.Clear();
+                Destroy(ParentObject);
+            }else{ParentObject = null;}
+            positionList.Clear();
+            rotationList.Clear();
+            CopyObjectNameList.Clear();
             previewObjectList.Clear();
             
         }
     }
     void Plunder(string copyName,Vector3 Position, Quaternion Rotation){
         Debug.Log("Name" + copyName);
+        Position = new Vector3(Position.x, Position.y,0);
         switch(copyName){
             case "Unit1": Instantiate(Unit1,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
             case "Unit2":Instantiate(Unit2,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;

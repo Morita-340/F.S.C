@@ -6,42 +6,44 @@ public class PreviewUnitManagerScript : MonoBehaviour
 {
     [SerializeField]
     SpriteRenderer spriteRenderer;
+    [SerializeField]
     private bool isCovered = false;
-    private bool enterCovered = false,exitCovered = false;
     // Start is called before the first frame update
     void Start()
     {
-        
+        Debug.Log("TTT");
     }
 
     // Update is called once per frame
     void Update()
     {
-        //enterCovered = false;
-        //exitCovered = false;
+        if(isCovered){spriteRenderer.color = Color.red;}
+        else{spriteRenderer.color = Color.green;}
+
     }
     public bool GetIsCovered(){
-        isCovered = enterCovered||exitCovered;
         return isCovered;
+    }
+
+    void OnTriggerStay2D(Collider2D collider){
+        if(collider.tag == "PlayerUnit"){
+            //stayCovered  = true;
+            isCovered = true;
+            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTC");
+        }
     }
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.tag == "PlayerUnit"){
-            enterCovered= true;
-            spriteRenderer.color = Color.red;
-            Debug.Log(collider.transform.gameObject.name + "TTS");
-        }else{
-            spriteRenderer.color = Color.green;
-            enterCovered = false;
+            //enterCovered= true;
+            isCovered = true;
+            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTS");
         }
     }
     void OnTriggerExit2D(Collider2D collider){
         if(collider.tag == "PlayerUnit"){
-            exitCovered = true;
-            spriteRenderer.color = Color.red;
-            Debug.Log(collider.transform.gameObject.name + "TTF");
-        }else{
-            spriteRenderer.color = Color.green;
-            exitCovered = false;
+            //exitCovered = true;
+            isCovered = false;
+            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTF");
         }
     }
 }
