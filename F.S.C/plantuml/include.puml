@@ -1,0 +1,19 @@
+@startuml MyDiaGram
+!include .\\Editor\PreviewDebugWindow.puml
+!include .\\Scripts\FieldManager.puml
+!include .\\Scripts\General\GSetting.puml
+!include .\\Scripts\BattleScene\Enemy\EnemyUnitControllScript.puml
+!include .\\Scripts\BattleScene\Enemy\EnemyUnitManagementScript.puml
+!include .\\Scripts\BattleScene\Input\MouseCursorControllScript.puml
+!include .\\Scripts\BattleScene\Player\PlayerUnitManagementScript.puml
+!include .\\Scripts\BattleScene\Player\PlayerUnitSimulateScript.puml
+!include .\\Scripts\BattleScene\Preview\PreviewUnitManagerScript.puml
+!include .\\Scripts\BattleScene\Preview\SnapToGrid.puml
+!include .\\Scripts\BattleScene\Unit\UnitBase.puml
+!include .\\Scripts\BattleScene\Unit\UnitData.puml
+!include .\\Scripts\BattleScene\Weapon\RocketBomb.puml
+!include .\\Scripts\BattleScene\Unit\Core\CoreBase.puml
+!include .\\Scripts\BattleScene\Unit\Core\NormalCore.puml
+!include .\\Scripts\BattleScene\Unit\WeaponUnit\NormalBeamWeaponUnit.puml
+!include .\\Scripts\BattleScene\Unit\WeaponUnit\WeaponUnitBase.puml
+@enduml

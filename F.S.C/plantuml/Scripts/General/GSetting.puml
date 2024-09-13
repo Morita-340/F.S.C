@@ -1,0 +1,12 @@
+@startuml
+class GSetting {
+}
+enum ShapeType {
+    Null= 0,
+    Square= 1,
+    RegularTriangle= 2,
+    IsoscelesRightTriangle= 3,
+}
+MonoBehaviour <|-- GSetting
+GSetting +-- ShapeType
+@enduml

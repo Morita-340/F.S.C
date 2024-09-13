@@ -1,0 +1,5 @@
+@startuml MyDiaGram
+class PreviewDebugWindow {
+}
+EditorWindow <|-- PreviewDebugWindow
+@enduml

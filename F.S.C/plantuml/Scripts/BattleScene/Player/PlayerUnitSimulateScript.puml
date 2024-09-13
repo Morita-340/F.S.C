@@ -1,0 +1,6 @@
+@startuml
+class PlayerUnitSimulateScript {
+    + GetIsPlunderable() : bool
+}
+MonoBehaviour <|-- PlayerUnitSimulateScript
+@enduml

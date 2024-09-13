@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// 子オブジェクトの移動周りの挙動をまとめて制御
+/// </summary>
 public class PlayerUnitManagementScript : MonoBehaviour
 {
     [SerializeField]
@@ -59,7 +61,7 @@ public class PlayerUnitManagementScript : MonoBehaviour
         //Debug.Log("b");
     }
     /// <summary>
-    /// このオブジェクトの加速減速旋回の入力を受け付けて処理する
+    /// このオブジェクトの加速減速旋回の入力を受け付けて処理する。InputSystemに対応させる
     /// </summary>
     void Manipulate(){
         if(Input.GetKey(KeyCode.W)){

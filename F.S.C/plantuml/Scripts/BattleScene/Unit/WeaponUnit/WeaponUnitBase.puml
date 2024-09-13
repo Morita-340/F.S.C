@@ -1,0 +1,5 @@
+@startuml
+class WeaponUnitBase {
+}
+UnitBase <|-- WeaponUnitBase
+@enduml

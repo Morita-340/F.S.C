@@ -1,0 +1,5 @@
+@startuml
+class UnitBase {
+}
+MonoBehaviour <|-- UnitBase
+@enduml

@@ -1,0 +1,6 @@
+@startuml
+class RocketBomb {
+    + OnCollisionEnter2D(other:Collision2D) : void
+}
+MonoBehaviour <|-- RocketBomb
+@enduml

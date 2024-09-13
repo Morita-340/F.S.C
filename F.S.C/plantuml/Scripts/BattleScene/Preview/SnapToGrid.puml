@@ -1,0 +1,12 @@
+@startuml
+class SnapToGrid {
+    + cellSize : float
+    + snapRotation : bool = true
+    + SnapPositon(position:Vector3) : Vector3
+    + SnapRotation(rotation:Quaternion) : Quaternion
+    + SnapRotation(rotation:Vector3) : Vector3
+}
+MonoBehaviour <|-- SnapToGrid
+SnapToGrid --> "gridOrigin" Transform
+SnapToGrid --> "Origin" Transform
+@enduml

@@ -1,0 +1,9 @@
+@startuml
+class FieldManager <<sealed>> {
+    + {static} GetInstance() : FieldManager
+}
+class "List`1"<T> {
+}
+MonoBehaviour <|-- FieldManager
+FieldManager o-> "UnitList<UnitData>" "List`1"
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class EnemyUnitManagementScript {
+    + MovePosition(position:Vector3) : void
+    + Spin(wheelInput:float) : void
+}
+MonoBehaviour <|-- EnemyUnitManagementScript
+@enduml
