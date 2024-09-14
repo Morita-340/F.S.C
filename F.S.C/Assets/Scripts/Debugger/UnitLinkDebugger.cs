@@ -12,6 +12,8 @@ public class UnitLinkDebugger : MonoBehaviour
     GameObject DebugLinkObjIcon;
     private FieldManager FM = FieldManager.GetInstance();
     List<GameObject> IconList = new List<GameObject>();
+    Transform pastObject = null;
+    Transform currentObject = null;
     //カーソルを当てたオブジェクトのスクリプトを取得
     //そのスクリプトのthisUnitについてLINQを用いてFieldManagerから探す。
     //該当した要素の上下左右のUnitBaseを取得し、そこからオブジェクトを辿ってそのオブジェクトのSpriteRendererにアクセスし、色を変える
@@ -29,16 +31,16 @@ public class UnitLinkDebugger : MonoBehaviour
         if(hit2D){
             //Rayを照射した先にあるオブジェクトのクラスを登録
             if(hit2D.collider.tag == "PlayerUnit"){
+                currentObject = hit2D.collider.gameObject.transform;
                 //カーソルを当てたユニットが格納されたUnitDataを検索する。
                 UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();
                 //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
                 UnitData SameData = new UnitData(null,null,null,null,null,0);
                 if(HitObj == null){Debug.Log("LLH"); return; }
-                foreach(UnitData unitData in FM.UnitList){
-                    if(unitData.ReturnThisUnit()==HitObj)SameData = unitData;
-                }
+                SameData = FM.SearchUnit(HitObj);Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
                 Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
                 if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
+                if(pastObject != currentObject)DestroyIcon();
                 foreach(UnitBase fourwayUnit in SameData.ReturnFourWayLink()){
                     Debug.Log("LLK");
                     if(fourwayUnit != null){
@@ -47,7 +49,8 @@ public class UnitLinkDebugger : MonoBehaviour
                         IconList.Add(Instantiate(DebugLinkObjIcon,fourwayUnit.gameObject.transform));
                     }
                 }
-            }
+                pastObject = hit2D.collider.gameObject.transform;
+            }else{DestroyIcon();}
         }else{DestroyIcon();}
     }
     void DestroyIcon(){

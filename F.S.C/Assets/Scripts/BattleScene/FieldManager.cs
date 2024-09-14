@@ -21,6 +21,14 @@ namespace FSCGeneral{
             return FM;
         }
         public List<UnitData> UnitList = new List<UnitData>();
+        public UnitData SearchUnit(UnitBase serachUnit){
+                foreach(UnitData unitData in FM.UnitList){
+                    if(unitData.ReturnThisUnit()==serachUnit){
+                        Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
+                        return unitData;
+                    }
+                }return new UnitData(null,null,null,null,null,0);
+        }
         // Start is called before the first frame update
         void Start()
         {

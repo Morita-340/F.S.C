@@ -23,15 +23,23 @@ public class UnitData
     private UnitBase DownerUnit;
     private UnitBase RightUnit;
     private UnitBase LeftUnit;
+    //データベースのキー扱い
     private UnitBase ThisUnit;
     private int HitPoint;
     private float AttackPower;
     public int ShapeTypeNum;
+    private bool AlreadySearch;
     public UnitBase ReturnThisUnit(){
         return ThisUnit;
     }
     public List<UnitBase> ReturnFourWayLink(){
         List<UnitBase> ReturnFourWayLink = new List<UnitBase>(){UpperUnit,DownerUnit,RightUnit,LeftUnit};
         return ReturnFourWayLink;
+    }
+    public void ReRegistFourWayLink(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
+        if(upperUnit != null)UpperUnit = upperUnit;
+        if(downerUnit != null)DownerUnit = downerUnit;
+        if(rightUnit != null)RightUnit = rightUnit;
+        if(leftUnit != null)LeftUnit = leftUnit;
     }
 }

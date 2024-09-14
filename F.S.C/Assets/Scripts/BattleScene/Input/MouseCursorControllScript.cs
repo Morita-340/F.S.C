@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,11 +25,12 @@ public class MouseCursorControllScript : MonoBehaviour
     GameObject PlayerUnit;
     GameObject ParentObject = null;
     private Vector3 target;
-    List<Vector3> positionList = new List<Vector3>();
-    List<Quaternion> rotationList = new List<Quaternion>();
-    List<GameObject> previewObjectList =   new List<GameObject>(); 
+    private List<Vector3> positionList = new List<Vector3>();
+    private List<Quaternion> rotationList = new List<Quaternion>();
+    private List<GameObject> previewObjectList =   new List<GameObject>(); 
+    private List<UnitBase> UnitBaseList = new List<UnitBase>();
         //プレビューオブジェクトを格納する。接合判定に利用する
-    List<string> CopyObjectNameList = new List<string>();
+    private List<string> CopyObjectNameList = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
@@ -65,11 +67,13 @@ public class MouseCursorControllScript : MonoBehaviour
                     Vector3 position = ParentObject.transform.GetChild(i).localPosition;
                     Quaternion rotation = ParentObject.transform.GetChild(i).localRotation;
                     string ObjectName = ParentObject.transform.GetChild(i).name;
+                    UnitBase ThisUnitBase = ParentObject.transform.GetChild(i).gameObject.GetComponent<UnitBase>();
                     //position = snapToGrid.SnapPositon(position);
                     //rotation = snapToGrid.SnapRotation(rotation);
                     CopyObjectNameList.Add(ObjectName);
                     positionList.Add(position);
                     rotationList.Add(rotation);
+                    UnitBaseList.Add(ThisUnitBase);
                 }
                 //Debug.Log("bbbA" + UnitSimulater.transform.position);
                 //PreviewユニットをSimulaterの子オブジェクトとして生成する
@@ -104,22 +108,39 @@ public class MouseCursorControllScript : MonoBehaviour
         }
         if(Input.GetMouseButtonUp(0)){
             //Simulaterの複製を削除する
+            bool isNotIsolated = false;
+            List<UnitBase> AdjacentUnitList = new List<UnitBase>();
             for(int i = 0;i < UnitSimulater.transform.childCount;i++){
                 Destroy(UnitSimulater.transform.GetChild(i).gameObject);
             }
+            //DestroyUnitがPlayerUnitに隣接しているかを判定し、隣接しているUnitはAdjacentUnitListに登録
+            foreach(UnitBase unitBase in UnitBaseList){
+                Debug.Log("GGG" + unitBase);
+                foreach(UnitBase adjacentUnit in unitBase.ReturnAdjacentUnitList()){
+                    if(adjacentUnit!=null)AdjacentUnitList.Add(adjacentUnit);
+                    else break;
+                }
+                if(AdjacentUnitList.Any(n => n != null)){isNotIsolated = true;}
+                else{isNotIsolated = false;}
+            }
             //PlayerUnitに複製する
-            if(playerUnitSimulateScript.GetIsPlunderable() == true){
+            if(playerUnitSimulateScript.GetIsPlunderable() == true && isNotIsolated == true){
                 for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
                 Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
                 }
                 Debug.Log("EEE");
                 Destroy(ParentObject);
+                //データの更新にAdjacentUnitListを用いる
+                foreach(UnitBase unitBase in AdjacentUnitList){
+                    unitBase.ReRegistData();
+                    Debug.Log("FFB");
+                }
             }else{ParentObject = null;}
             positionList.Clear();
             rotationList.Clear();
             CopyObjectNameList.Clear();
             previewObjectList.Clear();
-            
+            UnitBaseList.Clear();
         }
     }
     void Plunder(string copyName,Vector3 Position, Quaternion Rotation){
