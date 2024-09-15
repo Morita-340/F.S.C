@@ -6,6 +6,7 @@ TagManager:
   tags:
   - DestroyedUnit
   - PlayerUnit
+  - PlayerWeapon
   layers:
   - Default
   - TransparentFX

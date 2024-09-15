@@ -5,13 +5,13 @@ using UnityEngine;
 public class CoreBase : UnitBase
 {
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         
     }
 
     // Update is called once per frame
-    protected virtual void Update()
+    protected void Update()
     {
         if(Input.GetKeyDown(KeyCode.Space)){
             AttackAction();

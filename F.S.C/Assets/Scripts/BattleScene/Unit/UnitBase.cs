@@ -9,9 +9,14 @@ public class UnitBase : MonoBehaviour
 {
     [SerializeField]
     protected GSetting.ShapeType shapeType;
+    [SerializeField]
+    private int HitPoint = 5;
+    [SerializeField]
+    SpriteRenderer spriteRenderer;
     private string UnitTagName = "PlayerUnit";
     private GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
+    private bool isDestroyed = false;
     UnitBase thisUnit;
     UnitBase upperUnit = null;
     UnitBase downerUnit = null;
@@ -109,9 +114,9 @@ public class UnitBase : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
-        
+        spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f);
     }
     protected virtual void AttackAction(){}
     protected virtual void DestroyUnit(){
@@ -152,5 +157,11 @@ public class UnitBase : MonoBehaviour
         UnitData unitData = FM.SearchUnit(this);
         unitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
+    }
+    public void OnCollisionEnter2D(Collision2D collision2D){
+        if(collision2D!.transform.tag == "PlayerWeapon"){
+            if(HitPoint >0)HitPoint --;
+            else isDestroyed = true;
+        }
     }
 }

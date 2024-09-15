@@ -15,7 +15,7 @@ public class NormalCore : CoreBase
     }
 
     // Update is called once per frame
-    protected override void Update()
+    protected void Update()
     {
         base.Update();
     }

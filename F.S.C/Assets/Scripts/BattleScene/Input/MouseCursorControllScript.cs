@@ -28,10 +28,11 @@ public class MouseCursorControllScript : MonoBehaviour
     private float WheelInput = 0;
     private List<Vector3> positionList = new List<Vector3>();
     private List<Quaternion> rotationList = new List<Quaternion>();
-    private List<GameObject> previewObjectList =   new List<GameObject>(); 
+    private List<GameObject> previewObjectList = new List<GameObject>(); 
+    private List<GameObject> plunderObjectList  = new List<GameObject>();
     private List<UnitBase> UnitBaseList = new List<UnitBase>();
         //プレビューオブジェクトを格納する。接合判定に利用する
-    private List<string> CopyObjectNameList = new List<string>();
+    //private List<string> CopyObjectNameList = new List<string>();
     // Start is called before the first frame update
     void Start()
     {
@@ -71,7 +72,8 @@ public class MouseCursorControllScript : MonoBehaviour
                     UnitBase ThisUnitBase = ParentObject.transform.GetChild(i).gameObject.GetComponent<UnitBase>();
                     //position = snapToGrid.SnapPositon(position);
                     //rotation = snapToGrid.SnapRotation(rotation);
-                    CopyObjectNameList.Add(ObjectName);
+                    plunderObjectList.Add(ParentObject.transform.GetChild(i).gameObject);
+                    //CopyObjectNameList.Add(ObjectName);
                     positionList.Add(position);
                     rotationList.Add(rotation);
                     UnitBaseList.Add(ThisUnitBase);
@@ -127,8 +129,11 @@ public class MouseCursorControllScript : MonoBehaviour
             }
             //PlayerUnitに複製する
             if(playerUnitSimulateScript.GetIsPlunderable() == true && isNotIsolated == true){
-                for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
-                Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
+                ///for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
+                //Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
+                //}
+                for(int i = 0;i < plunderObjectList.Count;i++){
+                    Plunder(plunderObjectList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
                 }
                 Debug.Log("EEE");
                 Destroy(ParentObject);
@@ -140,7 +145,8 @@ public class MouseCursorControllScript : MonoBehaviour
             }else{ParentObject = null;}
             positionList.Clear();
             rotationList.Clear();
-            CopyObjectNameList.Clear();
+            plunderObjectList.Clear();
+            //CopyObjectNameList.Clear();
             previewObjectList.Clear();
             UnitBaseList.Clear();
         }
@@ -153,6 +159,10 @@ public class MouseCursorControllScript : MonoBehaviour
             case "Unit2":Instantiate(Unit2,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
             case "Unit3":Instantiate(Unit3,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
         }
+    }
+    void Plunder(GameObject PlunderUnit,Vector3 Position, Quaternion Rotation){
+        Position = new Vector3(Position.x, Position.y,0);
+        Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform).tag = "PlayerUnit";
     }
     /// <summary>
     /// マウスホイールでドラッグ中のオブジェクトを回転させる
