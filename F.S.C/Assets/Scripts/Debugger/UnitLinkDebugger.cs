@@ -14,6 +14,10 @@ public class UnitLinkDebugger : MonoBehaviour
     List<GameObject> IconList = new List<GameObject>();
     Transform pastObject = null;
     Transform currentObject = null;
+    GameObject UpperIcon;
+    GameObject DownerIcon;
+    GameObject RightIcon;
+    GameObject LeftIcon;
     //カーソルを当てたオブジェクトのスクリプトを取得
     //そのスクリプトのthisUnitについてLINQを用いてFieldManagerから探す。
     //該当した要素の上下左右のUnitBaseを取得し、そこからオブジェクトを辿ってそのオブジェクトのSpriteRendererにアクセスし、色を変える

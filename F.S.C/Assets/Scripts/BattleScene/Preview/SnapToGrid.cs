@@ -53,7 +53,7 @@ public class SnapToGrid : MonoBehaviour
             //float snappedRotationX = Mathf.Round(eulerRotation.x / 90) * 90;
             //float snappedRotationY = Mathf.Round(eulerRotation.y / 90) * 90;
             //float snappedRotationZ = Mathf.Round(eulerRotation.z / 90) * 90;
-            float snappedRotationZ = gridOrigin.transform.eulerAngles.z % 90 + Mathf.Round(eulerRotation.z/90) * 90;
+            float snappedRotationZ = gridOrigin.transform.eulerAngles.z + Mathf.Round(gridOrigin.transform.eulerAngles.z/90) * 90 + Mathf.Round(eulerRotation.z/90) * 90;
             //(eulerRotation.z+90) / 90
             //Debug.Log("a"+snappedRotationZ+"b"+gridOrigin.transform.eulerAngles.z+"c"+(Mathf.Floor(eulerRotation.z / 90) * 90));
             //this.gameObject.transform.rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, snappedRotationZ);

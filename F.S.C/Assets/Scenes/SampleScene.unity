@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyUnitManager: {fileID: 172520465}
-  gyrationFactor: 50
+  gyrationFactor: 90
 --- !u!4 &172520467
 Transform:
   m_ObjectHideFlags: 0
@@ -207,7 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyUnitManager: {fileID: 251426967}
-  gyrationFactor: 50
+  gyrationFactor: 90
 --- !u!4 &251426969
 Transform:
   m_ObjectHideFlags: 0
@@ -585,7 +585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shapeType: 3
+  shapeType: 1
 --- !u!1 &457517999
 GameObject:
   m_ObjectHideFlags: 0
@@ -5893,7 +5893,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyUnitManager: {fileID: 571100189}
-  gyrationFactor: 50
+  gyrationFactor: 90
 --- !u!4 &571100191
 Transform:
   m_ObjectHideFlags: 0
@@ -6053,12 +6053,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 587395937}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &630786388
 GameObject:
   m_ObjectHideFlags: 0
@@ -6107,7 +6105,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyUnitManager: {fileID: 630786388}
-  gyrationFactor: 50
+  gyrationFactor: 90
 --- !u!1 &633076056
 GameObject:
   m_ObjectHideFlags: 0
@@ -6659,12 +6657,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 742576173}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &753915495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6805,12 +6801,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 753915495}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &785791580
 GameObject:
   m_ObjectHideFlags: 0
@@ -7640,12 +7634,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1320984060}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &1331674529
 GameObject:
   m_ObjectHideFlags: 0
@@ -8401,12 +8393,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1481201383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &1493316987
 GameObject:
   m_ObjectHideFlags: 0
@@ -8591,12 +8581,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1563637390}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &1637949389
 GameObject:
   m_ObjectHideFlags: 0
@@ -8737,12 +8725,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1637949389}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!1 &1639518779
 GameObject:
   m_ObjectHideFlags: 0
@@ -8917,7 +8903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyUnitManager: {fileID: 1670819503}
-  gyrationFactor: 50
+  gyrationFactor: 90
 --- !u!4 &1670819505
 Transform:
   m_ObjectHideFlags: 0
@@ -9076,12 +9062,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1732919794}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}
 --- !u!4 &1888605411 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 973050959131081871, guid: 66ecc6add0e14974b889ebfa033374ce, type: 3}

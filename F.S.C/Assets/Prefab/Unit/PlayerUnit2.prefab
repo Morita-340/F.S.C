@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 335549677665419407}
   - component: {fileID: 3192163754755513182}
   - component: {fileID: 8006599415810652203}
-  - component: {fileID: 7496271066419090481}
+  - component: {fileID: -3139237061625950812}
   m_Layer: 0
   m_Name: PlayerUnit2
   m_TagString: PlayerUnit
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7496271066419090481
+--- !u!114 &-3139237061625950812
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,9 +168,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4264942486409253726}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5020915b38495994eaa696e10bf1fccf, type: 3}
+  m_Script: {fileID: 11500000, guid: c2fa0fef25ea7ec41addc84ac65c5bc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
-  RocketBomb: {fileID: 0}
-  FirePositionObj: {fileID: 0}

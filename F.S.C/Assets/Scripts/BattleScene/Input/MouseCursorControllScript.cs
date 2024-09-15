@@ -25,6 +25,7 @@ public class MouseCursorControllScript : MonoBehaviour
     GameObject PlayerUnit;
     GameObject ParentObject = null;
     private Vector3 target;
+    private float WheelInput = 0;
     private List<Vector3> positionList = new List<Vector3>();
     private List<Quaternion> rotationList = new List<Quaternion>();
     private List<GameObject> previewObjectList =   new List<GameObject>(); 
@@ -41,11 +42,11 @@ public class MouseCursorControllScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float wheelInput = Input.GetAxis("Mouse ScrollWheel");
+        WheelInput += Input.GetAxis("Mouse ScrollWheel");
         //Debug.Log(Input.mousePosition);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,10));
         Debug.Log("bbbZ" + target);
-        CursorDragClick(wheelInput);
+        CursorDragClick(WheelInput);
     }
     /// <summary>
     /// Unitを右クリックしたら離すまでドラッグし続ける
@@ -100,13 +101,14 @@ public class MouseCursorControllScript : MonoBehaviour
                 //親オブジェクトのスクリプトEnemyUnitManagementScriptにアクセス
                 enemyUnitManagementScript.MovePosition(target);
                 //マウスに追従するようにするMovePosition関数を呼び出す
-                enemyUnitManagementScript.Spin(wheelInput);
+                enemyUnitManagementScript.Spin(wheelInput,PlayerUnit.transform.rotation);
                 //プレビューオブジェクトを走査して
                 Debug.Log("ccc");
                 }
             }
         }
         if(Input.GetMouseButtonUp(0)){
+            WheelInput = 0;
             //Simulaterの複製を削除する
             bool isNotIsolated = false;
             List<UnitBase> AdjacentUnitList = new List<UnitBase>();

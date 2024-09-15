@@ -26,7 +26,10 @@ public class EnemyUnitManagementScript : MonoBehaviour
     public void MovePosition(Vector3 position){
         EnemyUnitManager.transform.position = position;
     }
-    public void Spin(float wheelInput){
-        EnemyUnitManager.transform.rotation = EnemyUnitManager.transform.rotation * Quaternion.AngleAxis(wheelInput*gyrationFactor,Vector3.forward);
+    public void Spin(float wheelInput,Quaternion rotation){
+        float currentRotation = 0;
+        currentRotation += wheelInput;
+        //EnemyUnitManager.transform.rotation = EnemyUnitManager.transform.rotation * Quaternion.AngleAxis(wheelInput*gyrationFactor,Vector3.forward);
+        EnemyUnitManager.transform.rotation = Quaternion.Euler(0,0,rotation.z + currentRotation*gyrationFactor);
     }
 }
