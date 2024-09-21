@@ -22,6 +22,14 @@ public class UnitBase : MonoBehaviour
     UnitBase downerUnit = null;
     UnitBase rightUnit = null;
     UnitBase leftUnit = null;
+    private Vector3 RayBasePosition;
+    private float PreviewObjZRotate;
+    public void SetRayBasePosition(Vector3 position){
+        RayBasePosition = position;
+    }
+    public void SetPreviewObjRotate(float ZRotate){
+        PreviewObjZRotate = ZRotate;
+    }
     // Start is called before the first frame update
     void Awake()
     {
@@ -34,7 +42,7 @@ public class UnitBase : MonoBehaviour
     }
     protected virtual void GetAdjacentObjLink()
     {
-        Debug.Log("LLA");
+        //Debug.Log("LLA" + thisUnit.gameObject.name);
         if(shapeType == GSetting.ShapeType.Square){
             upperUnit = GetUpLink();
             downerUnit = GetDownLink();
@@ -85,33 +93,127 @@ public class UnitBase : MonoBehaviour
         return leftUnit;
     }
     private GameObject GetUpperGameObject(string ObjTag){
-        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(0,1,5),new Vector3(0,0,1));
+        Vector3 RayPosition = new Vector3(0, 0,0);
+        switch(this.gameObject.tag){
+            case "PlayerUnit":
+                RayPosition = this.gameObject.transform.position + new Vector3(0,1,5);
+                break;
+            case "DestroyedUnit":
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,1,5)) + RayBasePosition;
+                break;
+            default: return null;
+        }
+        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
         if(!hit2D){return null;}
         GameObject UpperObj = hit2D.collider.gameObject;
         if(UpperObj.tag != ObjTag){return null;}
         else return UpperObj;
     }
     private GameObject GetDownerGameObject(string ObjTag){
-        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(0,-1,5),new Vector3(0,0,1));
-        if(!hit2D){Debug.Log("III");return null;}
+        //switch(this.gameObject.tag){
+        //    case "PlayerUnit":
+        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(0,-1,5),new Vector3(0,0,1));
+        //        if(!hit2D){Debug.Log("AZKi");return null;}
+        //        GameObject DownerObj = hit2D.collider.gameObject;
+        //        if(DownerObj.tag != ObjTag){return null;}
+        //        else return DownerObj;
+        //    case "DestroyedUnit":
+        //        RaycastHit2D hit2DAAA = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5),new Vector3(0,0,1));
+        //        if(!hit2DAAA){Debug.Log("AZKi");return null;}
+        //        DownerObj = hit2DAAA.collider.gameObject;
+        //        if(DownerObj.tag != ObjTag){return null;}
+        //        else return DownerObj;
+        //    default:Debug.Log("AZKi"); return null;
+        //}
+        Vector3 RayPosition = new Vector3(0, 0,0);
+        switch(this.gameObject.tag){
+            case "PlayerUnit":
+                RayPosition = this.gameObject.transform.position + new Vector3(0,-1,5);
+                break;
+            case "DestroyedUnit":
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5)) + RayBasePosition;
+                break;
+            default: return null;
+        }
+        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        Debug.Log("AZKi" +this.gameObject + RayPosition);
+        if(!hit2D){return null;}
         GameObject DownerObj = hit2D.collider.gameObject;
-        if(DownerObj.tag != ObjTag){Debug.Log("IIU");return null;}
+        if(DownerObj.tag != ObjTag){Debug.Log("AZKi"); return null;}
         else return DownerObj;
     }
     private GameObject GetRightGameObject(string ObjTag){
-        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(1,0,5),new Vector3(0,0,1));
+        //switch(this.gameObject.tag){
+        //    case "PlayerUnit":
+        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(1,0,5),new Vector3(0,0,1));
+        //        if(!hit2D){return null;}
+        //        GameObject RightObj = hit2D.collider.gameObject;
+        //        if(RightObj.tag != ObjTag){return null;}
+        //        else return RightObj;
+        //    case "DestroyedUnit":
+        //        hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(1,0,5),new Vector3(0,0,1));
+        //        if(!hit2D){return null;}
+        //        RightObj = hit2D.collider.gameObject;
+        //        if(RightObj.tag != ObjTag){return null;}
+        //        else return RightObj;
+        //    default: return null;
+        //}
+        Vector3 RayPosition = new Vector3(0, 0,0);
+        switch(this.gameObject.tag){
+            case "PlayerUnit":
+                RayPosition = this.gameObject.transform.position + new Vector3(1,0,5);
+                break;
+            case "DestroyedUnit":
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(1,0,5)) + RayBasePosition;
+                break;
+            default: return null;
+        }
+        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
         if(!hit2D){return null;}
         GameObject RightObj = hit2D.collider.gameObject;
         if(RightObj.tag != ObjTag){return null;}
         else return RightObj;
     }
     private GameObject GetLeftGameObject(string ObjTag){
-        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(-1,0,5),new Vector3(0,0,1));
+        //switch(this.gameObject.tag){
+        //    case "PlayerUnit":
+        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(-1,0,5),new Vector3(0,0,1));
+        //        if(!hit2D){return null;}
+        //        GameObject LeftObj = hit2D.collider.gameObject;
+        //        if(LeftObj.tag != ObjTag){return null;}
+        //        else return LeftObj;
+        //    case "DestroyedUnit":
+        //        hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(-1,0,5),new Vector3(0,0,1));
+        //        if(!hit2D){return null;}
+        //        LeftObj = hit2D.collider.gameObject;
+        //        if(LeftObj.tag != ObjTag){return null;}
+        //        else return LeftObj;
+        //    default: return null;
+        //}
+        Vector3 RayPosition = new Vector3(0, 0,0);
+        switch(this.gameObject.tag){
+            case "PlayerUnit":
+                RayPosition = this.gameObject.transform.position + new Vector3(-1,0,5);
+                break;
+            case "DestroyedUnit":
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(-1,0,5)) + RayBasePosition;
+                break;
+            default: return null;
+        }
+        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
         if(!hit2D){return null;}
         GameObject LeftObj = hit2D.collider.gameObject;
         if(LeftObj.tag != ObjTag){return null;}
         else return LeftObj;
     }
+
+    //private GameObject GetLeftGameObject(string ObjTag){
+    //    RaycastHit2D hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5) + RayBasePosition,new Vector3(0,0,1));
+    //    if(!hit2D){return null;}
+    //    GameObject LeftObj = hit2D.collider.gameObject;
+    //    if(LeftObj.tag != ObjTag){return null;}
+    //    else return LeftObj;
+    //}
 
     // Update is called once per frame
     protected void Update()
@@ -150,6 +252,7 @@ public class UnitBase : MonoBehaviour
         if(downerUnit != null)AdjacentUnitList.Add(downerUnit);
         if(rightUnit != null)AdjacentUnitList.Add(rightUnit);
         if(leftUnit != null)AdjacentUnitList.Add(leftUnit);
+        Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
         return AdjacentUnitList;
     }
     public void ReRegistData(){

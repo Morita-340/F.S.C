@@ -14,9 +14,13 @@ public class UnitLinkDebugger : MonoBehaviour
     List<GameObject> IconList = new List<GameObject>();
     Transform pastObject = null;
     Transform currentObject = null;
+    [SerializeField]
     GameObject UpperIcon;
+    [SerializeField]
     GameObject DownerIcon;
+    [SerializeField]
     GameObject RightIcon;
+    [SerializeField]
     GameObject LeftIcon;
     //カーソルを当てたオブジェクトのスクリプトを取得
     //そのスクリプトのthisUnitについてLINQを用いてFieldManagerから探す。
@@ -45,6 +49,7 @@ public class UnitLinkDebugger : MonoBehaviour
                 Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
                 if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
                 if(pastObject != currentObject)DestroyIcon();
+                /*
                 foreach(UnitBase fourwayUnit in SameData.ReturnFourWayLink()){
                     Debug.Log("LLK");
                     if(fourwayUnit != null){
@@ -53,13 +58,33 @@ public class UnitLinkDebugger : MonoBehaviour
                         IconList.Add(Instantiate(DebugLinkObjIcon,fourwayUnit.gameObject.transform));
                     }
                 }
+                */
+                
+                
+                List<UnitBase> FourWayLink = SameData.ReturnFourWayLink();
+                for(int i=0; i < FourWayLink.Count; i++){
+                    if(FourWayLink[i] != null){
+                        switch(i){
+                            case 0: UpperIcon.SetActive(true); UpperIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); UpperIcon.transform.localPosition = Vector3.zero; break;
+                            case 1: DownerIcon.SetActive(true); DownerIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); DownerIcon.transform.localPosition = Vector3.zero; break;
+                            case 2: RightIcon.SetActive(true); RightIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); RightIcon.transform.localPosition = Vector3.zero; break;
+                            case 3: LeftIcon.SetActive(true); LeftIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); LeftIcon.transform.localPosition = Vector3.zero; break;
+                        }
+                    }
+                }
                 pastObject = hit2D.collider.gameObject.transform;
             }else{DestroyIcon();}
         }else{DestroyIcon();}
     }
     void DestroyIcon(){
+        /*
         foreach(GameObject Icon in IconList){
             Destroy(Icon);
         }
+        */
+        UpperIcon.SetActive(false);
+        DownerIcon.SetActive(false);
+        RightIcon.SetActive(false);
+        LeftIcon.SetActive(false);
     }
 }

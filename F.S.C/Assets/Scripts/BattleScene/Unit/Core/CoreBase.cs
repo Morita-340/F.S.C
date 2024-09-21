@@ -7,12 +7,13 @@ public class CoreBase : UnitBase
     // Start is called before the first frame update
     protected void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
     protected void Update()
     {
+        base.Update();
         if(Input.GetKeyDown(KeyCode.Space)){
             AttackAction();
         }

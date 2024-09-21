@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 5168378381395616981}
   m_Layer: 0
   m_Name: NormalDebugUnit
-  m_TagString: Untagged
+  m_TagString: DestroyedUnit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

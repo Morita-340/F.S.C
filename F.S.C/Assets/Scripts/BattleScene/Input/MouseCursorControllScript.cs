@@ -117,15 +117,23 @@ public class MouseCursorControllScript : MonoBehaviour
             for(int i = 0;i < UnitSimulater.transform.childCount;i++){
                 Destroy(UnitSimulater.transform.GetChild(i).gameObject);
             }
+            for(int i = 0;i < plunderObjectList.Count;i++){
+                if(UnitBaseList[i] == null){Debug.Log("KZM"); break;}
+                UnitBaseList[i].SetRayBasePosition(previewObjectList[i].transform.position);
+                UnitBaseList[i].SetPreviewObjRotate(previewObjectList[i].transform.rotation.z);
+                Debug.Log("KZM" + UnitBaseList[i] + previewObjectList[i].transform.position + previewObjectList[i].transform.rotation.z);
+                if(UnitBaseList[i].IsNotIsolatedUnit() == true){isNotIsolated = true; Debug.Log("KZM");}
+            }
             //DestroyUnitがPlayerUnitに隣接しているかを判定し、隣接しているUnitはAdjacentUnitListに登録
             foreach(UnitBase unitBase in UnitBaseList){
                 Debug.Log("GGG" + unitBase);
                 foreach(UnitBase adjacentUnit in unitBase.ReturnAdjacentUnitList()){
-                    if(adjacentUnit!=null)AdjacentUnitList.Add(adjacentUnit);
+                    if(adjacentUnit!=null){AdjacentUnitList.Add(adjacentUnit);
+                    Debug.Log("GGG" + adjacentUnit);}
                     else break;
                 }
-                if(AdjacentUnitList.Any(n => n != null)){isNotIsolated = true;}
-                else{isNotIsolated = false;}
+                //if(AdjacentUnitList.Any(n => n != null)){isNotIsolated = true;}
+                //else{isNotIsolated = false;}
             }
             //PlayerUnitに複製する
             if(playerUnitSimulateScript.GetIsPlunderable() == true && isNotIsolated == true){
@@ -140,7 +148,7 @@ public class MouseCursorControllScript : MonoBehaviour
                 //データの更新にAdjacentUnitListを用いる
                 foreach(UnitBase unitBase in AdjacentUnitList){
                     unitBase.ReRegistData();
-                    Debug.Log("FFB");
+                    Debug.Log("FFB" + unitBase.name);
                 }
             }else{ParentObject = null;}
             positionList.Clear();
