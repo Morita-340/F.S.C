@@ -120,16 +120,17 @@ public class MouseCursorControllScript : MonoBehaviour
             for(int i = 0;i < plunderObjectList.Count;i++){
                 if(UnitBaseList[i] == null){Debug.Log("KZM"); break;}
                 UnitBaseList[i].SetRayBasePosition(previewObjectList[i].transform.position);
-                UnitBaseList[i].SetPreviewObjRotate(previewObjectList[i].transform.rotation.z);
-                Debug.Log("KZM" + UnitBaseList[i] + previewObjectList[i].transform.position + previewObjectList[i].transform.rotation.z);
+                Debug.Log("KZM" + previewObjectList[i].transform.root.rotation.eulerAngles.z);
+                UnitBaseList[i].SetPreviewObjRotate(previewObjectList[i].transform.root.rotation.eulerAngles.z);
+                Debug.Log("KZM" + UnitBaseList[i] + previewObjectList[i].transform.position + previewObjectList[i].transform.rotation.eulerAngles.z);
                 if(UnitBaseList[i].IsNotIsolatedUnit() == true){isNotIsolated = true; Debug.Log("KZM");}
             }
             //DestroyUnitがPlayerUnitに隣接しているかを判定し、隣接しているUnitはAdjacentUnitListに登録
             foreach(UnitBase unitBase in UnitBaseList){
-                Debug.Log("GGG" + unitBase);
+                Debug.Log("GGGA" + unitBase);
                 foreach(UnitBase adjacentUnit in unitBase.ReturnAdjacentUnitList()){
                     if(adjacentUnit!=null){AdjacentUnitList.Add(adjacentUnit);
-                    Debug.Log("GGG" + adjacentUnit);}
+                    Debug.Log("GGGB" + adjacentUnit);}
                     else break;
                 }
                 //if(AdjacentUnitList.Any(n => n != null)){isNotIsolated = true;}

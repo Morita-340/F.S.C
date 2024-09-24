@@ -28,6 +28,7 @@ public class UnitData
     private int HitPoint;
     private float AttackPower;
     public int ShapeTypeNum;
+    //探索時に探索済みであるかを判別してもらう
     private bool AlreadySearch;
     public UnitBase ReturnThisUnit(){
         return ThisUnit;

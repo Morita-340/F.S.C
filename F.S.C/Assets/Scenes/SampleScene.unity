@@ -559,8 +559,8 @@ MonoBehaviour:
   PlayerUnitManager: {fileID: 457517999}
   rigidbody2D: {fileID: 457518002}
   turn_factor: 40
-  drive_speed: 30
-  drive_minimum_speed_factor: 0.5
+  drive_speed: 10
+  drive_minimum_speed_factor: 0.05
 --- !u!50 &457518002
 Rigidbody2D:
   serializedVersion: 4

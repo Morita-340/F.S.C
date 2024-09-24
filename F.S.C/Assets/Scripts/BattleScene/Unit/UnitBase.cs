@@ -13,7 +13,7 @@ public class UnitBase : MonoBehaviour
     private int HitPoint = 5;
     [SerializeField]
     SpriteRenderer spriteRenderer;
-    private string UnitTagName = "PlayerUnit";
+    private string UnitTagName = GSetting.ObjTagName.PlayerUnit.ToString();
     private GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
     private bool isDestroyed = false;
@@ -22,8 +22,8 @@ public class UnitBase : MonoBehaviour
     UnitBase downerUnit = null;
     UnitBase rightUnit = null;
     UnitBase leftUnit = null;
-    private Vector3 RayBasePosition;
-    private float PreviewObjZRotate;
+    private Vector3 RayBasePosition;//対応するPreviewObjectの座標を代入してある
+    private float PreviewObjZRotate;//
     public void SetRayBasePosition(Vector3 position){
         RayBasePosition = position;
     }
@@ -37,7 +37,7 @@ public class UnitBase : MonoBehaviour
         thisUnit = this;
     }
     protected void Start(){
-        GetAdjacentObjLink();
+        GetAdjacentObjLink();//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(thisUnit,upperUnit,downerUnit,rightUnit,leftUnit);
     }
     protected virtual void GetAdjacentObjLink()
@@ -94,11 +94,11 @@ public class UnitBase : MonoBehaviour
     }
     private GameObject GetUpperGameObject(string ObjTag){
         Vector3 RayPosition = new Vector3(0, 0,0);
-        switch(this.gameObject.tag){
-            case "PlayerUnit":
-                RayPosition = this.gameObject.transform.position + new Vector3(0,1,5);
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            case GSetting.ObjTagName.PlayerUnit:
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(0,1,5)) + this.gameObject.transform.position;
                 break;
-            case "DestroyedUnit":
+            case GSetting.ObjTagName.DestroyedUnit:
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,1,5)) + RayBasePosition;
                 break;
             default: return null;
@@ -126,12 +126,14 @@ public class UnitBase : MonoBehaviour
         //    default:Debug.Log("AZKi"); return null;
         //}
         Vector3 RayPosition = new Vector3(0, 0,0);
-        switch(this.gameObject.tag){
-            case "PlayerUnit":
-                RayPosition = this.gameObject.transform.position + new Vector3(0,-1,5);
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//GameObjectのTagをstringからenumに変換している
+            case GSetting.ObjTagName.PlayerUnit://RegistDataやReRegistDataで使用
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(0,-1,5)) + this.gameObject.transform.position;
+                Debug.Log("Azki" + this.gameObject.transform.position + PreviewObjZRotate);
                 break;
-            case "DestroyedUnit":
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5)) + RayBasePosition;
+            case GSetting.ObjTagName.DestroyedUnit://ReturnAdjacentUnitListで使用
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,0)) + RayBasePosition;
+                Debug.Log("Azki" + RayBasePosition + PreviewObjZRotate);
                 break;
             default: return null;
         }
@@ -159,11 +161,11 @@ public class UnitBase : MonoBehaviour
         //    default: return null;
         //}
         Vector3 RayPosition = new Vector3(0, 0,0);
-        switch(this.gameObject.tag){
-            case "PlayerUnit":
-                RayPosition = this.gameObject.transform.position + new Vector3(1,0,5);
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            case GSetting.ObjTagName.PlayerUnit:
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(1,0,5)) + this.gameObject.transform.position;
                 break;
-            case "DestroyedUnit":
+            case GSetting.ObjTagName.DestroyedUnit:
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(1,0,5)) + RayBasePosition;
                 break;
             default: return null;
@@ -191,11 +193,11 @@ public class UnitBase : MonoBehaviour
         //    default: return null;
         //}
         Vector3 RayPosition = new Vector3(0, 0,0);
-        switch(this.gameObject.tag){
-            case "PlayerUnit":
-                RayPosition = this.gameObject.transform.position + new Vector3(-1,0,5);
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            case GSetting.ObjTagName.PlayerUnit:
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(-1,0,5)) + this.gameObject.transform.position;
                 break;
-            case "DestroyedUnit":
+            case GSetting.ObjTagName.DestroyedUnit:
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(-1,0,5)) + RayBasePosition;
                 break;
             default: return null;
