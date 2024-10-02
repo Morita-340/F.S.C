@@ -16,12 +16,18 @@ public class UnitBase : MonoBehaviour
     private string UnitTagName = GSetting.ObjTagName.PlayerUnit.ToString();
     private GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
+    private PlayerUnitDestroyManagementScript PUDMS;
     private bool isDestroyed = false;
-    UnitBase thisUnit;
-    UnitBase upperUnit = null;
-    UnitBase downerUnit = null;
-    UnitBase rightUnit = null;
-    UnitBase leftUnit = null;
+    private UnitBase thisUnit;
+    //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
+    UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
+    UnitBase downerUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
+    UnitBase rightUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
+    UnitBase leftUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
+    private UnitData ThisUnitData;
+    public UnitData GetThisUnitData(){
+        return ThisUnitData;
+    }
     private Vector3 RayBasePosition;//対応するPreviewObjectの座標を代入してある
     private float PreviewObjZRotate;//
     public void SetRayBasePosition(Vector3 position){
@@ -35,10 +41,13 @@ public class UnitBase : MonoBehaviour
     {
         thisGameObject = this.gameObject;
         thisUnit = this;
+        ThisUnitData= new UnitData(thisUnit,(int)shapeType);
+        FM.UnitList.Add(ThisUnitData);
     }
     protected void Start(){
         GetAdjacentObjLink();//RegistData()に格納するとなぜか動かなくなるので注意
-        RegistData(thisUnit,upperUnit,downerUnit,rightUnit,leftUnit);
+        RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
+        if(thisGameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString())PUDMS = thisGameObject.transform.root.GetComponent<PlayerUnitDestroyManagementScript>();
     }
     protected virtual void GetAdjacentObjLink()
     {
@@ -55,10 +64,8 @@ public class UnitBase : MonoBehaviour
             rightUnit = GetRightLink();
         }else Debug.LogAssertion("ShapeType is null!");
     }
-    void RegistData(UnitBase thisUnit,UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
-        Debug.Log("LLA"+shapeType+thisUnit.name+downerUnit);
-        UnitData unitData= new UnitData(thisUnit,upperUnit,downerUnit,rightUnit,leftUnit,(int)shapeType);
-        FM.UnitList.Add(unitData);
+    void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
+        ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
     }
     private UnitBase GetUpLink(){
         UnitBase upperUnit;
@@ -93,138 +100,60 @@ public class UnitBase : MonoBehaviour
         return leftUnit;
     }
     private GameObject GetUpperGameObject(string ObjTag){
-        Vector3 RayPosition = new Vector3(0, 0,0);
-        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-            case GSetting.ObjTagName.PlayerUnit:
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(0,1,5)) + this.gameObject.transform.position;
-                break;
-            case GSetting.ObjTagName.DestroyedUnit:
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,1,5)) + RayBasePosition;
-                break;
-            default: return null;
-        }
-        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.up);
         if(!hit2D){return null;}
         GameObject UpperObj = hit2D.collider.gameObject;
         if(UpperObj.tag != ObjTag){return null;}
         else return UpperObj;
     }
     private GameObject GetDownerGameObject(string ObjTag){
-        //switch(this.gameObject.tag){
-        //    case "PlayerUnit":
-        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(0,-1,5),new Vector3(0,0,1));
-        //        if(!hit2D){Debug.Log("AZKi");return null;}
-        //        GameObject DownerObj = hit2D.collider.gameObject;
-        //        if(DownerObj.tag != ObjTag){return null;}
-        //        else return DownerObj;
-        //    case "DestroyedUnit":
-        //        RaycastHit2D hit2DAAA = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5),new Vector3(0,0,1));
-        //        if(!hit2DAAA){Debug.Log("AZKi");return null;}
-        //        DownerObj = hit2DAAA.collider.gameObject;
-        //        if(DownerObj.tag != ObjTag){return null;}
-        //        else return DownerObj;
-        //    default:Debug.Log("AZKi"); return null;
-        //}
-        Vector3 RayPosition = new Vector3(0, 0,0);
-        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//GameObjectのTagをstringからenumに変換している
-            case GSetting.ObjTagName.PlayerUnit://RegistDataやReRegistDataで使用
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(0,-1,5)) + this.gameObject.transform.position;
-                Debug.Log("Azki" + this.gameObject.transform.position + PreviewObjZRotate);
-                break;
-            case GSetting.ObjTagName.DestroyedUnit://ReturnAdjacentUnitListで使用
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,0)) + RayBasePosition;
-                Debug.Log("Azki" + RayBasePosition + PreviewObjZRotate);
-                break;
-            default: return null;
-        }
-        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
-        Debug.Log("AZKi" +this.gameObject + RayPosition);
+        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.down);
         if(!hit2D){return null;}
         GameObject DownerObj = hit2D.collider.gameObject;
         if(DownerObj.tag != ObjTag){Debug.Log("AZKi"); return null;}
         else return DownerObj;
     }
     private GameObject GetRightGameObject(string ObjTag){
-        //switch(this.gameObject.tag){
-        //    case "PlayerUnit":
-        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(1,0,5),new Vector3(0,0,1));
-        //        if(!hit2D){return null;}
-        //        GameObject RightObj = hit2D.collider.gameObject;
-        //        if(RightObj.tag != ObjTag){return null;}
-        //        else return RightObj;
-        //    case "DestroyedUnit":
-        //        hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(1,0,5),new Vector3(0,0,1));
-        //        if(!hit2D){return null;}
-        //        RightObj = hit2D.collider.gameObject;
-        //        if(RightObj.tag != ObjTag){return null;}
-        //        else return RightObj;
-        //    default: return null;
-        //}
-        Vector3 RayPosition = new Vector3(0, 0,0);
-        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-            case GSetting.ObjTagName.PlayerUnit:
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(1,0,5)) + this.gameObject.transform.position;
-                break;
-            case GSetting.ObjTagName.DestroyedUnit:
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(1,0,5)) + RayBasePosition;
-                break;
-            default: return null;
-        }
-        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.right);
         if(!hit2D){return null;}
         GameObject RightObj = hit2D.collider.gameObject;
         if(RightObj.tag != ObjTag){return null;}
         else return RightObj;
     }
     private GameObject GetLeftGameObject(string ObjTag){
-        //switch(this.gameObject.tag){
-        //    case "PlayerUnit":
-        //        RaycastHit2D hit2D = Physics2D.Raycast(this.gameObject.transform.position + new Vector3(-1,0,5),new Vector3(0,0,1));
-        //        if(!hit2D){return null;}
-        //        GameObject LeftObj = hit2D.collider.gameObject;
-        //        if(LeftObj.tag != ObjTag){return null;}
-        //        else return LeftObj;
-        //    case "DestroyedUnit":
-        //        hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(-1,0,5),new Vector3(0,0,1));
-        //        if(!hit2D){return null;}
-        //        LeftObj = hit2D.collider.gameObject;
-        //        if(LeftObj.tag != ObjTag){return null;}
-        //        else return LeftObj;
-        //    default: return null;
-        //}
-        Vector3 RayPosition = new Vector3(0, 0,0);
-        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-            case GSetting.ObjTagName.PlayerUnit:
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * new Vector3(-1,0,5)) + this.gameObject.transform.position;
-                break;
-            case GSetting.ObjTagName.DestroyedUnit:
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(-1,0,5)) + RayBasePosition;
-                break;
-            default: return null;
-        }
-        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.left);
         if(!hit2D){return null;}
         GameObject LeftObj = hit2D.collider.gameObject;
         if(LeftObj.tag != ObjTag){return null;}
         else return LeftObj;
     }
-
-    //private GameObject GetLeftGameObject(string ObjTag){
-    //    RaycastHit2D hit2D = Physics2D.Raycast(Quaternion.Euler(0,0,PreviewObjZRotate) * new Vector3(0,-1,5) + RayBasePosition,new Vector3(0,0,1));
-    //    if(!hit2D){return null;}
-    //    GameObject LeftObj = hit2D.collider.gameObject;
-    //    if(LeftObj.tag != ObjTag){return null;}
-    //    else return LeftObj;
-    //}
-
+    private RaycastHit2D RayCalculateAndCast(Vector3 RayOffsetDirection){
+        Vector3 RayPosition = new Vector3(0,0,0);
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            case GSetting.ObjTagName.PlayerUnit:
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                break;
+            case GSetting.ObjTagName.DestroyedUnit:
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * RayOffsetDirection) + RayBasePosition;
+                break;
+        }
+        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        Debug.Log("AZKi" +this.gameObject + RayPosition);
+        return hit2D;
+    }
     // Update is called once per frame
     protected void Update()
     {
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f);
+        if(HitPoint == 0){DestroyUnit();}
     }
     protected virtual void AttackAction(){}
+    //HPが0になった時の破壊処理（分離の処理はPUDMSが行う）
     protected virtual void DestroyUnit(){
+        ThisUnitData.DeleteFourWayLink();
+        if(PUDMS != null)PUDMS.DestroyProcess(ThisUnitData);
         //分離エフェクトを実装する
+        Debug.Log("PUDMS Destroy");
         Destroy(thisGameObject);
     }
     public bool IsNotIsolatedUnit(){
@@ -244,7 +173,8 @@ public class UnitBase : MonoBehaviour
         }else Debug.LogWarning("Cannot Judge IsNotIsolated Bcause ShapeType is Null "); return false;
     }
     /// <summary>
-    /// Unitの周りにPlayerUnitがあるかどうかを判別
+    /// Unitの周りにPlayerUnitがあるかどうかを判別。
+    /// PreviewObjectにアタッチする方がよろしいが、ShapeTypeによって処理が異なってしまうのでとりあえずこちらで実装。Intarfaceに直した方がいいかも
     /// </summary>
     /// <returns>隣接するPlayerUnitのUnitBaseのList</returns>
     public List<UnitBase> ReturnAdjacentUnitList(){
@@ -259,8 +189,8 @@ public class UnitBase : MonoBehaviour
     }
     public void ReRegistData(){
         GetAdjacentObjLink();
-        UnitData unitData = FM.SearchUnit(this);
-        unitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
+        //UnitData unitData = FM.SearchUnit(this);
+        ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
     }
     public void OnCollisionEnter2D(Collision2D collision2D){
@@ -268,5 +198,12 @@ public class UnitBase : MonoBehaviour
             if(HitPoint >0)HitPoint --;
             else isDestroyed = true;
         }
+    }
+    /// <summary>
+    ///デバッグ用の被弾処理。それ以外では使わないこと
+    /// </summary>
+    public void DebugDamaged(){
+        if(HitPoint >0)HitPoint --;
+        else isDestroyed = true;
     }
 }

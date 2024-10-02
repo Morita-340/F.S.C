@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3192163754755513182}
   - component: {fileID: 8006599415810652203}
   - component: {fileID: -3139237061625950812}
+  - component: {fileID: 6743949824428350444}
   m_Layer: 0
   m_Name: PlayerUnit2
   m_TagString: PlayerUnit
@@ -172,3 +173,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shapeType: 1
+  HitPoint: 5
+  spriteRenderer: {fileID: 0}
+--- !u!114 &6743949824428350444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4264942486409253726}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBase: {fileID: -3139237061625950812}

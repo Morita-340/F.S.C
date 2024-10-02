@@ -151,6 +151,9 @@ public class MouseCursorControllScript : MonoBehaviour
                     unitBase.ReRegistData();
                     Debug.Log("FFB" + unitBase.name);
                 }
+                //PUDMSのデータ更新
+                PlayerUnitDestroyManagementScript PUDMS = PlayerUnit.GetComponent<PlayerUnitDestroyManagementScript>();
+                PUDMS.SetUnitData();
             }else{ParentObject = null;}
             positionList.Clear();
             rotationList.Clear();

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1625033710563570026}
   - component: {fileID: 6147639704816546126}
   - component: {fileID: 1216229667017932647}
+  - component: {fileID: 6251384632838190408}
   m_Layer: 0
   m_Name: Unit2
   m_TagString: DestroyedUnit
@@ -146,6 +147,19 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 1625033710563570026}
+--- !u!114 &6251384632838190408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699713688977399983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBase: {fileID: 1216229667017932647}
 --- !u!1 &4126249200044146030
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,6 +221,7 @@ GameObject:
   - component: {fileID: 6368974249194005277}
   - component: {fileID: 7156021674719284907}
   - component: {fileID: 5126032773588310292}
+  - component: {fileID: 2892535259325308985}
   m_Layer: 0
   m_Name: Unit1
   m_TagString: DestroyedUnit
@@ -341,6 +356,19 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 6368974249194005277}
+--- !u!114 &2892535259325308985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5310064612624002152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBase: {fileID: 5126032773588310292}
 --- !u!1 &6956690897667558365
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,6 +381,7 @@ GameObject:
   - component: {fileID: 5995833344862942960}
   - component: {fileID: 7065966481136867280}
   - component: {fileID: 3342259839647464535}
+  - component: {fileID: 6039128185090527668}
   m_Layer: 0
   m_Name: Unit3
   m_TagString: DestroyedUnit
@@ -487,3 +516,16 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 5995833344862942960}
+--- !u!114 &6039128185090527668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6956690897667558365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitBase: {fileID: 3342259839647464535}

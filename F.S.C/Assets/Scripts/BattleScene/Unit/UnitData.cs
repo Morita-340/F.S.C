@@ -5,7 +5,7 @@ using FSCGeneral;
 
 public class UnitData
 {
-    public UnitData(UnitBase thisUnit,UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit,int ShapeType){
+    public UnitData(UnitBase thisUnit,int ShapeType){
         //thisUnit = ThisUnit;
         //upperUnit = UpperUnit;
         //downerUnit = DownerUnit;
@@ -13,34 +13,52 @@ public class UnitData
         //leftUnit = LeftUnit;
         //ShapeType = ShapeTypeNum;
         ThisUnit = thisUnit;
-        UpperUnit = upperUnit;
-        DownerUnit = downerUnit;
-        RightUnit = rightUnit;
-        LeftUnit = leftUnit;
         ShapeTypeNum = ShapeType;
     }
-    private UnitBase UpperUnit;
-    private UnitBase DownerUnit;
-    private UnitBase RightUnit;
-    private UnitBase LeftUnit;
+    private UnitData UpperUnit;
+    private UnitData DownerUnit;
+    private UnitData RightUnit;
+    private UnitData LeftUnit;
     //データベースのキー扱い
     private UnitBase ThisUnit;
-    private int HitPoint;
+    private int MaxHitPoint;
     private float AttackPower;
     public int ShapeTypeNum;
     //探索時に探索済みであるかを判別してもらう
-    private bool AlreadySearch;
+    public bool AlreadySearch = false;
     public UnitBase ReturnThisUnit(){
         return ThisUnit;
     }
-    public List<UnitBase> ReturnFourWayLink(){
-        List<UnitBase> ReturnFourWayLink = new List<UnitBase>(){UpperUnit,DownerUnit,RightUnit,LeftUnit};
+    public List<UnitData> ReturnFourWayLink(){
+        List<UnitData> ReturnFourWayLink = new List<UnitData>(){UpperUnit,DownerUnit,RightUnit,LeftUnit};
         return ReturnFourWayLink;
     }
     public void ReRegistFourWayLink(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
-        if(upperUnit != null)UpperUnit = upperUnit;
-        if(downerUnit != null)DownerUnit = downerUnit;
-        if(rightUnit != null)RightUnit = rightUnit;
-        if(leftUnit != null)LeftUnit = leftUnit;
+        if(upperUnit != null)UpperUnit = upperUnit.GetThisUnitData();
+        if(downerUnit != null)DownerUnit = downerUnit.GetThisUnitData();
+        if(rightUnit != null)RightUnit = rightUnit.GetThisUnitData();
+        if(leftUnit != null)LeftUnit = leftUnit.GetThisUnitData();
+    }
+    /// <summary>
+    /// 自身と紐づけられたUnitのHitPointが0になった場合に呼び出され周囲から自分へのLinkを削除する処理
+    /// </summary>
+    public void DeleteFourWayLink(){
+        if(UpperUnit != null)UpperUnit.DeleteDestroyUnitLink(this);
+        if(DownerUnit != null)DownerUnit.DeleteDestroyUnitLink(this);
+        if(RightUnit != null)RightUnit.DeleteDestroyUnitLink(this);
+        if(LeftUnit != null)LeftUnit.DeleteDestroyUnitLink(this);
+    }
+    /// <summary>
+    /// DeleteFourWayLink内でのみ呼び出され周囲のUnitの自分へのLinkを削除する
+    /// </summary>
+    /// <param name="DestroyUnitData"></param>
+    protected void DeleteDestroyUnitLink(UnitData DestroyUnitData){
+        Debug.Log("PUDMS DDUL");
+        if(UpperUnit == DestroyUnitData)UpperUnit = null;
+        else if(DownerUnit == DestroyUnitData)DownerUnit = null;
+        else if(RightUnit == DestroyUnitData)RightUnit = null;
+        else if(LeftUnit == DestroyUnitData)LeftUnit = null;
+        else Debug.LogWarning("DeleteDestroyUnitLink Was Called but DestroyUnitData isNot in" + ThisUnit.gameObject.name);
+        return;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// バトルシーンでのシングルトン。
+/// バトルシーンでのシングルトン。ユニットのデータベースはUnitListとしてここにある
 /// </summary>
 namespace FSCGeneral{
     public sealed class FieldManager
@@ -27,7 +27,7 @@ namespace FSCGeneral{
                         Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
                         return unitData;
                     }
-                }return new UnitData(null,null,null,null,null,0);
+                }return new UnitData(null,0);
         }
         // Start is called before the first frame update
         void Start()

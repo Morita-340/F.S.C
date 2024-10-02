@@ -43,7 +43,7 @@ public class UnitLinkDebugger : MonoBehaviour
                 //カーソルを当てたユニットが格納されたUnitDataを検索する。
                 UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();
                 //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
-                UnitData SameData = new UnitData(null,null,null,null,null,0);
+                UnitData SameData = new UnitData(null,0);
                 if(HitObj == null){Debug.Log("LLH"); return; }
                 SameData = FM.SearchUnit(HitObj);Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
                 Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
@@ -61,14 +61,14 @@ public class UnitLinkDebugger : MonoBehaviour
                 */
                 
                 
-                List<UnitBase> FourWayLink = SameData.ReturnFourWayLink();
+                List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
                 for(int i=0; i < FourWayLink.Count; i++){
                     if(FourWayLink[i] != null){
                         switch(i){
-                            case 0: UpperIcon.SetActive(true); UpperIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); UpperIcon.transform.localPosition = Vector3.zero; break;
-                            case 1: DownerIcon.SetActive(true); DownerIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); DownerIcon.transform.localPosition = Vector3.zero; break;
-                            case 2: RightIcon.SetActive(true); RightIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); RightIcon.transform.localPosition = Vector3.zero; break;
-                            case 3: LeftIcon.SetActive(true); LeftIcon.transform.SetParent(FourWayLink[i].gameObject.transform,false); LeftIcon.transform.localPosition = Vector3.zero; break;
+                            case 0: UpperIcon.SetActive(true); UpperIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                            case 1: DownerIcon.SetActive(true); DownerIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                            case 2: RightIcon.SetActive(true); RightIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                            case 3: LeftIcon.SetActive(true); LeftIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
                         }
                     }
                 }

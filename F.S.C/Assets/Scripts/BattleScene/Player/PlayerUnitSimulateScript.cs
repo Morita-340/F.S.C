@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// UnitSimulaterにアタッチされるコンポーネントで、子オブジェクト各々鹵獲可能であるかどうかの判定を調べさせてGetIsPlunderable()でInput側にSimulater全体としての判断を返している
+/// </summary>
 public class PlayerUnitSimulateScript : MonoBehaviour
 {
     [SerializeField]
