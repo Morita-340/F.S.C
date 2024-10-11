@@ -38,7 +38,7 @@ public class UnitLinkDebugger : MonoBehaviour
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
         if(hit2D){
             //Rayを照射した先にあるオブジェクトのクラスを登録
-            if(hit2D.collider.tag == "PlayerUnit"){
+            if(hit2D.collider.tag == "PlayerUnit" ||hit2D.collider.tag == "EnemyUnit"){
                 currentObject = hit2D.collider.gameObject.transform;
                 //カーソルを当てたユニットが格納されたUnitDataを検索する。
                 UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();

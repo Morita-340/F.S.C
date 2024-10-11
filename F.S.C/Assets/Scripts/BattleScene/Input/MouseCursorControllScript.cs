@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using FSCGeneral;
 
 /// <summary>
 /// マウスカーソルによる入力はここで管理する
@@ -60,7 +61,7 @@ public class MouseCursorControllScript : MonoBehaviour
         if(Input.GetMouseButtonDown(0)&&hit2D){
             //Rayを照射した先にあるオブジェクトを登録
             //オブジェクトが撃破後Unitであるなら
-            if(hit2D.collider.tag == "DestroyedUnit"/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
+            if(hit2D.collider.tag == GSetting.ObjTagName.DestroyedUnit.ToString()/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
                 ParentObject = hit2D.collider.gameObject.transform.root.gameObject;
                 snapToGrid.Origin = ParentObject.transform;
                 //子オブジェクトのlocalPositionとlocalRotationを取得してリストに格納
@@ -114,9 +115,11 @@ public class MouseCursorControllScript : MonoBehaviour
             //Simulaterの複製を削除する
             bool isNotIsolated = false;
             List<UnitBase> AdjacentUnitList = new List<UnitBase>();
+            //シミュレート用のプレビューオブジェクトを削除する
             for(int i = 0;i < UnitSimulater.transform.childCount;i++){
                 Destroy(UnitSimulater.transform.GetChild(i).gameObject);
             }
+            //鹵獲中のユニットについて一つ一つRayを飛ばすために初期値を登録して離れ小島にならないかIsNotIsolatedUnit()で判別している
             for(int i = 0;i < plunderObjectList.Count;i++){
                 if(UnitBaseList[i] == null){Debug.Log("KZM"); break;}
                 UnitBaseList[i].SetRayBasePosition(previewObjectList[i].transform.position);
@@ -137,6 +140,7 @@ public class MouseCursorControllScript : MonoBehaviour
                 //else{isNotIsolated = false;}
             }
             //PlayerUnitに複製する
+            Debug.Log("MCCS Plunderable" + playerUnitSimulateScript.GetIsPlunderable() + " isNotIsolated" + isNotIsolated);
             if(playerUnitSimulateScript.GetIsPlunderable() == true && isNotIsolated == true){
                 ///for(int i = 0;i < CopyObjectNameList.Count;i++){Debug.Log("ddd");
                 //Plunder(CopyObjectNameList[i],previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
@@ -163,18 +167,18 @@ public class MouseCursorControllScript : MonoBehaviour
             UnitBaseList.Clear();
         }
     }
-    void Plunder(string copyName,Vector3 Position, Quaternion Rotation){
-        Debug.Log("Name" + copyName);
-        Position = new Vector3(Position.x, Position.y,0);
-        switch(copyName){
-            case "Unit1": Instantiate(Unit1,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
-            case "Unit2":Instantiate(Unit2,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
-            case "Unit3":Instantiate(Unit3,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
-        }
-    }
+    //void Plunder(string copyName,Vector3 Position, Quaternion Rotation){
+    //    Debug.Log("Name" + copyName);
+    //    Position = new Vector3(Position.x, Position.y,0);
+    //    switch(copyName){
+    //        case "Unit1": Instantiate(Unit1,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
+    //        case "Unit2":Instantiate(Unit2,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
+    //        case "Unit3":Instantiate(Unit3,Position,Rotation,PlayerUnit.transform);Debug.Log("YYY"); break;
+    //    }
+    //}
     void Plunder(GameObject PlunderUnit,Vector3 Position, Quaternion Rotation){
         Position = new Vector3(Position.x, Position.y,0);
-        Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform).tag = "PlayerUnit";
+        Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform).tag = GSetting.ObjTagName.PlayerUnit.ToString();
     }
     /// <summary>
     /// マウスホイールでドラッグ中のオブジェクトを回転させる

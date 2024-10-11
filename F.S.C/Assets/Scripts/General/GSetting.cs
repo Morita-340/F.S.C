@@ -14,12 +14,13 @@ namespace FSCGeneral{
         public enum ObjTagName{
             DestroyedUnit = 0,
             PlayerUnit = 1,
-            EnemyBossUnit = 2,
-            PlayerWeapon1 = 3,
-            PlayerWeapon2 = 4,
-            EnemyWeapon1 = 5,
-            EnemyWeapon2 = 6,
-            Weapon5 = 7,
+            EnemyUnit = 2,
+            EnemyBossUnit = 3,
+            PlayerWeapon1 = 4,
+            PlayerWeapon2 = 5,
+            EnemyWeapon1 = 6,
+            EnemyWeapon2 = 7,
+            Weapon5 = 8,
 
         }
         public string TagEnumToString(int num)
@@ -27,12 +28,13 @@ namespace FSCGeneral{
             switch (num){
                 case 0: return "DestroyedUnit";
                 case 1: return "PlayerUnit";
-                case 2: return "EnemyBossUnit";
-                case 3: return "PlayerWeapon1  ";
-                case 4: return "PlayerWeapon2";
-                case 5: return "EnemyWeapon1";
-                case 6: return "EnemyWeapon2";
-                case 7: return "Weapon5";
+                case 2: return "EnemyUnit";
+                case 3: return "EnemyBossUnit";
+                case 4: return "PlayerWeapon1  ";
+                case 5: return "PlayerWeapon2";
+                case 6: return "EnemyWeapon1";
+                case 7: return "EnemyWeapon2";
+                case 8: return "Weapon5";
                 default: Debug.LogAssertion("TagName Enum IsNot Registared!"); return null;
             }   
         }

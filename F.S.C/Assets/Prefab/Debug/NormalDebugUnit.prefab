@@ -147,6 +147,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 1625033710563570026}
+  objTagName: 1
 --- !u!114 &6251384632838190408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,6 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitBase: {fileID: 1216229667017932647}
+  anotherUnitBase: {fileID: 0}
 --- !u!1 &4126249200044146030
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +358,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 6368974249194005277}
+  objTagName: 1
 --- !u!114 &2892535259325308985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitBase: {fileID: 5126032773588310292}
+  anotherUnitBase: {fileID: 0}
 --- !u!1 &6956690897667558365
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,6 +520,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 5995833344862942960}
+  objTagName: 1
 --- !u!114 &6039128185090527668
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -529,3 +534,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitBase: {fileID: 3342259839647464535}
+  anotherUnitBase: {fileID: 0}

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/// <summary>
+/// DestroyedUnitの時の移動制御を行う
+/// </summary>
 public class EnemyUnitManagementScript : MonoBehaviour
 {
     [SerializeField]

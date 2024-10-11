@@ -8,17 +8,6 @@ public class NormalCore : CoreBase
     GameObject RocketBomb;
     [SerializeField]
     GameObject FirePositionObj;
-    // Start is called before the first frame update
-    protected void Start()
-    {
-        base.Start();
-    }
-
-    // Update is called once per frame
-    protected void Update()
-    {
-        base.Update();
-    }
     protected override void AttackAction()
     {
         Vector3 FirePosition = FirePositionObj.transform.position;

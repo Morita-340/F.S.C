@@ -175,6 +175,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 0}
+  objTagName: 1
 --- !u!114 &6743949824428350444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,3 +189,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitBase: {fileID: -3139237061625950812}
+  anotherUnitBase: {fileID: 0}
