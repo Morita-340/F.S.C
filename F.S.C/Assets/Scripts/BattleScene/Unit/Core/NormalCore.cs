@@ -14,6 +14,6 @@ public class NormalCore : CoreBase
         Quaternion FireRotation = FirePositionObj.transform.rotation;
         base.AttackAction();
         //ロケット弾を前方に射出
-        Instantiate(RocketBomb,FirePosition,FireRotation);
+        Instantiate(RocketBomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = transform.right * 10;
     }
 }

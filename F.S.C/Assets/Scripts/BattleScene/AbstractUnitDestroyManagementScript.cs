@@ -12,14 +12,14 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     private UnitBase ThisUnitSCore;
     [SerializeField]
     GameObject DestroyParentUnitObject;
-    protected virtual GSetting.ObjTagName childObjTagName {get; set;}
+    protected GSetting.ObjTagName childObjTagName ;
     protected List<UnitData> ChildUnitDataList = new List<UnitData>();
     //横型探索用のスタック用リスト
     private Stack<UnitData> StackForBreathFirstSearch = new Stack<UnitData>();
     //探索フラグ解除用のスタックデータのコピー（幅優先探索の終了条件はスタックを空にすることなので、探索終了後に対象ユニット探索フラグを解除するためにもう一度アクセスする必要がある）
     List<UnitData> StackCopy = new List<UnitData>();
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         SetUnitData();
     }
@@ -125,6 +125,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         Debug.Log("PUDMS RG StackCopy" + StackCopy.Count);
         foreach(UnitData unitData in StackCopy){
             unitData.AlreadySearch = false;
+        }
+    }
+    public void DeleteChildrenDataFromFM(){
+        FieldManager FM = FieldManager.GetInstance();
+        foreach(UnitData childrenData in ChildUnitDataList){
+            Debug.Log("AUDMS DCDFFM");
+            FM.UnitList.Remove(childrenData);
         }
     }
 

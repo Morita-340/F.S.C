@@ -6,5 +6,9 @@ using UnityEngine;
 
 public class PlayerUnitDestroyManagementScript : AbstractUnitDestroyManagementScript
 {
-    protected override GSetting.ObjTagName childObjTagName {get; set;} = GSetting.ObjTagName.PlayerUnit;
+    protected override void Start(){
+        //データ登録をする際のタグを決めている
+        childObjTagName = GSetting.ObjTagName.PlayerUnit;
+        base.Start();
+    }
 }

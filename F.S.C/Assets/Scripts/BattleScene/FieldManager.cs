@@ -22,12 +22,19 @@ namespace FSCGeneral{
         }
         public List<UnitData> UnitList = new List<UnitData>();
         public UnitData SearchUnit(UnitBase serachUnit){
-                foreach(UnitData unitData in FM.UnitList){
-                    if(unitData.ReturnThisUnit()==serachUnit){
-                        Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
-                        return unitData;
-                    }
-                }return new UnitData(null,0);
+            foreach(UnitData unitData in FM.UnitList){
+                if(unitData.ReturnThisUnit()==serachUnit){
+                    Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
+                    return unitData;
+                }
+            }return new UnitData(null,0);
+        }
+        public void DeleteData(UnitData willDeleteData){
+            foreach(UnitData unitData in FM.UnitList){
+                if(unitData == willDeleteData){
+                    FM.UnitList.Remove(unitData);
+                }
+            }
         }
         // Start is called before the first frame update
         void Start()

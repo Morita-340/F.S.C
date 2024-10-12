@@ -15,8 +15,7 @@ public class UnitBase : MonoBehaviour
     SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
-    private AbstractUnitDestroyManagementScript AUDMS;
-    private bool isDestroyed = false;
+    protected AbstractUnitDestroyManagementScript AUDMS;
     private UnitBase thisUnit;
     //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
     UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
@@ -43,7 +42,7 @@ public class UnitBase : MonoBehaviour
         ThisUnitData= new UnitData(thisUnit,(int)shapeType);
         FM.UnitList.Add(ThisUnitData);
     }
-    protected void Start(){
+    protected virtual void Start(){
         GetAdjacentObjLink(thisGameObject.tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
         AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
@@ -152,10 +151,10 @@ public class UnitBase : MonoBehaviour
         return hit2D;
     }
     // Update is called once per frame
-    protected void Update()
+    protected virtual void Update()
     {
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f);
-        if(HitPoint == 0){DestroyUnit();}
+        if(HitPoint <= 0){DestroyUnit();}
     }
     protected virtual void AttackAction(){}
     //HPが0になった時の破壊処理（分離の処理はAUDMSが行う）
@@ -205,16 +204,36 @@ public class UnitBase : MonoBehaviour
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
     }
     public void OnCollisionEnter2D(Collision2D collision2D){
-        if(collision2D!.transform.tag == "PlayerWeapon"){
-            if(HitPoint >0)HitPoint --;
-            else isDestroyed = true;
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            case GSetting.ObjTagName.PlayerUnit: 
+            {
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    case GSetting.ObjTagName.EnemyWeapon1:{break;}
+                    case GSetting.ObjTagName.EnemyWeapon2:{break;}
+                }
+                break;
+            }
+            case GSetting.ObjTagName.EnemyUnit:
+            {
+                    switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    case GSetting.ObjTagName.PlayerWeapon1:{
+                        if(HitPoint >0)HitPoint --;
+                        break;}
+                    case GSetting.ObjTagName.PlayerWeapon2:{break;}
+                }
+                break;
+            }
+            default: break;
         }
+        //if(collision2D!.transform.tag == GSetting.ObjTagName.PlayerWeapon1.ToString()){
+        //    if(HitPoint >0)HitPoint --;
+        //    else isDestroyed = true;
+        //}
     }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと
     /// </summary>
     public void DebugDamaged(){
         if(HitPoint >0)HitPoint --;
-        else isDestroyed = true;
     }
 }

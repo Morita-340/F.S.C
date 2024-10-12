@@ -7,7 +7,7 @@ public class CoreBase : UnitBase
 {
 
     // Update is called once per frame
-    protected void Update()
+    protected override void Update()
     {
         base.Update();
         if(Input.GetKeyDown(KeyCode.Space) && thisGameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
@@ -17,11 +17,12 @@ public class CoreBase : UnitBase
     /// <summary>
     /// コアが破壊された場合はプレイヤーユニットが完全に消去される
     /// </summary>
-    //protected override void DestroyUnit()
-    //{
-    //    DestroyCore();
-    //}
-    //protected void DestroyCore(){
-    //    Destroy(this.gameObject.transform.root.gameObject);
-    //}
+    protected override void DestroyUnit()
+    {
+        DestroyCore();
+    }
+    protected void DestroyCore(){
+        AUDMS.DeleteChildrenDataFromFM();
+        Destroy(this.gameObject.transform.root.gameObject);
+    }
 }
