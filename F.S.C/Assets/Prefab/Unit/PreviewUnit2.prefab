@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1991873143887262483}
   - component: {fileID: 6702906668271375354}
   - component: {fileID: 6524710758160941877}
-  - component: {fileID: 1963025268240961936}
+  - component: {fileID: -4259258574583661285}
   m_Layer: 0
   m_Name: PreviewUnit2
   m_TagString: Untagged
@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1991873143887262483}
+  isCovered: 0
 --- !u!61 &6524710758160941877
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -145,7 +146,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
---- !u!50 &1963025268240961936
+--- !u!50 &-4259258574583661285
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -170,5 +171,5 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 0

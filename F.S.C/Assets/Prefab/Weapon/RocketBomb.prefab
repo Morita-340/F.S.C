@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 1119540286865686011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -8.99, z: 0}
+  m_LocalPosition: {x: 0, y: -8.99, z: 5}
   m_LocalScale: {x: 1, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100,7 +100,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisRb2D: {fileID: 8177833823725131474}
-  firstSpeed: 20
   graceTime: 5
 --- !u!50 &8177833823725131474
 Rigidbody2D:
@@ -158,7 +157,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

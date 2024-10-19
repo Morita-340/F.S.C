@@ -27,13 +27,15 @@ public class RocketBomb : MonoBehaviour
         if(nowTime > graceTime){Destroy(this.gameObject);}
         else if(rocketHit){Destroy(this.gameObject);}
     }
-    public void OnCollisionEnter2D(Collision2D other){
+    public void OnTriggerEnter2D(Collider2D other){
         //if(true)rocketHit = true;//敵に当たれば爆発する。タグで判別せよ
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             case GSetting.ObjTagName.PlayerWeapon1: 
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other!.transform.tag,true)){
-                    default:{rocketHit = true;break;}
+                    case GSetting.ObjTagName.EnemyUnit: rocketHit = true; break;
+                    //case GSetting.ObjTagName.DestroyedUnit: rocketHit = true; break;
+                    default: rocketHit = false;break;
                 }
                 break;
             }

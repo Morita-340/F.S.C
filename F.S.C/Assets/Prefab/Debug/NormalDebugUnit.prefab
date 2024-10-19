@@ -147,7 +147,6 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 1625033710563570026}
-  objTagName: 1
 --- !u!114 &6251384632838190408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,7 +187,7 @@ Transform:
   m_GameObject: {fileID: 4126249200044146030}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.36, y: 0, z: 0}
+  m_LocalPosition: {x: 20.36, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -358,7 +357,6 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 6368974249194005277}
-  objTagName: 1
 --- !u!114 &2892535259325308985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,7 +518,6 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 5995833344862942960}
-  objTagName: 1
 --- !u!114 &6039128185090527668
 MonoBehaviour:
   m_ObjectHideFlags: 0

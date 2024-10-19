@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 973050959131081871}
   - component: {fileID: 5215615277174002920}
   - component: {fileID: 270673410978548987}
-  - component: {fileID: 4257018044196818181}
   - component: {fileID: 3649473439114067675}
   - component: {fileID: 6071092126242251736}
+  - component: {fileID: 2705088829806247239}
   m_Layer: 0
   m_Name: PlayerUnit1
   m_TagString: PlayerUnit
@@ -133,33 +133,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!50 &4257018044196818181
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7437144553620217271}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &3649473439114067675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,7 +148,8 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 0}
-  objTagName: 1
+  RocketBomb: {fileID: 0}
+  Bomb: {fileID: 0}
 --- !u!114 &6071092126242251736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,3 +164,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitBase: {fileID: 3649473439114067675}
   anotherUnitBase: {fileID: 0}
+--- !u!114 &2705088829806247239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7437144553620217271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeRadius: 50
+  rangeRadian: 90

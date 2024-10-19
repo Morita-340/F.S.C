@@ -134,6 +134,9 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             FM.UnitList.Remove(childrenData);
         }
     }
+    public List<UnitData> GetChildUnitDataList(){
+        return ChildUnitDataList;
+    }
 
     // Update is called once per frame
     void Update()

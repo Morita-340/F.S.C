@@ -156,7 +156,8 @@ public class UnitBase : MonoBehaviour
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f);
         if(HitPoint <= 0){DestroyUnit();}
     }
-    protected virtual void AttackAction(){}
+    public virtual void NormalAttack(Vector3 TargetPosition){}
+    public virtual void ChargeAttack(Vector3 TargetPosition){}
     //HPが0になった時の破壊処理（分離の処理はAUDMSが行う）
     protected virtual void DestroyUnit(){
         ThisUnitData.DeleteFourWayLink();
@@ -203,23 +204,25 @@ public class UnitBase : MonoBehaviour
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
     }
-    public void OnCollisionEnter2D(Collision2D collision2D){
+    public void OnTriggerEnter2D(Collider2D collision2D){
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             case GSetting.ObjTagName.PlayerUnit: 
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.EnemyWeapon1:{break;}
                     case GSetting.ObjTagName.EnemyWeapon2:{break;}
+                    default:break;
                 }
                 break;
             }
             case GSetting.ObjTagName.EnemyUnit:
             {
-                    switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         if(HitPoint >0)HitPoint --;
                         break;}
                     case GSetting.ObjTagName.PlayerWeapon2:{break;}
+                    default:break;
                 }
                 break;
             }

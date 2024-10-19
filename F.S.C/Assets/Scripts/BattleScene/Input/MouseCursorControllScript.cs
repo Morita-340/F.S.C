@@ -10,20 +10,16 @@ using FSCGeneral;
 /// </summary>
 public class MouseCursorControllScript : MonoBehaviour
 {
-    [SerializeField]
-    GameObject UnitSimulater;
+    [SerializeField]GameObject UnitSimulater;
     SnapToGrid snapToGrid;
     PlayerUnitSimulateScript playerUnitSimulateScript;
-    [SerializeField]
-    GameObject PreviewUnit;
-    [SerializeField]
-    GameObject Unit1;
-    [SerializeField]
-    GameObject Unit2;
-    [SerializeField]
-    GameObject Unit3;
-    [SerializeField]
-    GameObject PlayerUnit;
+    PlayerUnitAttackManagementScript PUAMS;
+    [SerializeField]GameObject PreviewUnit;
+    [SerializeField]GameObject Unit1;
+    [SerializeField]GameObject Unit2;
+    [SerializeField]GameObject Unit3;
+    [SerializeField]GameObject PlayerUnit;
+    [SerializeField]ChargeCursolIconController ChargeIcon;
     GameObject ParentObject = null;
     private Vector3 target;
     private float WheelInput = 0;
@@ -32,6 +28,9 @@ public class MouseCursorControllScript : MonoBehaviour
     private List<GameObject> previewObjectList = new List<GameObject>(); 
     private List<GameObject> plunderObjectList  = new List<GameObject>();
     private List<UnitBase> UnitBaseList = new List<UnitBase>();
+    private bool lockOnEnemyUnit = false;
+    private bool lockOnEnemyUnitLongTime = false;
+    private float timer = 0;
         //プレビューオブジェクトを格納する。接合判定に利用する
     //private List<string> CopyObjectNameList = new List<string>();
     // Start is called before the first frame update
@@ -39,15 +38,18 @@ public class MouseCursorControllScript : MonoBehaviour
     {
         snapToGrid = UnitSimulater.GetComponent<SnapToGrid>();
         playerUnitSimulateScript = UnitSimulater.GetComponent<PlayerUnitSimulateScript>();
+        PUAMS = PlayerUnit.GetComponent<PlayerUnitAttackManagementScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("MCCS" + timer);
         WheelInput += Input.GetAxis("Mouse ScrollWheel");
         //Debug.Log(Input.mousePosition);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,10));
         Debug.Log("bbbZ" + target);
+        ChargeIcon.ChangeCircleRange(timer,PUAMS,target);
         CursorDragClick(WheelInput);
     }
     /// <summary>
@@ -57,6 +59,13 @@ public class MouseCursorControllScript : MonoBehaviour
         //Rayを照射する
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
+        //ロックオン機能
+        if(hit2D && hit2D.collider.tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+            PUAMS.NormalAttack(timer,target);
+            timer += Time.deltaTime;
+        }else{
+            timer =0;
+        }
         //Debug.Log(hit2D.collider.gameObject.name);
         if(Input.GetMouseButtonDown(0)&&hit2D){
             //Rayを照射した先にあるオブジェクトを登録

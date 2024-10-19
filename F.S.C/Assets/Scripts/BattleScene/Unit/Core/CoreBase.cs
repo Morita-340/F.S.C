@@ -10,9 +10,9 @@ public class CoreBase : UnitBase
     protected override void Update()
     {
         base.Update();
-        if(Input.GetKeyDown(KeyCode.Space) && thisGameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
-            AttackAction();
-        }
+        //if(Input.GetKeyDown(KeyCode.Space) && thisGameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
+        //    NormalAttack();
+        //}
     }
     /// <summary>
     /// コアが破壊された場合はプレイヤーユニットが完全に消去される
