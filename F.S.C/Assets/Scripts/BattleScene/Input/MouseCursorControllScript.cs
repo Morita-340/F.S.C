@@ -20,6 +20,7 @@ public class MouseCursorControllScript : MonoBehaviour
     [SerializeField]GameObject Unit3;
     [SerializeField]GameObject PlayerUnit;
     [SerializeField]ChargeCursolIconController ChargeIcon;
+    [SerializeField,Range(0f,2f)]float firstAttackInterval = 0.5f;
     GameObject ParentObject = null;
     private Vector3 target;
     private float WheelInput = 0;
@@ -49,7 +50,7 @@ public class MouseCursorControllScript : MonoBehaviour
         //Debug.Log(Input.mousePosition);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,10));
         Debug.Log("bbbZ" + target);
-        ChargeIcon.ChangeCircleRange(timer,PUAMS,target);
+        ChargeIcon.ChangeCircleRange(timer + firstAttackInterval,PUAMS,target);
         CursorDragClick(WheelInput);
     }
     /// <summary>
@@ -64,7 +65,8 @@ public class MouseCursorControllScript : MonoBehaviour
             PUAMS.NormalAttack(timer,target);
             timer += Time.deltaTime;
         }else{
-            timer =0;
+            //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
+            timer = -firstAttackInterval;
         }
         //Debug.Log(hit2D.collider.gameObject.name);
         if(Input.GetMouseButtonDown(0)&&hit2D){

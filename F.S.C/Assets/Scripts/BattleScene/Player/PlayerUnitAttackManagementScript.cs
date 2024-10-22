@@ -23,7 +23,8 @@ public class PlayerUnitAttackManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="time">ロックオンし始めてから経過した時間。ロックオンが外れると0に戻る</param>
     public void NormalAttack(float time,Vector3 TargetPosition){
-        if(time == 0){NextNormalAttack = 0;}
+        Debug.Log("MCCS PUAMS normal" + time +" "+ NextNormalAttack);
+        if(time <= 0){NextNormalAttack = 0;}
         if(time >= NextNormalAttack){
             foreach (UnitData child in ChildrenUnitDatalist){
                 child.ReturnThisUnit().NormalAttack(TargetPosition);
@@ -41,7 +42,7 @@ public class PlayerUnitAttackManagementScript : MonoBehaviour
                 inTimeRangeOFChargeAttack = true;
                 NextChargeAttack =time;}
             if(time >= NextChargeAttack){
-        Debug.Log("MCCS PUAMS charge" + time +" "+ NextChargeAttack);
+                Debug.Log("MCCS PUAMS charge" + time +" "+ NextChargeAttack);
                 foreach (UnitData child in ChildrenUnitDatalist){
                     child.ReturnThisUnit().ChargeAttack(TargetPosition);
                 }

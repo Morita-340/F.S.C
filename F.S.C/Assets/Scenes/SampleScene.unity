@@ -628,8 +628,9 @@ MonoBehaviour:
   rb2d: {fileID: 457518002}
   turn_factor: 2
   maximum_turn_factor: 180
-  drive_speed: 10
-  drive_minimum_speed_factor: 1
+  drive_speed: 0
+  drive_minimum_speed_factor: 15
+  drive_miximum_speed_factor: 15
 --- !u!50 &457518002
 Rigidbody2D:
   serializedVersion: 4
@@ -901,6 +902,7 @@ MonoBehaviour:
   Unit3: {fileID: 3718163170572064972, guid: 8669bf7e804dee347bebc1074478d25e, type: 3}
   PlayerUnit: {fileID: 457517999}
   ChargeIcon: {fileID: 801371912}
+  firstAttackInterval: 0.5
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9233,7 +9235,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &2133352446
 SpriteRenderer:
   m_ObjectHideFlags: 0

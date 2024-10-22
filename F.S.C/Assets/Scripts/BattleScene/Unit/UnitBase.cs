@@ -160,10 +160,15 @@ public class UnitBase : MonoBehaviour
     public virtual void ChargeAttack(Vector3 TargetPosition){}
     //HPが0になった時の破壊処理（分離の処理はAUDMSが行う）
     protected virtual void DestroyUnit(){
+        //リンク情報が消去されたのにゲームオブジェクトだけ消去されない場合の例外処理
+        if(ThisUnitData == null){
+            Debug.LogWarning("Exception Destroy Handle");
+            Destroy(thisGameObject);
+        }
         ThisUnitData.DeleteFourWayLink();
         if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
         //分離エフェクトを実装する
-        Debug.Log("AUDMS Destroy");
+        Debug.Log("AUDMS Destroy" + thisGameObject.name);
         Destroy(thisGameObject);
     }
     //離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している

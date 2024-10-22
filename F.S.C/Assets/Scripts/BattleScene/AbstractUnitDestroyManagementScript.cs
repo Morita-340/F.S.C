@@ -108,6 +108,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false);
                     RegeneObj.tag = GSetting.ObjTagName.DestroyedUnit.ToString();
                     RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                    //子オブジェクトが消去されるのでデータリンクも消去する
+                    ChildUnitDataList.Remove(unitData);
                     //複製元の消去
                     FieldManager FM = FieldManager.GetInstance();
                     FM.UnitList.Remove(unitData);
@@ -118,6 +120,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
+            Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
         }
         
         //探索フラグのリセット

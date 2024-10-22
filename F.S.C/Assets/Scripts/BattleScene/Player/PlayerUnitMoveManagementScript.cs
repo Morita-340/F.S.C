@@ -19,13 +19,18 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     private float minimum_rotation = 0;
     private float rotationOffset = 0;
 
-    [SerializeField,Range(1,100)]
+    [SerializeField,Range(0,100)]
     int drive_speed = 1;
     /// <summary>
     /// プレイヤーが減速するときの速度下限値
     /// </summary>
-    [SerializeField,Range(0f,3f)]
-    float drive_minimum_speed_factor = 0.5f;
+    [SerializeField,Range(0f,30f)]
+    float drive_minimum_speed_factor = 1.5f;
+    /// <summary>
+    /// プレイヤーが加速するときの速度上限値
+    /// </summary>
+    [SerializeField,Range(0f,30f)]
+    float drive_miximum_speed_factor = 1.5f;
     float thisRotationZ;
     // Start is called before the first frame update
     void Start()
@@ -36,42 +41,61 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     void Update()
     {
         Manipulate();
-        AutoDrive();
+        Drive();
         //Debug.Log("PUMMS" + thisRotationZ +" "+ maximum_rotation +" "+ minimum_rotation);
     }
     void FixedUpdate(){
     }
     /// <summary>
-    /// このオブジェクトを自動的に前進させる命令
+    /// このオブジェクトを前後に動かす命令
+    /// 加速時はハンドルが利くが、無操作の時は慣性に従う
+    /// 加速減速同時押しで停止する
     /// </summary>
-    void AutoDrive(){
-        Vector2 forward = transform.up;
-        if(Input.GetKey(KeyCode.S)){
-            Decelerate(forward);
-        }else if (Input.GetKeyDown(KeyCode.W)){
-            Accelerate();
-        }else{
-            rb2d.velocity = forward * drive_speed;
-            //Debug.Log("c");
+    void Drive(){
+        Vector2 forward = this.transform.up;
+        if(Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W)){
+            rb2d.velocity = Vector2.zero;
         }
+        else if(Input.GetKey(KeyCode.S)){
+            Decelerate(-forward);
+        }else if (Input.GetKey(KeyCode.W)){
+            Accelerate(forward);
+        }
+        //else{
+        //    rb2d.velocity = forward * drive_speed;
+        //    //Debug.Log("c");
+        //}
     }
     /// <summary>
-    /// 正面方向へ加速する。但し僅かにクールタイムが必要である。
+    /// 正面方向へ加速する
     /// </summary>
-    void Accelerate(){
-
+    void Accelerate(Vector2 forward){
+        //rb2d.velocity = new Vector2(0,0);
+        if(rb2d.velocity.x <= forward.x*drive_miximum_speed_factor
+        && rb2d.velocity.y <= forward.y*drive_miximum_speed_factor
+        && rb2d.velocity.x >= -forward.x*drive_minimum_speed_factor
+        && rb2d.velocity.y >= -forward.y*drive_minimum_speed_factor)
+        {
+            //Debug.Log("aaaaa");
+            rb2d.velocity += forward * 1.5f;
+        }else{
+            rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor,forward.y*drive_miximum_speed_factor);
+        }
     }
     /// <summary>
     /// 正面方向への速度を減速する
     /// </summary>
-    void Decelerate(Vector2 forward){
+    void Decelerate(Vector2 behind){
         //rb2d.velocity = new Vector2(0,0);
-        if(Mathf.Abs(rb2d.velocity.x)>=Mathf.Abs(forward.x*drive_minimum_speed_factor)
-        &&Mathf.Abs(rb2d.velocity.y)>=Mathf.Abs(forward.y*drive_minimum_speed_factor)
-        ){
+        if(rb2d.velocity.x <= -behind.x*drive_miximum_speed_factor
+        && rb2d.velocity.y <= -behind.y*drive_miximum_speed_factor
+        && rb2d.velocity.x >= behind.x*drive_minimum_speed_factor
+        && rb2d.velocity.y >= behind.y*drive_minimum_speed_factor)
+        {
+            rb2d.velocity += behind * 1.5f;
             //Debug.Log("aaaaa");
-            rb2d.velocity -= forward * 0.1f;
-            //Debug.Log("VelX:"+ rb2d.velocity.x +"forX"+forward.x*drive_minimum_speed_factor + "\nVelY:"+ rb2d.velocity.y + "forY"+forward.y*drive_minimum_speed_factor);
+        }else{
+            rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor,behind.y*drive_minimum_speed_factor);
         }
     }
     /// <summary>
