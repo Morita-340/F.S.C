@@ -7,17 +7,20 @@ TagManager:
   - DestroyedUnit
   - PlayerUnit
   - EnemyUnit
-  - EnemyWeapon
   - PlayerWeapon1
+  - SimulateUnit
+  - PlayerWeapon2
+  - EnemyWeapon1
+  - EnemyWeapon2
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - EnemyUnit
   - Water
   - UI
-  - 
-  - 
+  - DestroyedUnit
+  - PlayerUnit
   - 
   - 
   - 

@@ -29,6 +29,10 @@ namespace FSCGeneral{
                 }
             }return new UnitData(null,0);
         }
+        /// <summary>
+        /// ListのRemoveを使えば同じ処理が出来るのでいらないかも
+        /// </summary>
+        /// <param name="willDeleteData"></param>
         public void DeleteData(UnitData willDeleteData){
             foreach(UnitData unitData in FM.UnitList){
                 if(unitData == willDeleteData){

@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FSCGeneral;
 
 public class NormalCore : CoreBase
 {
@@ -8,8 +10,6 @@ public class NormalCore : CoreBase
     GameObject RocketBomb;
     [SerializeField]
     GameObject Bomb;
-    [SerializeField]
-    GameObject FirePositionObj;
     FanRange FR;
     protected override void Start(){
         base.Start();
@@ -18,20 +18,46 @@ public class NormalCore : CoreBase
     public override void NormalAttack(Vector3 TargetPosition)
     {
         if(FR.InRange(TargetPosition)){
-            Vector3 FirePosition = FirePositionObj.transform.position;
-            Quaternion FireRotation = FirePositionObj.transform.rotation;
             base.NormalAttack(TargetPosition);
+            Vector3 FirePosition = this.transform.position;
+            Quaternion FireRotation = this.transform.rotation;
             //ロケット弾を前方に射出
-            Instantiate(RocketBomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = transform.up + FR.GetTargetDelta();
+            string tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
+            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+                case GSetting.ObjTagName.PlayerUnit:{
+                    tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
+                    break;}
+                case GSetting.ObjTagName.EnemyUnit:{
+                    tagName = GSetting.ObjTagName.EnemyWeapon1.ToString();
+                    break;
+                }
+                default:break;
+
+            }
+            RocketBomb.tag = tagName;
+            Instantiate(RocketBomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta();
         }
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {
         if(FR.InRange(TargetPosition)){
-            Vector3 FirePosition = FirePositionObj.transform.position;
-            Quaternion FireRotation = FirePositionObj.transform.rotation;
+            Vector3 FirePosition = this.transform.position;
+            Quaternion FireRotation = this.transform.rotation;
             base.ChargeAttack(TargetPosition);
-            Instantiate(Bomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = transform.up + FR.GetTargetDelta();
+            string tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
+            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+                case GSetting.ObjTagName.PlayerUnit:{
+                    tagName = GSetting.ObjTagName.PlayerWeapon2.ToString();
+                    break;}
+                case GSetting.ObjTagName.EnemyUnit:{
+                    tagName = GSetting.ObjTagName.EnemyWeapon2.ToString();
+                    break;
+                }
+                default:break;
+
+            }
+            Bomb.tag= tagName;
+            Instantiate(Bomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta();
         }
     }
 }

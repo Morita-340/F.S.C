@@ -71,15 +71,14 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// </summary>
     void Accelerate(Vector2 forward){
         //rb2d.velocity = new Vector2(0,0);
-        if(rb2d.velocity.x <= forward.x*drive_miximum_speed_factor
-        && rb2d.velocity.y <= forward.y*drive_miximum_speed_factor
-        && rb2d.velocity.x >= -forward.x*drive_minimum_speed_factor
-        && rb2d.velocity.y >= -forward.y*drive_minimum_speed_factor)
+        if(rb2d.velocity.x < drive_miximum_speed_factor
+        && rb2d.velocity.x > -drive_minimum_speed_factor
+        && rb2d.velocity.y < drive_miximum_speed_factor
+        && rb2d.velocity.y > -drive_minimum_speed_factor)
         {
-            //Debug.Log("aaaaa");
-            rb2d.velocity += forward * 1.5f;
+            rb2d.velocity += forward * 0.1f;
         }else{
-            rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor,forward.y*drive_miximum_speed_factor);
+            rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
         }
     }
     /// <summary>
@@ -87,15 +86,14 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// </summary>
     void Decelerate(Vector2 behind){
         //rb2d.velocity = new Vector2(0,0);
-        if(rb2d.velocity.x <= -behind.x*drive_miximum_speed_factor
-        && rb2d.velocity.y <= -behind.y*drive_miximum_speed_factor
-        && rb2d.velocity.x >= behind.x*drive_minimum_speed_factor
-        && rb2d.velocity.y >= behind.y*drive_minimum_speed_factor)
+        if(rb2d.velocity.x < drive_miximum_speed_factor
+        && rb2d.velocity.x > -drive_minimum_speed_factor
+        && rb2d.velocity.y < drive_miximum_speed_factor
+        && rb2d.velocity.y > -drive_minimum_speed_factor)
         {
-            rb2d.velocity += behind * 1.5f;
-            //Debug.Log("aaaaa");
+            rb2d.velocity += behind * 0.1f;
         }else{
-            rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor,behind.y*drive_minimum_speed_factor);
+            rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
         }
     }
     /// <summary>

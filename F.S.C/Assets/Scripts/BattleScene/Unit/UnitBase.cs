@@ -214,8 +214,15 @@ public class UnitBase : MonoBehaviour
             case GSetting.ObjTagName.PlayerUnit: 
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
-                    case GSetting.ObjTagName.EnemyWeapon1:{break;}
-                    case GSetting.ObjTagName.EnemyWeapon2:{break;}
+                    case GSetting.ObjTagName.EnemyWeapon1:{
+                        if(HitPoint >0)HitPoint --;
+                        break;}
+                    case GSetting.ObjTagName.EnemyWeapon2:{
+                        if(HitPoint >0)HitPoint -= 2;
+                        break;}
+                    case GSetting.ObjTagName.EnemyUnit:{
+                        HitPoint = 0;
+                        break;}
                     default:break;
                 }
                 break;
@@ -226,7 +233,12 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         if(HitPoint >0)HitPoint --;
                         break;}
-                    case GSetting.ObjTagName.PlayerWeapon2:{break;}
+                    case GSetting.ObjTagName.PlayerWeapon2:{
+                        if(HitPoint >0)HitPoint -= 2;
+                        break;}
+                    case GSetting.ObjTagName.PlayerUnit:{
+                        HitPoint = 0;
+                        break;}
                     default:break;
                 }
                 break;

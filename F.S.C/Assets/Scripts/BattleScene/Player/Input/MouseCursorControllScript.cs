@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,15 +54,58 @@ public class MouseCursorControllScript : MonoBehaviour
         ChargeIcon.ChangeCircleRange(timer + firstAttackInterval,PUAMS,target);
         CursorDragClick(WheelInput);
     }
+    private (RaycastHit2D,RaycastHit2D) PlundeAndRockOn(Ray ray){
+        bool enemyHitFirst = true;
+        bool destroyedHitFirst = true;
+        RaycastHit2D DestroyedHit2D = new RaycastHit2D();
+        RaycastHit2D EnemyHit2D = new RaycastHit2D();
+        foreach(RaycastHit2D hit2D in Physics2D.RaycastAll((Vector2)ray.origin, (Vector2)ray.direction)){
+            if(hit2D){
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), hit2D.collider.tag,true)){
+                    case GSetting.ObjTagName.EnemyUnit:{
+                        if(enemyHitFirst){EnemyHit2D = hit2D;enemyHitFirst = false;}
+                        break;}
+                    case GSetting.ObjTagName.EnemyWeapon1:{
+                        if(enemyHitFirst){EnemyHit2D = hit2D;enemyHitFirst = false;}
+                        break;}
+                    case GSetting.ObjTagName.DestroyedUnit:{
+                        if(destroyedHitFirst){DestroyedHit2D = hit2D;destroyedHitFirst = false;}
+                        break;}
+                    default:break;
+                }
+                //if(enemyHitFirst && hit2D.collider.tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+                //    EnemyHit2D = hit2D;
+                //    enemyHitFirst = false;
+                //}
+                //if(destroyedHitFirst && hit2D.collider.tag == GSetting.ObjTagName.DestroyedUnit.ToString()){
+                //    DestroyedHit2D = hit2D;
+                //    destroyedHitFirst = false;
+                //}
+
+            }else{
+                enemyHitFirst = true;
+                destroyedHitFirst = true;
+            }
+            // 両方のヒットがすでに割り当てられたら、ループを終了
+            if (DestroyedHit2D && EnemyHit2D)
+            {
+                Debug.Log("MCCS PlundeAndRockOn");
+                break;
+            }
+        }
+        return (DestroyedHit2D,EnemyHit2D);
+    }
     /// <summary>
     /// Unitを右クリックしたら離すまでドラッグし続ける
     /// </summary>
     void CursorDragClick(float wheelInput){
         //Rayを照射する
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
+        var Hit2DList = PlundeAndRockOn(ray);
+        RaycastHit2D DestroyedHit2D = Hit2DList.Item1;
+        RaycastHit2D EnemyHit2D = Hit2DList.Item2;
         //ロックオン機能
-        if(hit2D && hit2D.collider.tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+        if(EnemyHit2D){
             PUAMS.NormalAttack(timer,target);
             timer += Time.deltaTime;
         }else{
@@ -69,11 +113,11 @@ public class MouseCursorControllScript : MonoBehaviour
             timer = -firstAttackInterval;
         }
         //Debug.Log(hit2D.collider.gameObject.name);
-        if(Input.GetMouseButtonDown(0)&&hit2D){
+        if(Input.GetMouseButtonDown(0)&&DestroyedHit2D){
             //Rayを照射した先にあるオブジェクトを登録
             //オブジェクトが撃破後Unitであるなら
-            if(hit2D.collider.tag == GSetting.ObjTagName.DestroyedUnit.ToString()/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
-                ParentObject = hit2D.collider.gameObject.transform.root.gameObject;
+            if(DestroyedHit2D/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
+                ParentObject = DestroyedHit2D.collider.gameObject.transform.root.gameObject;
                 snapToGrid.Origin = ParentObject.transform;
                 //子オブジェクトのlocalPositionとlocalRotationを取得してリストに格納
                 for(int i = 0;i < ParentObject.transform.childCount;i++){
@@ -108,14 +152,14 @@ public class MouseCursorControllScript : MonoBehaviour
             }
             else{
                 Debug.Log("bbbB"+ ParentObject.name + ParentObject.transform.position);
-                EnemyUnitManagementScript enemyUnitManagementScript = ParentObject.GetComponent<EnemyUnitManagementScript>();
-                if(enemyUnitManagementScript == null){
-                    Debug.LogWarning("enemyUnitManagementScript is null" + ParentObject.name);
+                DestroyedUnitManagementScript DUMS = ParentObject.GetComponent<DestroyedUnitManagementScript>();
+                if(DUMS == null){
+                    Debug.LogWarning("DestroyedUnitManagementScript is null" + ParentObject.name);
                 }else{
-                //親オブジェクトのスクリプトEnemyUnitManagementScriptにアクセス
-                enemyUnitManagementScript.MovePosition(target);
+                //親オブジェクトのスクリプトDestroyedUnitManagementScriptにアクセス
+                DUMS.MovePosition(target);
                 //マウスに追従するようにするMovePosition関数を呼び出す
-                enemyUnitManagementScript.Spin(wheelInput,PlayerUnit.transform.rotation);
+                DUMS.Spin(wheelInput,PlayerUnit.transform.rotation);
                 //プレビューオブジェクトを走査して
                 Debug.Log("ccc");
                 }

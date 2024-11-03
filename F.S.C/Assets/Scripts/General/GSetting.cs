@@ -11,6 +11,9 @@ namespace FSCGeneral{
             RegularTriangle = 2,
             IsoscelesRightTriangle = 3,
         }
+        /// <summary>
+        /// Tag&LayerManager内に記述しているTagのインデックスナンバーを取得
+        /// </summary>
         public enum ObjTagName{
             DestroyedUnit = 0,
             PlayerUnit = 1,
@@ -21,7 +24,16 @@ namespace FSCGeneral{
             EnemyWeapon1 = 6,
             EnemyWeapon2 = 7,
             Weapon5 = 8,
+            SimulateUnit = 9,
 
+        }
+        /// <summary>
+        /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
+        /// </summary>
+        public enum UniqueLayerName{
+            EnemyUnit = 3,
+            DestroyedUnit = 6,
+            PlayerUnit = 7,
         }
         public string TagEnumToString(int num)
         {

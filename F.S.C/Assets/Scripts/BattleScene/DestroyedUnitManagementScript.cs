@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// DestroyedUnitの時の移動制御を行う
 /// </summary>
-public class EnemyUnitManagementScript : MonoBehaviour
+public class DestroyedUnitManagementScript : MonoBehaviour
 {
     [SerializeField]
     GameObject EnemyUnitManager;

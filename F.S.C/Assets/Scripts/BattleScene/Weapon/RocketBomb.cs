@@ -28,35 +28,41 @@ public class RocketBomb : MonoBehaviour
         else if(rocketHit){Destroy(this.gameObject);}
     }
     public void OnTriggerEnter2D(Collider2D other){
-        //if(true)rocketHit = true;//敵に当たれば爆発する。タグで判別せよ
+        //if(true)rocketHit = true;//敵に当たれば爆発する。タグで判別する
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             case GSetting.ObjTagName.PlayerWeapon1: 
             {
-                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other!.transform.tag,true)){
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other.transform.tag,true)){
                     case GSetting.ObjTagName.EnemyUnit: rocketHit = true; break;
-                    //case GSetting.ObjTagName.DestroyedUnit: rocketHit = true; break;
+                    case GSetting.ObjTagName.EnemyWeapon1: rocketHit = true; break;
                     default: rocketHit = false;break;
                 }
                 break;
             }
             case GSetting.ObjTagName.PlayerWeapon2:
             {
-                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other!.transform.tag,true)){
-                        default:{rocketHit = true;break;}
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other.transform.tag,true)){
+                    case GSetting.ObjTagName.EnemyUnit: rocketHit = true; break;
+                    case GSetting.ObjTagName.EnemyWeapon1: rocketHit = true; break;
+                    default: rocketHit = false;break;
                 }
                 break;
             }
             case GSetting.ObjTagName.EnemyWeapon1:
             {
-                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other!.transform.tag,true)){
-                        default:{rocketHit = true;break;}
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other.transform.tag,true)){
+                    case GSetting.ObjTagName.PlayerUnit:{rocketHit = true;break;}
+                    case GSetting.ObjTagName.PlayerWeapon1:{rocketHit = true;break;}
+                    default:{rocketHit = false;break;}
                 }
                 break;
             }
             case GSetting.ObjTagName.EnemyWeapon2:
             {
-                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other!.transform.tag,true)){
-                        default:{rocketHit = true;break;}
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), other.transform.tag,true)){
+                    case GSetting.ObjTagName.PlayerUnit:{rocketHit = true;break;}
+                    case GSetting.ObjTagName.PlayerWeapon1:{rocketHit = true;break;}
+                    default:{rocketHit = false;break;}
                 }
                 break;
             }
