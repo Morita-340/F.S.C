@@ -8,8 +8,10 @@ using UnityEngine;
 /// </summary>
 public class SnapToGrid : MonoBehaviour
 {
-    public Transform gridOrigin; // グリッドの起点（中心）オブジェクト[SerializeField]に書き換えても問題ない
+    [SerializeField] Transform gridOrigin; // グリッドの起点（中心）オブジェクト[SerializeField]に書き換えても問題ない
     public Transform Origin;//プレビューで補正する対象のオブジェクト
+    public Vector3 OriginPosition;
+    public Vector3 OriginRotation;
     public float cellSize; // グリッドのセルのサイズ（正方形）
     public bool snapRotation = true; // 回転もスナップするかどうか
 
@@ -21,6 +23,7 @@ public class SnapToGrid : MonoBehaviour
     /// <summary>
     /// このオブジェクトを動的にグリッド補正、角度補正する
     /// </summary>
+    /*
     void SnapObjectToGrid()
     {
         if (gridOrigin == null)
@@ -50,6 +53,46 @@ public class SnapToGrid : MonoBehaviour
         if (snapRotation)
         {
             Vector3 eulerRotation = Origin.transform.rotation.eulerAngles;
+            Vector3 gridRotation = gridOrigin.transform.rotation.eulerAngles;
+            //float snappedRotationX = Mathf.Round(eulerRotation.x / 90) * 90;
+            //float snappedRotationY = Mathf.Round(eulerRotation.y / 90) * 90;
+            //float snappedRotationZ = Mathf.Round(eulerRotation.z / 90) * 90;
+            float snappedRotationZ = gridRotation.z - Mathf.Round(gridRotation.z/90) * 90 + Mathf.Round(eulerRotation.z/90) * 90;
+            //(eulerRotation.z+90) / 90
+            //Debug.Log("a"+snappedRotationZ+"b"+gridOrigin.transform.eulerAngles.z+"c"+(Mathf.Floor(eulerRotation.z / 90) * 90));
+            //this.gameObject.transform.rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, snappedRotationZ);
+            this.gameObject.transform.rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, snappedRotationZ);
+        }
+    }*/
+    void SnapObjectToGrid()
+    {
+        if (gridOrigin == null)
+        {
+            Debug.LogWarning("Grid origin is not assigned.");
+            return;
+        }
+        //if(Origin == null){
+        //    Debug.Log("Origin is not assigned.");
+        //    return;
+        //}
+
+        // グリッドのローカル座標に変換
+        Vector3 localPosition = gridOrigin.InverseTransformPoint(OriginPosition);
+
+        // 位置のスナップ
+        float snappedX = Mathf.Round(localPosition.x / cellSize) * cellSize;
+        float snappedY = Mathf.Round(localPosition.y / cellSize) * cellSize;
+        //float snappedZ = Mathf.Round(localPosition.z / cellSize) * cellSize;
+
+        Vector3 snappedLocalPosition = new Vector3(snappedX, snappedY, 0);
+        
+        // グリッドのワールド座標に変換
+        transform.position = gridOrigin.TransformPoint(snappedLocalPosition);
+
+        // 回転のスナップ（オプション）
+        if (snapRotation)
+        {
+            Vector3 eulerRotation = OriginRotation;
             Vector3 gridRotation = gridOrigin.transform.rotation.eulerAngles;
             //float snappedRotationX = Mathf.Round(eulerRotation.x / 90) * 90;
             //float snappedRotationY = Mathf.Round(eulerRotation.y / 90) * 90;

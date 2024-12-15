@@ -56,5 +56,13 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "F.S.C.sln"
+    "dotnet.defaultSolution": "F.S.C.sln",
+    //"csharp.inlayHints.enableInlayHintsForImplicitObjectCreation": true,
+    //"csharp.inlayHints.enableInlayHintsForImplicitVariableTypes": true,
+    //"csharp.inlayHints.enableInlayHintsForLambdaParameterTypes": true,
+    //"csharp.inlayHints.enableInlayHintsForTypes": true,
+    //"dotnet.inlayHints.enableInlayHintsForIndexerParameters": true,
+    //"dotnet.inlayHints.enableInlayHintsForLiteralParameters": true,
+    //"omnisharp.disableMSBuildDiagnosticWarning": true,
+    //"csharp.format.enable": true
 }

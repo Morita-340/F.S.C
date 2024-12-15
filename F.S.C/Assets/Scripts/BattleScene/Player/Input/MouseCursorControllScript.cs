@@ -118,6 +118,7 @@ public class MouseCursorControllScript : MonoBehaviour
             //オブジェクトが撃破後Unitであるなら
             if(DestroyedHit2D/*撃破後のUnitであることを識別できる何かをフラグに持ってくる*/){
                 ParentObject = DestroyedHit2D.collider.gameObject.transform.root.gameObject;
+                //Previewを動かすために補正対象として登録する
                 snapToGrid.Origin = ParentObject.transform;
                 //子オブジェクトのlocalPositionとlocalRotationを取得してリストに格納
                 for(int i = 0;i < ParentObject.transform.childCount;i++){

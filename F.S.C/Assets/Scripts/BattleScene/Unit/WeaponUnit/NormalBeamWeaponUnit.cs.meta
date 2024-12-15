@@ -3,7 +3,11 @@ guid: c2fa0fef25ea7ec41addc84ac65c5bc5
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - spriteRenderer: {instanceID: 0}
+  - DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
+  - RocketBomb: {instanceID: 0}
+  - Bomb: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

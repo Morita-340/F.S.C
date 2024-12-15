@@ -41,7 +41,7 @@ public class NormalBeamWeaponUnit : WeaponUnitBase
 
             }
             RocketBomb.tag = tagName;
-            Instantiate(RocketBomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta();
+            Instantiate(RocketBomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
         }
     }
     public override void ChargeAttack(Vector3 TargetPosition)
@@ -63,7 +63,7 @@ public class NormalBeamWeaponUnit : WeaponUnitBase
 
             }
             Bomb.tag= tagName;
-            Instantiate(Bomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta();
+            Instantiate(Bomb,FirePosition,FireRotation).GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
         }
     }
 }

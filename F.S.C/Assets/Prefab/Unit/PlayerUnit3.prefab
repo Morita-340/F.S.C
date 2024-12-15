@@ -148,6 +148,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 0}
+  DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
   RocketBomb: {fileID: 0}
   Bomb: {fileID: 0}
 --- !u!114 &4571154305521284014

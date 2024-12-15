@@ -23,6 +23,7 @@ public class UnitData
     private UnitBase ThisUnit;
     private int MaxHitPoint;
     private float AttackPower;
+    public bool dividable = false;
     public int ShapeTypeNum;
     //探索時に探索済みであるかを判別してもらう
     public bool AlreadySearch = false;
@@ -47,6 +48,24 @@ public class UnitData
         if(DownerUnit != null)DownerUnit.DeleteDestroyUnitLink(this);
         if(RightUnit != null)RightUnit.DeleteDestroyUnitLink(this);
         if(LeftUnit != null)LeftUnit.DeleteDestroyUnitLink(this);
+    }
+    /// <summary>
+    /// DeleteFourWayLinkを拡張。データのdividableがfalse即ち分離対象に選ばれていなければdividableなunitとのリンクを相互で削除する
+    /// これによりdividableなユニットのリンクをコアから独立させることが出来る
+    /// </summary>
+    public void DeleteFourWayLinkThatIsNotDividable(){
+        if(UpperUnit?.dividable == false){
+            UpperUnit.DeleteDestroyUnitLink(this);
+            UpperUnit = null;}
+        if(DownerUnit?.dividable == false){
+            DownerUnit.DeleteDestroyUnitLink(this);
+            DownerUnit = null;}
+        if(RightUnit?.dividable == false){
+            RightUnit.DeleteDestroyUnitLink(this);
+            RightUnit = null;}
+        if(LeftUnit?.dividable == false){
+            LeftUnit.DeleteDestroyUnitLink(this);
+            LeftUnit = null;}
     }
     /// <summary>
     /// DeleteFourWayLink内でのみ呼び出され周囲のUnitの自分へのLinkを削除する

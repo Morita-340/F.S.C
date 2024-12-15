@@ -26,6 +26,9 @@ public class UnitBase : MonoBehaviour
     public UnitData GetThisUnitData(){
         return ThisUnitData;
     }
+    public GSetting.ShapeType GetShapeType(){
+        return shapeType;
+    }
     private Vector3 RayBasePosition;//対応するPreviewObjectの座標を代入してある
     private float PreviewObjZRotate;//
     public void SetRayBasePosition(Vector3 position){
@@ -153,7 +156,7 @@ public class UnitBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f);
+        spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
         if(HitPoint <= 0){DestroyUnit();}
     }
     public virtual void NormalAttack(Vector3 TargetPosition){}
@@ -165,11 +168,14 @@ public class UnitBase : MonoBehaviour
             Debug.LogWarning("Exception Destroy Handle");
             Destroy(thisGameObject);
         }
-        ThisUnitData.DeleteFourWayLink();
-        if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
+        DivideUnitLink();
         //分離エフェクトを実装する
         Debug.Log("AUDMS Destroy" + thisGameObject.name);
         Destroy(thisGameObject);
+    }
+    private void DivideUnitLink(){
+        if(ThisUnitData != null)ThisUnitData.DeleteFourWayLink();
+        if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
     }
     //離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している
     public bool IsNotIsolatedUnit(){

@@ -37,9 +37,22 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         }
         Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
     }
+    /// <summary>
+    /// 破壊時に呼び出されるDestroyProcess
+    /// </summary>
+    /// <param name="DeleteData"></param>
     public void DestroyProcess(UnitData DeleteData){
         Debug.Log("PUDMS DP");
         ChildUnitDataList.Remove(DeleteData);
+        UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
+        Regenerate();
+        StackCopy.Clear();
+    }
+    /// <summary>
+    /// 分離時に呼び出されるDestroyProcess
+    /// </summary>
+    public void DestroyProcess(){
+        Debug.Log("PUDMS DP");
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         Regenerate();
         StackCopy.Clear();
@@ -82,12 +95,15 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         Vector3 regenePosition = new Vector3(0,0,0);
         Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
         //foreach内で走査対象のリストを書き換えるとエラーが発生するので注意
+        //未探索のユニットを別のリストに再格納
+        //探索範囲を子オブジェクトのユニット全体から未探索だったユニットのみに絞っている
         foreach(UnitData unitData in ChildUnitDataList){
             if(unitData.AlreadySearch == false){
                 Debug.Log("PUDMS falseUnit" + unitData.ReturnThisUnit().name );
                 NotResearchUnitList.Add(unitData);
             }
         }
+        //未探索のユニットを集めたリスト内で再び探索を行って、リンクで繋がれたまとまり毎に分離させて再生成させる
         while(NotResearchUnitList.Count > 0){
             //一つ選ぶ
             //探索をする
@@ -107,6 +123,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     }
                     GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false);
                     RegeneObj.tag = GSetting.ObjTagName.DestroyedUnit.ToString();
+                    RegeneObj.layer = (int)GSetting.UniqueLayerName.DestroyedUnit;
+                    RegeneObj.GetComponent<WeaponUnitBase>().GetThisUnitData().dividable = false;
                     RegeneObj.transform.localPosition -= UnitDefferenceVector;
                     //子オブジェクトが消去されるのでデータリンクも消去する
                     ChildUnitDataList.Remove(unitData);
@@ -116,11 +134,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     Destroy(unitObj);
                 }
             }
+
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
             Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
+            StartCoroutine(WaitTimeForUnregist(1,ParentObject.GetComponent<DestroyedUnitManagementScript>()));
         }
         
         //探索フラグのリセット
@@ -129,6 +149,15 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         foreach(UnitData unitData in StackCopy){
             unitData.AlreadySearch = false;
         }
+    }
+    IEnumerator WaitTimeForUnregist(int time,DestroyedUnitManagementScript DUMS){
+        Debug.Log("AUDMS WTFU" + DUMS.gameObject.name);
+        DUMS.ChildrenSpriteTranslucent(true);
+        DUMS.ChildrenSColliderEnabled(false);
+        yield return new WaitForSeconds(time);
+        //元データのコライダーと透明度を戻す
+        DUMS.ChildrenSpriteTranslucent(false);
+        DUMS.ChildrenSColliderEnabled(true);
     }
     public void DeleteChildrenDataFromFM(){
         FieldManager FM = FieldManager.GetInstance();

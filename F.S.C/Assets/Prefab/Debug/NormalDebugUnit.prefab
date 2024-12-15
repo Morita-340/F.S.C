@@ -149,6 +149,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 1625033710563570026}
+  DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
   RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &6251384632838190408
@@ -330,7 +331,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 894f5516fee18fb48933c545dcb7e345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyUnitManager: {fileID: 4126249200044146030}
   gyrationFactor: 90
 --- !u!1 &5310064612624002152
 GameObject:
@@ -481,6 +481,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 6368974249194005277}
+  DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
   RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &2892535259325308985
@@ -764,6 +765,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   spriteRenderer: {fileID: 5995833344862942960}
+  DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
   RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &6039128185090527668
