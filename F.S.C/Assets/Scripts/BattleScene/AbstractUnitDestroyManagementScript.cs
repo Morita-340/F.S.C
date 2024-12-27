@@ -4,6 +4,9 @@ using Unity.VisualScripting;
 using FSCGeneral;
 using UnityEngine;
 
+/// <summary>
+/// ユニット全体の破壊処理もとい子オブジェクト全体から抽出したデータはここで管理する。子オブジェクトのデータはここで取得できる
+/// </summary>
 public class AbstractUnitDestroyManagementScript : MonoBehaviour
 {
     [SerializeField]
@@ -12,7 +15,11 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     private UnitBase ThisUnitSCore;
     [SerializeField]
     GameObject DestroyParentUnitObject;
-    protected GSetting.ObjTagName childObjTagName ;
+    MainCameraZoomRatioController MCZRC;
+    protected GSetting.ObjTagName childObjTagName;
+    protected int maximumDistanseFromCore = 0;
+    protected int combatPower = 0;
+    protected bool isDead = false;
     protected List<UnitData> ChildUnitDataList = new List<UnitData>();
     //横型探索用のスタック用リスト
     private Stack<UnitData> StackForBreathFirstSearch = new Stack<UnitData>();
@@ -21,6 +28,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
+        MCZRC = GameObject.Find("Main Camera")?.GetComponent<MainCameraZoomRatioController>();
         SetUnitData();
     }
     /// <summary>
@@ -28,14 +36,29 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     public virtual void SetUnitData(){
         ChildUnitDataList.Clear();
+        combatPower = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
+            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
-            ChildUnitDataList.Add(childUnitObject.GetComponent<UnitBase>().GetThisUnitData());
+            ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
+            ReloadMaxDistanse(ChildUnit);
+            combatPower += ChildUnit.GetUnitStatus();
             Debug.Log("PUDMS PUDL set" + childUnitObject.name);
             }
         }
         Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
+    }
+    /// <summary>
+    /// maximumDistanseFromCoreを更新
+    /// </summary>
+    /// <param name="ChildUnit"></param>
+    private void ReloadMaxDistanse(UnitBase ChildUnit){
+        int distanseFromCore = ChildUnit.GetDistanseFromCore();
+        if(maximumDistanseFromCore < distanseFromCore){
+            maximumDistanseFromCore = distanseFromCore;
+            Debug.Log("AUDMS distanse " + distanseFromCore);
+        }
     }
     /// <summary>
     /// 破壊時に呼び出されるDestroyProcess
@@ -46,6 +69,12 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         ChildUnitDataList.Remove(DeleteData);
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         Regenerate();
+        maximumDistanseFromCore = 0;
+        for(int i = 0; i < ThisGameObject.transform.childCount; i++){
+            GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
+            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
+            if(childUnitObject.tag == childObjTagName.ToString()){ReloadMaxDistanse(ChildUnit);}
+        }
         StackCopy.Clear();
     }
     /// <summary>
@@ -55,6 +84,12 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         Debug.Log("PUDMS DP");
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         Regenerate();
+        maximumDistanseFromCore = 0;
+        for(int i = 0; i < ThisGameObject.transform.childCount; i++){
+            GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
+            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
+            if(childUnitObject.tag == childObjTagName.ToString()){ReloadMaxDistanse(ChildUnit);}
+        }
         StackCopy.Clear();
     }
     //幅優先探索の処理(リンクの繋がっているユニットの洗い出し)
@@ -134,13 +169,12 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     Destroy(unitObj);
                 }
             }
-
+            StartCoroutine(WaitTimeForUnregist(1,ParentObject.GetComponent<DestroyedUnitManagementScript>()));
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
             Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
-            StartCoroutine(WaitTimeForUnregist(1,ParentObject.GetComponent<DestroyedUnitManagementScript>()));
         }
         
         //探索フラグのリセット
@@ -169,10 +203,45 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     public List<UnitData> GetChildUnitDataList(){
         return ChildUnitDataList;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public int GetChildNum(){
+        return ChildUnitDataList.Count;
+    }
+    public UnitBase GetUnitCore(){
+        return ThisUnitSCore;
+    }
+    public int GetMaximumDistanseFromCore(){
+        return maximumDistanseFromCore;
+    }
+    public void ThisIsVisible(bool flag){
+        if(flag)MCZRC?.AddToVisibleUnitList(this);
+        else{MCZRC?.DeleteFromVisibleUnitList(this);}
+    }
+    public int GetCombatPower(){
+        return combatPower;
+    }
+    public virtual int CaluculateCombatPower(){
+        combatPower = 0;
+        for(int i = 0; i < ThisGameObject.transform.childCount; i++){
+            GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
+            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
+            if(childUnitObject.tag == childObjTagName.ToString()){
+            combatPower += ChildUnit.GetUnitStatus();
+            Debug.Log(ChildUnit.GetUnitStatus());
+            }
+        }
+        return combatPower;
+    }
+    /// <summary>
+    /// 撃墜された際はこれを呼び出し撃墜判定をtrueにする。これによりゲームフローが進む
+    /// </summary>
+    public void IsDead(){
+        isDead = true;
+    }
+    /// <summary>
+    /// isDeadを参照する際に呼び出す
+    /// </summary>
+    /// <returns></returns>
+    public bool GetIsDead(){
+        return isDead;
     }
 }

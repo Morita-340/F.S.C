@@ -39,6 +39,7 @@ public class MouseInput : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Cursor.visible = false;
         snapToGrid = UnitSimulater.GetComponent<SnapToGrid>();
         playerUnitSimulateScript = UnitSimulater.GetComponent<PlayerUnitSimulateScript>();
         PUAMS = PlayerUnit.GetComponent<PlayerUnitAttackManagementScript>();

@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using FSCGeneral;
 
-public class RocketBomb : MonoBehaviour
+public class RocketBomb : WeaponBase
 {
     [SerializeField]
     Rigidbody2D thisRb2D;

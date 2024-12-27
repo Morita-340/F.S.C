@@ -2201,7 +2201,7 @@ GameObject:
   - component: {fileID: 6763205848867093476}
   - component: {fileID: 7303565189159308569}
   m_Layer: 0
-  m_Name: EnemyUnit
+  m_Name: EnemySampleUnit
   m_TagString: EnemyUnit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2258,5 +2258,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AUDMS: {fileID: 6763205848867093476}
-  normalAttackInterval: 1.2
+  normalAttackInterval: 5
   chargeAttackInterval: 1

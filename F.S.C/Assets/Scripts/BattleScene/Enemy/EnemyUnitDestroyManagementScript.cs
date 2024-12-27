@@ -11,4 +11,9 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
         base.Start();
     }
+    public override int CaluculateCombatPower(){
+        //データ登録をする際のタグを決めている
+        childObjTagName = GSetting.ObjTagName.EnemyUnit;
+        return base.CaluculateCombatPower();
+    }
 }

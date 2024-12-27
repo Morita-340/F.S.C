@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// バトルシーンでのシングルトン。ユニットのデータベースはUnitListとしてここにある
+/// バトルシーンでのシングルトン。シーン中のUnitDataは全てUnitListとしてここにある
 /// </summary>
 namespace FSCGeneral{
     public sealed class FieldManager
@@ -30,7 +30,7 @@ namespace FSCGeneral{
             }return new UnitData(null,0);
         }
         /// <summary>
-        /// ListのRemoveを使えば同じ処理が出来るのでいらないかも
+        /// ListのRemoveを使えば同じ処理が出来るのでいらない
         /// </summary>
         /// <param name="willDeleteData"></param>
         public void DeleteData(UnitData willDeleteData){

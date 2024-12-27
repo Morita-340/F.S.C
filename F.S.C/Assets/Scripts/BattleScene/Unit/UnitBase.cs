@@ -12,10 +12,13 @@ public class UnitBase : MonoBehaviour
     [SerializeField]
     private int HitPoint = 5;
     [SerializeField]
-    SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
     protected AbstractUnitDestroyManagementScript AUDMS;
+    protected int distanseFromCore = 0;
+    protected int normalAttackPower = 0;
+    protected int chargeAttackPower = 0;
     private UnitBase thisUnit;
     //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
     UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
@@ -25,6 +28,13 @@ public class UnitBase : MonoBehaviour
     private UnitData ThisUnitData;
     public UnitData GetThisUnitData(){
         return ThisUnitData;
+    }
+    /// <summary>
+    /// ユニットの戦闘力を渡す。リアクター実装時はココを書き換えよ
+    /// </summary>
+    /// <returns></returns>
+    public int GetUnitStatus(){
+        return HitPoint + normalAttackPower + chargeAttackPower;
     }
     public GSetting.ShapeType GetShapeType(){
         return shapeType;
@@ -44,6 +54,10 @@ public class UnitBase : MonoBehaviour
         thisUnit = this;
         ThisUnitData= new UnitData(thisUnit,(int)shapeType);
         FM.UnitList.Add(ThisUnitData);
+        if(this.tag == GSetting.ObjTagName.PlayerUnit.ToString()
+        || this.tag == GSetting.ObjTagName.EnemyUnit.ToString()
+        ||this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
+        {distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition);}
     }
     protected virtual void Start(){
         GetAdjacentObjLink(thisGameObject.tag);//RegistData()に格納するとなぜか動かなくなるので注意
@@ -65,8 +79,12 @@ public class UnitBase : MonoBehaviour
             rightUnit = GetRightLink(SelectedObjTag);
         }else Debug.LogAssertion("ShapeType is null!");
     }
-    void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
+    private void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
+    }
+    private int CaluculateHowFarFromCore(Vector3 RegeneUnitsPosition){
+        int distanseFromCore = (int)Math.Sqrt(Math.Pow(RegeneUnitsPosition.x,2)+Math.Pow(RegeneUnitsPosition.y,2));
+        return distanseFromCore;
     }
     private UnitBase GetUpLink(string SelectedObjTag){
         UnitBase upperUnit;
@@ -157,6 +175,7 @@ public class UnitBase : MonoBehaviour
     protected virtual void Update()
     {
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
+        AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
         if(HitPoint <= 0){DestroyUnit();}
     }
     public virtual void NormalAttack(Vector3 TargetPosition){}
@@ -177,7 +196,10 @@ public class UnitBase : MonoBehaviour
         if(ThisUnitData != null)ThisUnitData.DeleteFourWayLink();
         if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
     }
-    //離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している
+    /// <summary>
+    /// 離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している。合体時に使用
+    /// </summary>
+    /// <returns></returns>
     public bool IsNotIsolatedUnit(){
         if(shapeType == GSetting.ShapeType.Square){
             if(GetUpperGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
@@ -208,6 +230,9 @@ public class UnitBase : MonoBehaviour
         if(leftUnit != null)AdjacentUnitList.Add(leftUnit);
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
         return AdjacentUnitList;
+    }
+    public int GetDistanseFromCore(){
+        return distanseFromCore;
     }
     public void ReRegistData(){
         GetAdjacentObjLink(thisGameObject.tag);

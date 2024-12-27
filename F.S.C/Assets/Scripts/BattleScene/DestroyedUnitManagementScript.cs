@@ -16,6 +16,8 @@ public class DestroyedUnitManagementScript : MonoBehaviour
     void Awake()
     {
         DestroyedUnitManager = this.gameObject;
+        ChildrenSColliderEnabled(true);
+        ChildrenSpriteTranslucent(false);
     }
 
     // Update is called once per frame
