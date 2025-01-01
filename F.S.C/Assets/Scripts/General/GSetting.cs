@@ -23,8 +23,9 @@ namespace FSCGeneral{
             PlayerWeapon2 = 5,
             EnemyWeapon1 = 6,
             EnemyWeapon2 = 7,
-            Weapon5 = 8,
+            ReactorExplosion = 8,
             SimulateUnit = 9,
+            ReactorEffect = 10,
 
         }
         /// <summary>
@@ -34,6 +35,15 @@ namespace FSCGeneral{
             EnemyUnit = 3,
             DestroyedUnit = 6,
             PlayerUnit = 7,
+        }
+        /// <summary>
+        /// ノージャンルのマジックナンバーはここで一元管理
+        /// </summary>
+        public enum UniqueMagicNumber{
+            /// <summary>
+            /// リアクターの強化レベル1辺りの攻撃倍率増加量
+            /// </summary>
+            AttackEfficiencyONReactorLevel = 1,
         }
         public string TagEnumToString(int num)
         {

@@ -12,6 +12,8 @@ TagManager:
   - PlayerWeapon2
   - EnemyWeapon1
   - EnemyWeapon2
+  - ReactorExplosion
+  - ReactorEffect
   layers:
   - Default
   - TransparentFX

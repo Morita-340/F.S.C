@@ -17,7 +17,7 @@ public class WaveData : ScriptableObject
     public int GetCombatPower(){
         combatPower = 0;
         foreach(GameObject waveEnemy in waveEnemyList){
-            combatPower += waveEnemy.GetComponent<EnemyUnitDestroyManagementScript>().GetCombatPower();
+            combatPower += waveEnemy.GetComponent<EnemyUnitDestroyManagementScript>().CaluculateCombatPower();
         }
         Debug.Log("CombatPower :"+combatPower);
         return combatPower;
@@ -30,7 +30,8 @@ public class WaveData : ScriptableObject
     private void GetCombatPowerOnInspector(){
         combatPower = 0;
         foreach(GameObject waveEnemy in waveEnemyList){
-            combatPower += waveEnemy.GetComponent<EnemyUnitDestroyManagementScript>().CaluculateCombatPower();
+            EnemyUnitDestroyManagementScript EUDMS = waveEnemy.GetComponent<EnemyUnitDestroyManagementScript>();
+            combatPower += EUDMS.CaluculateCombatPower();
         }
         Debug.Log("CombatPower :"+combatPower);
     }

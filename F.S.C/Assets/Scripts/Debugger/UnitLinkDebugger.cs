@@ -36,46 +36,49 @@ public class UnitLinkDebugger : MonoBehaviour
     {
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
-        if(hit2D){
-            //Rayを照射した先にあるオブジェクトのクラスを登録
-            if(hit2D.collider.tag == "PlayerUnit" ||hit2D.collider.tag == "EnemyUnit"){
-                currentObject = hit2D.collider.gameObject.transform;
-                //カーソルを当てたユニットが格納されたUnitDataを検索する。
-                UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();
-                //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
-                UnitData SameData = new UnitData(null,0);
-                if(HitObj == null){Debug.Log("LLH"); return; }
-                SameData = FM.SearchUnit(HitObj);Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
-                Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
-                if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
-                if(pastObject != currentObject)DestroyIcon();
-                /*
-                foreach(UnitBase fourwayUnit in SameData.ReturnFourWayLink()){
-                    Debug.Log("LLK");
-                    if(fourwayUnit != null){
-                        Debug.Log("LLN"+fourwayUnit);
-                        Debug.Log("LLO");
-                        IconList.Add(Instantiate(DebugLinkObjIcon,fourwayUnit.gameObject.transform));
-                    }
-                }
-                */
-                
-                
-                List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
-                for(int i=0; i < FourWayLink.Count; i++){
-                    if(FourWayLink[i] != null){
-                        switch(i){
-                            case 0: UpperIcon.SetActive(true); UpperIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
-                            case 1: DownerIcon.SetActive(true); DownerIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
-                            case 2: RightIcon.SetActive(true); RightIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
-                            case 3: LeftIcon.SetActive(true); LeftIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+        //foreach(RaycastHit2D hit2D in Physics2D.RaycastAll((Vector2)ray.origin, (Vector2)ray.direction)){
+            if(hit2D){
+                //Rayを照射した先にあるオブジェクトのクラスを登録
+                if(hit2D.collider.tag == GSetting.ObjTagName.PlayerUnit.ToString() ||hit2D.collider.tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+                    currentObject = hit2D.collider.gameObject.transform;
+                    //カーソルを当てたユニットが格納されたUnitDataを検索する。
+                    UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();
+                    //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
+                    UnitData SameData = new UnitData(null,0);
+                    if(HitObj == null){Debug.Log("LLH"); return; }
+                    SameData = FM.SearchUnit(HitObj);
+                    Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
+                    Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
+                    if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
+                    if(pastObject != currentObject){DestroyIcon();Debug.LogWarning("AAAA");}
+                    /*
+                    foreach(UnitBase fourwayUnit in SameData.ReturnFourWayLink()){
+                        Debug.Log("LLK");
+                        if(fourwayUnit != null){
+                            Debug.Log("LLN"+fourwayUnit);
+                            Debug.Log("LLO");
+                            IconList.Add(Instantiate(DebugLinkObjIcon,fourwayUnit.gameObject.transform));
                         }
                     }
-                }
-                pastObject = hit2D.collider.gameObject.transform;
+                    */
+
+
+                    List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
+                    for(int i=0; i < FourWayLink.Count; i++){
+                        if(FourWayLink[i] != null){
+                            switch(i){
+                                case 0: UpperIcon.SetActive(true); UpperIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                                case 1: DownerIcon.SetActive(true); DownerIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                                case 2: RightIcon.SetActive(true); RightIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                                case 3: LeftIcon.SetActive(true); LeftIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
+                            }
+                        }
+                    }
+                    pastObject = hit2D.collider.gameObject.transform;
+                }else{DestroyIcon();}
             }else{DestroyIcon();}
-        }else{DestroyIcon();}
-    }
+        //}
+    }   
     void DestroyIcon(){
         /*
         foreach(GameObject Icon in IconList){

@@ -149,9 +149,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 9002628763156508716}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &2140470717875577163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,9 +434,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 1523808751509031848}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &5458020974977894472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -717,8 +719,9 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 1194352960149251134}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
 --- !u!114 &2039797787649805382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1000,9 +1003,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 8564423461446181709}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &2415681550723660573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1284,9 +1288,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 4468832973298700489}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &6362514991944941741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1568,9 +1573,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 1602606587067651036}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &8135908677656871778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2054,9 +2060,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   spriteRenderer: {fileID: 1898803148692868637}
+  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  RocketBomb: {fileID: 1119540286865686011, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
-  Bomb: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
 --- !u!114 &8777449851728948339
 MonoBehaviour:
   m_ObjectHideFlags: 0

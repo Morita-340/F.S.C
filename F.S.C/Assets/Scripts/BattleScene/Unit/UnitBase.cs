@@ -11,14 +11,19 @@ public class UnitBase : MonoBehaviour
     protected GSetting.ShapeType shapeType;
     [SerializeField]
     private int HitPoint = 5;
-    [SerializeField]
     protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     private FieldManager FM = FieldManager.GetInstance();
     protected AbstractUnitDestroyManagementScript AUDMS;
+    //カメラの拡大倍率の計算に用いるコアからの距離
     protected int distanseFromCore = 0;
-    protected int normalAttackPower = 0;
+    //通常攻撃力。コアや武器ユニットでは装着した武器の攻撃力が再代入される
+    protected int normalAttackPower = 3;
+    //チャージ攻撃力。コアや武器ユニットでは装着した武器の攻撃力が再代入される
     protected int chargeAttackPower = 0;
+    //攻撃倍率。リアクターの影響を受けるとこの数字が増える
+    [SerializeField,ReadOnly]
+    protected int attackEfficiency = 1;
     private UnitBase thisUnit;
     //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
     UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
@@ -30,11 +35,22 @@ public class UnitBase : MonoBehaviour
         return ThisUnitData;
     }
     /// <summary>
-    /// ユニットの戦闘力を渡す。リアクター実装時はココを書き換えよ
+    /// 攻撃倍率の変更
+    /// </summary>
+    /// <param name="reactorAttackEfficiency">
+    /// リアクターの攻撃倍率。減算する時は負符号をつけること</param>
+    protected virtual void AddAttackEfficiency(int reactorAttackEfficiency){
+        Debug.Log("UB AAE"+reactorAttackEfficiency+name);
+        attackEfficiency += reactorAttackEfficiency;
+        //処理順序とかを間違えたとしても攻撃倍率が1未満にならないようにしたい
+        if(attackEfficiency < 1){attackEfficiency = 1;}
+    }
+    /// <summary>
+    /// ユニットの戦闘力を渡す
     /// </summary>
     /// <returns></returns>
-    public int GetUnitStatus(){
-        return HitPoint + normalAttackPower + chargeAttackPower;
+    public virtual int GetUnitStatus(){
+        return HitPoint + (normalAttackPower + chargeAttackPower)*attackEfficiency;
     }
     public GSetting.ShapeType GetShapeType(){
         return shapeType;
@@ -48,7 +64,7 @@ public class UnitBase : MonoBehaviour
         PreviewObjZRotate = ZRotate;
     }
     // Start is called before the first frame update
-    void Awake()
+    protected virtual void Awake()
     {
         thisGameObject = this.gameObject;
         thisUnit = this;
@@ -60,6 +76,7 @@ public class UnitBase : MonoBehaviour
         {distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition);}
     }
     protected virtual void Start(){
+        spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
         GetAdjacentObjLink(thisGameObject.tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
         AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
@@ -121,39 +138,58 @@ public class UnitBase : MonoBehaviour
         return leftUnit;
     }
     private GameObject GetUpperGameObject(string SelectedObjTag){
-        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.up);
-        if(!hit2D){return null;}
-        GameObject UpperObj = hit2D.collider.gameObject;
-        if(UpperObj.tag != SelectedObjTag){return null;}
-        else return UpperObj;
+        foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.up)){
+            GameObject LeftObj = hit2D.collider.gameObject;
+            if(LeftObj.tag == SelectedObjTag){return LeftObj;}
+        }
+        return null;
+        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.up);
+        //if(!hit2D){return null;}
+        //GameObject UpperObj = hit2D.collider.gameObject;
+        //if(UpperObj.tag != SelectedObjTag){return null;}
+        //else return UpperObj;
     }
     private GameObject GetDownerGameObject(string SelectedObjTag){
-        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.down);
-        if(!hit2D){Debug.Log("UBase RayCast not hit" + thisGameObject.name); return null;}
-        GameObject DownerObj = hit2D.collider.gameObject;
-        if(DownerObj.tag != SelectedObjTag){Debug.Log("UBase DownerObj Tag Wrong" + thisGameObject.name + thisGameObject.tag + thisGameObject.tag); return null;}
-        else return DownerObj;
+        foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
+            GameObject LeftObj = hit2D.collider.gameObject;
+            if(LeftObj.tag == SelectedObjTag){
+            Debug.Log("UB Raycast"+ this.name+ LeftObj.name);
+                return LeftObj;}
+        }
+        return null;
+        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.down);
+        //if(!hit2D){Debug.Log("UBase RayCast not hit" + thisGameObject.name); return null;}
+        //GameObject DownerObj = hit2D.collider.gameObject;
+        //if(DownerObj.tag != SelectedObjTag){Debug.Log("UBase DownerObj Tag Wrong" + thisGameObject.name + thisGameObject.tag + thisGameObject.tag); return null;}
+        //else return DownerObj;
     }
     private GameObject GetRightGameObject(string SelectedObjTag){
-        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.right);
-        if(!hit2D){return null;}
-        GameObject RightObj = hit2D.collider.gameObject;
-        if(RightObj.tag != SelectedObjTag){return null;}
-        else return RightObj;
+        foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.right)){
+            GameObject LeftObj = hit2D.collider.gameObject;
+            if(LeftObj.tag == SelectedObjTag){return LeftObj;}
+        }
+        return null;
+        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.right);
+        //if(!hit2D){return null;}
+        //GameObject RightObj = hit2D.collider.gameObject;
+        //if(RightObj.tag != SelectedObjTag){return null;}
+        //else return RightObj;
     }
     private GameObject GetLeftGameObject(string SelectedObjTag){
-        RaycastHit2D hit2D = RayCalculateAndCast(Vector3.left);
-        if(!hit2D){return null;}
-        GameObject LeftObj = hit2D.collider.gameObject;
-        if(LeftObj.tag != SelectedObjTag){return null;}
-        else return LeftObj;
+        foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.left)){
+            GameObject LeftObj = hit2D.collider.gameObject;
+            if(LeftObj.tag == SelectedObjTag){return LeftObj;}
+        }
+        return null;
+        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.left);
+        //if(!hit2D){return null;}
     }
     /// <summary>
     /// オブジェクト種と調べたい隣のユニットの位置を入力にRayを照射する座標を計算している
     /// </summary>
     /// <param name="RayOffsetDirection">Rayを飛ばす位置をずらす際の初期値</param>
     /// <returns>座標を計算して照射したRayが当たったかどうかRaycastHit2Dで判定し、当たったなら情報を返している</returns>
-    private RaycastHit2D RayCalculateAndCast(Vector3 RayOffsetDirection){
+    private RaycastHit2D[] RayCalculateAndCast(Vector3 RayOffsetDirection){
         Vector3 RayPosition = new Vector3(0,0,0);
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//このオブジェクトのタグをenumでswitch文の分岐判別している
         //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
@@ -167,9 +203,8 @@ public class UnitBase : MonoBehaviour
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * RayOffsetDirection) + RayBasePosition;
                 break;
         }
-        RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
-        Debug.Log("AZKi" +this.gameObject + RayPosition + hit2D.transform);
-        return hit2D;
+        //RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
+        return Physics2D.RaycastAll(RayPosition,new Vector3(0,0,1));
     }
     // Update is called once per frame
     protected virtual void Update()
@@ -242,36 +277,66 @@ public class UnitBase : MonoBehaviour
     }
     public void OnTriggerEnter2D(Collider2D collision2D){
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            //自身がプレイヤーの場合
             case GSetting.ObjTagName.PlayerUnit: 
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    //被弾時の処理
                     case GSetting.ObjTagName.EnemyWeapon1:{
-                        if(HitPoint >0)HitPoint --;
+                        WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
+                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
                         break;}
                     case GSetting.ObjTagName.EnemyWeapon2:{
-                        if(HitPoint >0)HitPoint -= 2;
+                        WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
+                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
                         break;}
                     case GSetting.ObjTagName.EnemyUnit:{
                         HitPoint = 0;
                         break;}
+                    //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
+                    case GSetting.ObjTagName.ReactorEffect:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(reactorBase.tag == thisGameObject.tag){
+                            AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
+                        break;}
+                    //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
+                    case GSetting.ObjTagName.ReactorExplosion:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
+                        break;}
                     default:break;
                 }
+                if(HitPoint < 0){HitPoint = 0;}
                 break;
             }
+            //自身が敵の場合
             case GSetting.ObjTagName.EnemyUnit:
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.PlayerWeapon1:{
-                        if(HitPoint >0)HitPoint --;
+                        WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
+                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
                         break;}
                     case GSetting.ObjTagName.PlayerWeapon2:{
-                        if(HitPoint >0)HitPoint -= 2;
+                        WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
+                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
                         break;}
                     case GSetting.ObjTagName.PlayerUnit:{
                         HitPoint = 0;
                         break;}
+                    //敵のリアクターの効果範囲であれば攻撃倍率を加算する
+                    case GSetting.ObjTagName.ReactorEffect:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
+                        break;}
+                    //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
+                    case GSetting.ObjTagName.ReactorExplosion:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
+                        break;}
                     default:break;
                 }
+                if(HitPoint < 0){HitPoint = 0;}
                 break;
             }
             default: break;
@@ -280,6 +345,38 @@ public class UnitBase : MonoBehaviour
         //    if(HitPoint >0)HitPoint --;
         //    else isDestroyed = true;
         //}
+    }
+    public void OnTriggerExit2D(Collider2D collision2D){
+        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+            //自身がプレイヤーの場合
+            case GSetting.ObjTagName.PlayerUnit: 
+            {
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    //リアクターが分離または爆発した際に効果倍率を減算する
+                    case GSetting.ObjTagName.ReactorEffect:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        //引数はマイナスにすること
+                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
+                        break;}
+                    default:break;
+                }
+                break;
+            }
+            case GSetting.ObjTagName.EnemyUnit:
+            {
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    //リアクターが分離または爆発した際に効果倍率を減算する
+                    case GSetting.ObjTagName.ReactorEffect:{
+                        ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        //引数はマイナスにすること
+                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
+                        break;}
+                    default:break;
+                }
+                break;
+            }
+            default:break;
+        }
     }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと

@@ -11,6 +11,7 @@ public class RocketBomb : WeaponBase
     Rigidbody2D thisRb2D;
     //[SerializeField]
     //float firstSpeed = 1f;
+    //生成後何にも当たらずに漂える時間
     [SerializeField,Range(2f, 5f)]
     float graceTime = 2;
     private float nowTime = 0;

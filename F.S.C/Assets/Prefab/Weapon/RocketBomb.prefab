@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb40ed47eb8799a41aa9ba99eb322739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackPower: 0
   thisRb2D: {fileID: 8177833823725131474}
   graceTime: 5
 --- !u!50 &8177833823725131474

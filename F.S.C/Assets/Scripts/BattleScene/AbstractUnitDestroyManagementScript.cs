@@ -18,8 +18,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     MainCameraZoomRatioController MCZRC;
     protected GSetting.ObjTagName childObjTagName;
     protected int maximumDistanseFromCore = 0;
+    [SerializeField,ReadOnly]
     protected int combatPower = 0;
     protected bool isDead = false;
+    /// <summary>
+    /// 起動後最初のUpdateが呼ばれたタイミングでのみ処理を行えるようにフラグを用意した。combatpowerにリアクターの効果が初めて乗るのがメインスレッドのStart関数ではなくUpdate関数なので、UI表記をちゃんとするためにこれが必要
+    /// </summary>
+    protected bool initialUpdate = true;
     protected List<UnitData> ChildUnitDataList = new List<UnitData>();
     //横型探索用のスタック用リスト
     private Stack<UnitData> StackForBreathFirstSearch = new Stack<UnitData>();
@@ -41,13 +46,14 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
             UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
-            ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
-            ReloadMaxDistanse(ChildUnit);
-            combatPower += ChildUnit.GetUnitStatus();
-            Debug.Log("PUDMS PUDL set" + childUnitObject.name);
+                ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
+                ReloadMaxDistanse(ChildUnit);
+                combatPower += ChildUnit.GetUnitStatus();
+                Debug.Log("PUDMS PUDL set" + childUnitObject.name);
             }
         }
         Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
+        Debug.Log("PUDMS combatpower"+ combatPower);
     }
     /// <summary>
     /// maximumDistanseFromCoreを更新
@@ -64,16 +70,20 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// 破壊時に呼び出されるDestroyProcess
     /// </summary>
     /// <param name="DeleteData"></param>
-    public void DestroyProcess(UnitData DeleteData){
+    public virtual void DestroyProcess(UnitData DeleteData){
         Debug.Log("PUDMS DP");
         ChildUnitDataList.Remove(DeleteData);
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         Regenerate();
+        combatPower = 0;
         maximumDistanseFromCore = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
             UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
-            if(childUnitObject.tag == childObjTagName.ToString()){ReloadMaxDistanse(ChildUnit);}
+            if(childUnitObject.tag == childObjTagName.ToString()){
+                ReloadMaxDistanse(ChildUnit);
+                combatPower += ChildUnit.GetUnitStatus();
+            }
         }
         StackCopy.Clear();
     }
@@ -223,10 +233,11 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         combatPower = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
-            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
+            CoreBase coreBase = childUnitObject.GetComponent<CoreBase>();
+            WeaponUnitBase weaponUnitBase = childUnitObject.GetComponent<WeaponUnitBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
-            combatPower += ChildUnit.GetUnitStatus();
-            Debug.Log(ChildUnit.GetUnitStatus());
+                if(coreBase != null){combatPower += coreBase.GetUnitStatus();}
+                else if(weaponUnitBase != null){combatPower += weaponUnitBase.GetUnitStatus();}
             }
         }
         return combatPower;
@@ -243,5 +254,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// <returns></returns>
     public bool GetIsDead(){
         return isDead;
+    }
+    protected void Update(){
+        if(initialUpdate){initialUpdate = false;CaluculateCombatPower();}
     }
 }
