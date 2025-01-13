@@ -18,6 +18,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     MainCameraZoomRatioController MCZRC;
     protected GSetting.ObjTagName childObjTagName;
     protected int maximumDistanseFromCore = 0;
+    [SerializeField,Range(1, 100)]
+    protected int primeUnitsHP = 10;
     [SerializeField,ReadOnly]
     protected int combatPower = 0;
     protected bool isDead = false;
@@ -166,11 +168,20 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                         Debug.Log("PUDMS DeffVec" + UnitDefferenceVector.x + UnitDefferenceVector.y);
                         regeneFirstTime = false;
                     }
-                    GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false);
-                    RegeneObj.tag = GSetting.ObjTagName.DestroyedUnit.ToString();
-                    RegeneObj.layer = (int)GSetting.UniqueLayerName.DestroyedUnit;
-                    RegeneObj.GetComponent<WeaponUnitBase>().GetThisUnitData().dividable = false;
-                    RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                    if(unitObj.GetComponent<WeaponUnitBase>()){
+                        WeaponUnitBase weaponUnitBase = unitObj.GetComponent<WeaponUnitBase>();
+                        GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<WeaponUnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
+                        RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                        RegeneObj.GetComponent<WeaponUnitBase>() .GetThisUnitData().dividable = false;
+                    }else if(unitObj.GetComponent<WeaponControllUnitBase>()){
+                        WeaponControllUnitBase WCUB = unitObj.GetComponent<WeaponControllUnitBase>();
+                        GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<WeaponControllUnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
+                        RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                    }else{
+                        //上記二つ以外のユニットだった場合
+                        GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
+                        RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                    }
                     //子オブジェクトが消去されるのでデータリンクも消去する
                     ChildUnitDataList.Remove(unitData);
                     //複製元の消去
@@ -182,6 +193,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             StartCoroutine(WaitTimeForUnregist(1,ParentObject.GetComponent<DestroyedUnitManagementScript>()));
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
+            ParentObject.GetComponent<DestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
             Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
@@ -199,6 +211,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         DUMS.ChildrenSpriteTranslucent(true);
         DUMS.ChildrenSColliderEnabled(false);
         yield return new WaitForSeconds(time);
+        //デブリの兵装が損壊していた場合はDUMSがdestroyされるので
+        if(DUMS == null){yield break;}
         //元データのコライダーと透明度を戻す
         DUMS.ChildrenSpriteTranslucent(false);
         DUMS.ChildrenSColliderEnabled(true);
@@ -226,6 +240,12 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         if(flag)MCZRC?.AddToVisibleUnitList(this);
         else{MCZRC?.DeleteFromVisibleUnitList(this);}
     }
+    public int GetPrimeUnitsHP(){
+        return primeUnitsHP;
+    }
+    public void DecreasePrimeUnitsHP(int decreaseValue){
+        primeUnitsHP -= decreaseValue;
+    }
     public int GetCombatPower(){
         return combatPower;
     }
@@ -233,11 +253,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         combatPower = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
-            CoreBase coreBase = childUnitObject.GetComponent<CoreBase>();
-            WeaponUnitBase weaponUnitBase = childUnitObject.GetComponent<WeaponUnitBase>();
+            AttackUnit AU = childUnitObject.GetComponent<AttackUnit>();
+            WeaponControllUnitBase WCUB = childUnitObject.GetComponent<WeaponControllUnitBase>();
+            ReactorBase reactorBase = childUnitObject.GetComponent<ReactorBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
-                if(coreBase != null){combatPower += coreBase.GetUnitStatus();}
-                else if(weaponUnitBase != null){combatPower += weaponUnitBase.GetUnitStatus();}
+                if(AU != null){combatPower += AU.GetUnitStatus();}
+                else if(WCUB != null){combatPower += WCUB.GetUnitStatus();}
+                else if(reactorBase != null){combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();}
             }
         }
         return combatPower;
@@ -257,5 +279,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     protected void Update(){
         if(initialUpdate){initialUpdate = false;CaluculateCombatPower();}
+        if(primeUnitsHP < 0){primeUnitsHP = 0;}
     }
 }

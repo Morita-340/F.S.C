@@ -28,6 +28,17 @@ namespace FSCGeneral{
             ReactorEffect = 10,
 
         }
+        public enum WaveShapePreset{
+            FourCorners = 0,
+            Up = 1,
+            Down = 2,
+            Right = 3,
+            Left = 4,
+            UpAndDown = 5,
+            RightAndDown = 6,
+            UpperRightAndLowerLeft = 7,
+            UpperLeftAndLowerRight = 8,
+        }
         /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
         /// </summary>

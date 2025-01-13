@@ -27,8 +27,10 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
         if(time >= NextNormalAttack){
             Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
             foreach (UnitData child in ChildrenUnitDatalist){
-                child.ReturnThisUnit().NormalAttack(TargetPosition);
-                Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
+                if(child.ReturnThisUnit() is AttackUnit AU){
+                    AU.NormalAttack(TargetPosition);
+                    Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
+                }
             }
             NextNormalAttack += normalAttackInterval;
         }
@@ -45,7 +47,10 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
             if(time >= NextChargeAttack){
                 Debug.Log("AUAMS charge" + time +" "+ NextChargeAttack);
                 foreach (UnitData child in ChildrenUnitDatalist){
-                    child.ReturnThisUnit().ChargeAttack(TargetPosition);
+                    if(child.ReturnThisUnit() is AttackUnit AU){
+                        AU.ChargeAttack(TargetPosition);
+                        Debug.Log("AUAMS charge unit" + child.ReturnThisUnit().name);
+                    }
                 }
                 NextChargeAttack += chargeAttackInterval;
             }

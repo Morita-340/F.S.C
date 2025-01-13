@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using FSCGeneral;
@@ -7,7 +8,8 @@ public class ReactorBase : UnitBase
 {
     [SerializeField]ReactorEffectManager REM;
     ReactorEffectManager InstREM;
-    [SerializeField]GameObject ReactorEffectPool;
+    protected GameObject ReactorEffectPool;
+    [SerializeField,ReadOnly]int reactorEffectToOtherUnit = 0;
     /// <summary>
     /// リアクターが付与できる強化倍率
     /// </summary>
@@ -16,6 +18,7 @@ public class ReactorBase : UnitBase
         return reactorsEfficiencyLevel;
     }
     protected override void Awake(){
+        ReactorEffectPool = GameObject.Find("ReactorEffectPool");
         SetReactorEffectScope();
         REM.SetThisReactor(this);
         REM.transform.SetParent(ReactorEffectPool.transform);
@@ -44,11 +47,7 @@ public class ReactorBase : UnitBase
         REM.ScopeActive(false);
         base.DestroyUnit();
     }
-    /// <summary>
-    /// インスペクターで定めたレベルに応じてリアクターの効果範囲のコライダー半径が決められる
-    /// </summary>
-    [ContextMenu("CaluculateCombatPower")]
-    public void SetReactorEffectScope(){
+    private int CaluculateScopeRadius(){
         int scopeRadius = 1;
         switch(reactorsEfficiencyLevel){
             case int x when x < 5:  scopeRadius = 1; break;
@@ -58,6 +57,44 @@ public class ReactorBase : UnitBase
             case int x when x <=100: scopeRadius = 5; break;
             default: scopeRadius = 1; break;
         }
-        REM?.SetReactorEffectScope(scopeRadius);
+        return scopeRadius;
+    }
+    /// <summary>
+    /// インスペクターで定めたレベルに応じてリアクターの効果範囲のコライダー半径が決められる
+    /// </summary>
+    [ContextMenu("SetReactorEffectScope")]
+    public void SetReactorEffectScope(){
+        REM?.SetReactorEffectScope(CaluculateScopeRadius());
+    }
+    [ContextMenu("CaluculateReactorEffect")]
+    public int CaluculateReactorEffect(){
+        Vector2[] OffsetList = {new Vector2(0,0),new Vector2(0.5f,0.5f),new Vector2(0.5f,-0.5f),new Vector2(-0.5f,0.5f),new Vector2(-0.5f,-0.5f)};
+        int previsionalNum = 0;
+        SetReactorEffectScope();
+        AbstractUnitDestroyManagementScript AUDMS = this.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
+        AUDMS.SetUnitData();
+        if(AUDMS != null){
+            for(int i = 0; i < AUDMS.transform.childCount; i++){
+            AttackUnit attackUnit = AUDMS.transform.GetChild(i).gameObject.GetComponent<AttackUnit>();
+                if(attackUnit == null){continue;}
+                foreach(Vector2 OffsetVector in OffsetList){
+                    Vector2 distanseFromThisReactor = attackUnit.transform.localPosition - this.transform.localPosition + new Vector3(OffsetVector.x,OffsetVector.y,0);
+                    if(distanseFromThisReactor.magnitude < CaluculateScopeRadius()){
+                        if(attackUnit is WeaponUnitBase weaponUnitBase){
+                            previsionalNum += weaponUnitBase.GetUnitAttackPower();
+                        }
+                        else{
+                            previsionalNum += attackUnit.GetUnitAttackPower();
+                        }
+                        Debug.Log(previsionalNum);
+                        break;
+                    }
+                }
+            }
+        }
+        reactorEffectToOtherUnit = previsionalNum * reactorsEfficiencyLevel;
+        if(reactorEffectToOtherUnit < 0)reactorEffectToOtherUnit = 0;
+        Debug.Log(" "+reactorEffectToOtherUnit);
+        return reactorEffectToOtherUnit;
     }
 }

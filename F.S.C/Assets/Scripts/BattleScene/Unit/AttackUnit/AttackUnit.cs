@@ -17,7 +17,7 @@ public class AttackUnit : UnitBase
     {
         SetWeaponPower();
         FR = this.gameObject.GetComponent<FanRange>();
-        if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+        if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()||tag == GSetting.ObjTagName.DestroyedUnit.ToString()){
             InstReactorLevelUI = Instantiate(ReactorLevelUI,this.gameObject.transform);
             InstReactorLevelUI.transform.position = this.transform.position + new Vector3(0,0,-2);
             ReactorLevelUISSpRenderer = InstReactorLevelUI.GetComponent<SpriteRenderer>();
@@ -30,14 +30,17 @@ public class AttackUnit : UnitBase
     }
     public override int GetUnitStatus(){
         SetWeaponPower();
-        return base.GetUnitStatus();
+        return base.GetUnitStatus()/*HP*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
+    }
+    public virtual int GetUnitAttackPower(){
+        return normalAttackPower + chargeAttackPower;
     }
     // Update is called once per frame
     protected override void Update()
     {
-        if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()){
+        if((tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString())&&ReactorLevelUISSpRenderer.enabled){
             ReactorLevelUISSpRenderer.color 
-            = new Color(attackEfficiency/(int)GSetting.UniqueMagicNumber.AttackEfficiencyONReactorLevel/100,1,1,0.5f);
+            = new Color(attackEfficiency/*+EXP*//(int)GSetting.UniqueMagicNumber.AttackEfficiencyONReactorLevel/100,1,1,0.5f);
         }
         base.Update();
     }
@@ -62,7 +65,7 @@ public class AttackUnit : UnitBase
             }
             NormalWeapon.tag = tagName;
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
-            InstWeapon.SetAttackEfficiency(attackEfficiency);
+            InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
         }
     }
@@ -86,7 +89,7 @@ public class AttackUnit : UnitBase
             }
             ChargeWeapon.tag= tagName;
             WeaponBase InstWeapon = Instantiate(ChargeWeapon,FirePosition,FireRotation);
-            InstWeapon.SetAttackEfficiency(attackEfficiency);
+            InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
         }
     }

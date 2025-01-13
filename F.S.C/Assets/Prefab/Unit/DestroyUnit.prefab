@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3666095986030781723}
   - component: {fileID: 3761113553657298027}
+  - component: {fileID: 2846844460398241852}
   m_Layer: 0
   m_Name: DestroyUnit
   m_TagString: DestroyedUnit
@@ -44,5 +45,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 894f5516fee18fb48933c545dcb7e345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyUnitManager: {fileID: 7332052915261354937}
   gyrationFactor: 90
+  rb2D: {fileID: 2846844460398241852}
+  InstMoveAndRotateVector: {x: 0, y: 0, z: 0}
+--- !u!50 &2846844460398241852
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7332052915261354937}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

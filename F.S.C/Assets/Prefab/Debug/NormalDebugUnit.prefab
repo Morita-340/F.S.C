@@ -148,11 +148,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
-  spriteRenderer: {fileID: 1625033710563570026}
+  isPrime: 0
+  attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
+  WCUB: {fileID: 0}
+  ControllUnitPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &6251384632838190408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,6 +298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 251280162179955867}
   - component: {fileID: 5168378381395616981}
+  - component: {fileID: 2491369280737064815}
   m_Layer: 6
   m_Name: NormalDebugUnit
   m_TagString: DestroyedUnit
@@ -333,6 +337,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gyrationFactor: 90
+  rb2D: {fileID: 2491369280737064815}
+  InstMoveAndRotateVector: {x: 0, y: 0, z: 0}
+--- !u!50 &2491369280737064815
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4126249200044146030}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &5310064612624002152
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,11 +514,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
-  spriteRenderer: {fileID: 6368974249194005277}
+  isPrime: 0
+  attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
+  WCUB: {fileID: 0}
+  ControllUnitPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &2892535259325308985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,11 +802,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
-  spriteRenderer: {fileID: 5995833344862942960}
+  isPrime: 0
+  attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
+  WCUB: {fileID: 0}
+  ControllUnitPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &6039128185090527668
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -171,6 +171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb40ed47eb8799a41aa9ba99eb322739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPower: 1
+  attackPower: 2
   thisRb2D: {fileID: 5624797923364600743}
   graceTime: 2

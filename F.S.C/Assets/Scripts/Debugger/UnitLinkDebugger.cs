@@ -50,19 +50,7 @@ public class UnitLinkDebugger : MonoBehaviour
                     Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
                     Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
                     if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
-                    if(pastObject != currentObject){DestroyIcon();Debug.LogWarning("AAAA");}
-                    /*
-                    foreach(UnitBase fourwayUnit in SameData.ReturnFourWayLink()){
-                        Debug.Log("LLK");
-                        if(fourwayUnit != null){
-                            Debug.Log("LLN"+fourwayUnit);
-                            Debug.Log("LLO");
-                            IconList.Add(Instantiate(DebugLinkObjIcon,fourwayUnit.gameObject.transform));
-                        }
-                    }
-                    */
-
-
+                    if(pastObject != currentObject){DestroyIcon();}
                     List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
                     for(int i=0; i < FourWayLink.Count; i++){
                         if(FourWayLink[i] != null){
@@ -80,11 +68,6 @@ public class UnitLinkDebugger : MonoBehaviour
         //}
     }   
     void DestroyIcon(){
-        /*
-        foreach(GameObject Icon in IconList){
-            Destroy(Icon);
-        }
-        */
         UpperIcon.SetActive(false);
         DownerIcon.SetActive(false);
         RightIcon.SetActive(false);

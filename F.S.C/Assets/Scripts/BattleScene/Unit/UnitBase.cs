@@ -10,10 +10,15 @@ public class UnitBase : MonoBehaviour
     [SerializeField]
     protected GSetting.ShapeType shapeType;
     [SerializeField]
-    private int HitPoint = 5;
+    protected int HitPoint = 5;
+    /// <summary>
+    /// 素体のユニットであるかを判別する。インスペクターで予め設定する。プレイ中は一切変えない
+    /// </summary>
+    [SerializeField]
+    protected bool isPrime = false;
     protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
-    private FieldManager FM = FieldManager.GetInstance();
+    protected FieldManager FM = FieldManager.GetInstance();
     protected AbstractUnitDestroyManagementScript AUDMS;
     //カメラの拡大倍率の計算に用いるコアからの距離
     protected int distanseFromCore = 0;
@@ -24,6 +29,10 @@ public class UnitBase : MonoBehaviour
     //攻撃倍率。リアクターの影響を受けるとこの数字が増える
     [SerializeField,ReadOnly]
     protected int attackEfficiency = 1;
+    /// <summary>
+    /// 敵のユニットを破壊することで得られる経験値。PUDMSから代入するだけでこちらで計算することは無い
+    /// </summary>
+    protected int EXP = 0;
     private UnitBase thisUnit;
     //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
     UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
@@ -35,11 +44,29 @@ public class UnitBase : MonoBehaviour
         return ThisUnitData;
     }
     /// <summary>
+    /// ユニット再生成処理時に設定するパラメータを関数にした。これにより関数の呼び出しでtagとlayerの設定を追うことが出来る
+    /// </summary>
+    /// <param name="tagName"></param>
+    /// <param name="layerNum"></param>
+    /// <returns></returns>
+    public virtual GameObject UnitSetting(string tagName,int layerNum){
+        tag = tagName;
+        this.gameObject.layer = layerNum;
+        return this.gameObject;
+    }
+    /// <summary>
     /// 攻撃倍率の変更
     /// </summary>
     /// <param name="reactorAttackEfficiency">
-    /// リアクターの攻撃倍率。減算する時は負符号をつけること</param>
+    /// リアクターの攻撃倍率の加減算処理。減算する時は負符号をつけること</param>
     protected virtual void AddAttackEfficiency(int reactorAttackEfficiency){
+        float delayTime = 0f;
+        //減算時＝リアクターが破壊された時は爆風で破壊されたユニットのステータスをスコアに加算しないといけないが、即時減算だとリアクターによる強化がスコアに反映されないので、体感では分からない程度に処理を遅らせる
+        if(reactorAttackEfficiency < 0){delayTime = 0.2f;}
+        StartCoroutine(AttackEfficiencyAddDelay(delayTime,reactorAttackEfficiency));
+    }
+    IEnumerator AttackEfficiencyAddDelay(float delayTime,int reactorAttackEfficiency){
+        yield return new WaitForSeconds(delayTime);
         Debug.Log("UB AAE"+reactorAttackEfficiency+name);
         attackEfficiency += reactorAttackEfficiency;
         //処理順序とかを間違えたとしても攻撃倍率が1未満にならないようにしたい
@@ -50,7 +77,7 @@ public class UnitBase : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public virtual int GetUnitStatus(){
-        return HitPoint + (normalAttackPower + chargeAttackPower)*attackEfficiency;
+        return HitPoint ;
     }
     public GSetting.ShapeType GetShapeType(){
         return shapeType;
@@ -70,6 +97,7 @@ public class UnitBase : MonoBehaviour
         thisUnit = this;
         ThisUnitData= new UnitData(thisUnit,(int)shapeType);
         FM.UnitList.Add(ThisUnitData);
+        attackEfficiency = 1;
         if(this.tag == GSetting.ObjTagName.PlayerUnit.ToString()
         || this.tag == GSetting.ObjTagName.EnemyUnit.ToString()
         ||this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
@@ -77,7 +105,8 @@ public class UnitBase : MonoBehaviour
     }
     protected virtual void Start(){
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
-        GetAdjacentObjLink(thisGameObject.tag);//RegistData()に格納するとなぜか動かなくなるので注意
+        //Debug.Log(tag);
+        GetAdjacentObjLink(tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
         AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
     }
@@ -143,11 +172,6 @@ public class UnitBase : MonoBehaviour
             if(LeftObj.tag == SelectedObjTag){return LeftObj;}
         }
         return null;
-        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.up);
-        //if(!hit2D){return null;}
-        //GameObject UpperObj = hit2D.collider.gameObject;
-        //if(UpperObj.tag != SelectedObjTag){return null;}
-        //else return UpperObj;
     }
     private GameObject GetDownerGameObject(string SelectedObjTag){
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
@@ -157,11 +181,6 @@ public class UnitBase : MonoBehaviour
                 return LeftObj;}
         }
         return null;
-        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.down);
-        //if(!hit2D){Debug.Log("UBase RayCast not hit" + thisGameObject.name); return null;}
-        //GameObject DownerObj = hit2D.collider.gameObject;
-        //if(DownerObj.tag != SelectedObjTag){Debug.Log("UBase DownerObj Tag Wrong" + thisGameObject.name + thisGameObject.tag + thisGameObject.tag); return null;}
-        //else return DownerObj;
     }
     private GameObject GetRightGameObject(string SelectedObjTag){
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.right)){
@@ -169,11 +188,6 @@ public class UnitBase : MonoBehaviour
             if(LeftObj.tag == SelectedObjTag){return LeftObj;}
         }
         return null;
-        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.right);
-        //if(!hit2D){return null;}
-        //GameObject RightObj = hit2D.collider.gameObject;
-        //if(RightObj.tag != SelectedObjTag){return null;}
-        //else return RightObj;
     }
     private GameObject GetLeftGameObject(string SelectedObjTag){
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.left)){
@@ -181,8 +195,6 @@ public class UnitBase : MonoBehaviour
             if(LeftObj.tag == SelectedObjTag){return LeftObj;}
         }
         return null;
-        //RaycastHit2D hit2D = RayCalculateAndCast(Vector3.left);
-        //if(!hit2D){return null;}
     }
     /// <summary>
     /// オブジェクト種と調べたい隣のユニットの位置を入力にRayを照射する座標を計算している
@@ -203,12 +215,13 @@ public class UnitBase : MonoBehaviour
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * RayOffsetDirection) + RayBasePosition;
                 break;
         }
-        //RaycastHit2D hit2D = Physics2D.Raycast(RayPosition,new Vector3(0,0,1));
         return Physics2D.RaycastAll(RayPosition,new Vector3(0,0,1));
     }
     // Update is called once per frame
     protected virtual void Update()
     {
+        //素体ユニットならAUDMS側で共有しているHPに変更する
+        if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
         AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
         if(HitPoint <= 0){DestroyUnit();}
@@ -224,7 +237,7 @@ public class UnitBase : MonoBehaviour
         }
         DivideUnitLink();
         //分離エフェクトを実装する
-        Debug.Log("AUDMS Destroy" + thisGameObject.name);
+        Debug.Log("AUDMS Destroy" + thisGameObject.name + attackEfficiency);
         Destroy(thisGameObject);
     }
     private void DivideUnitLink(){
@@ -276,6 +289,7 @@ public class UnitBase : MonoBehaviour
         Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
     }
     public void OnTriggerEnter2D(Collider2D collision2D){
+            Debug.Log("this.gameObject.tag" + gameObject.name + this.gameObject.tag);
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             //自身がプレイヤーの場合
             case GSetting.ObjTagName.PlayerUnit: 
@@ -284,11 +298,19 @@ public class UnitBase : MonoBehaviour
                     //被弾時の処理
                     case GSetting.ObjTagName.EnemyWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
-                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
+                        if(HitPoint >0){
+                            //素体ユニットであるかどうかで減算対象を変える
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
+                            else{HitPoint -= HitWeapon.GetTotalDamage();}
+                        }
                         break;}
                     case GSetting.ObjTagName.EnemyWeapon2:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
-                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
+                        if(HitPoint >0){
+                            //素体ユニットであるかどうかで減算対象を変える
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
+                            else{HitPoint -= HitWeapon.GetTotalDamage();}
+                        }
                         break;}
                     case GSetting.ObjTagName.EnemyUnit:{
                         HitPoint = 0;
@@ -296,6 +318,7 @@ public class UnitBase : MonoBehaviour
                     //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        //Debug.Log("UB TriEn" +reactorBase.name + reactorBase.tag);
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
@@ -312,6 +335,7 @@ public class UnitBase : MonoBehaviour
             //自身が敵の場合
             case GSetting.ObjTagName.EnemyUnit:
             {
+                Debug.Log("UB TriEn" +collision2D.name + collision2D.tag);
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
@@ -327,7 +351,8 @@ public class UnitBase : MonoBehaviour
                     //敵のリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
-                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
+                        if(reactorBase.tag == thisGameObject.tag){
+                            AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
                     //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
                     case GSetting.ObjTagName.ReactorExplosion:{
@@ -341,10 +366,6 @@ public class UnitBase : MonoBehaviour
             }
             default: break;
         }
-        //if(collision2D!.transform.tag == GSetting.ObjTagName.PlayerWeapon1.ToString()){
-        //    if(HitPoint >0)HitPoint --;
-        //    else isDestroyed = true;
-        //}
     }
     public void OnTriggerExit2D(Collider2D collision2D){
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
@@ -356,7 +377,8 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                         //引数はマイナスにすること
-                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
+                        if(reactorBase.tag == thisGameObject.tag){
+                            AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
                     default:break;
                 }
@@ -369,7 +391,8 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                         //引数はマイナスにすること
-                        if(reactorBase.tag == thisGameObject.tag){AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
+                        if(reactorBase.tag == thisGameObject.tag){
+                            AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
                     default:break;
                 }
@@ -382,6 +405,8 @@ public class UnitBase : MonoBehaviour
     ///デバッグ用の被弾処理。それ以外では使わないこと
     /// </summary>
     public void DebugDamaged(){
-        if(HitPoint >0)HitPoint --;
+        //素体ユニットであるかどうかで減算対象を変える
+        if(isPrime){AUDMS?.DecreasePrimeUnitsHP(1);}
+        else{HitPoint -= 1;}
     }
 }

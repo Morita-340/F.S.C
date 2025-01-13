@@ -24,12 +24,12 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// <summary>
     /// プレイヤーが減速するときの速度下限値
     /// </summary>
-    [SerializeField,Range(0f,30f)]
+    [SerializeField,Range(0f,11.4f)]
     float drive_minimum_speed_factor = 1.5f;
     /// <summary>
     /// プレイヤーが加速するときの速度上限値
     /// </summary>
-    [SerializeField,Range(0f,30f)]
+    [SerializeField,Range(0f,11.4f)]
     float drive_miximum_speed_factor = 1.5f;
     float thisRotationZ;
     // Start is called before the first frame update
@@ -41,10 +41,10 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     void Update()
     {
         Manipulate();
-        Drive();
         //Debug.Log("PUMMS" + thisRotationZ +" "+ maximum_rotation +" "+ minimum_rotation);
     }
     void FixedUpdate(){
+        Drive();
     }
     /// <summary>
     /// このオブジェクトを前後に動かす命令
@@ -70,29 +70,36 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// 正面方向へ加速する
     /// </summary>
     void Accelerate(Vector2 forward){
-        //rb2d.velocity = new Vector2(0,0);
-        if(rb2d.velocity.x < drive_miximum_speed_factor
-        && rb2d.velocity.x > -drive_minimum_speed_factor
-        && rb2d.velocity.y < drive_miximum_speed_factor
-        && rb2d.velocity.y > -drive_minimum_speed_factor)
-        {
-            rb2d.velocity += forward * 0.1f;
-        }else{
+        ////rb2d.velocity = new Vector2(0,0);
+        //if((rb2d.velocity.x < drive_miximum_speed_factor && rb2d.velocity.x > -drive_minimum_speed_factor)
+        //&& (rb2d.velocity.y < drive_miximum_speed_factor&& rb2d.velocity.y > -drive_minimum_speed_factor))
+        //{
+        //    rb2d.velocity += forward * 0.1f;
+        //}else{
+        //    rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
+        //}
+        rb2d.velocity += forward * 0.2f;
+        if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
         }
+
     }
     /// <summary>
     /// 正面方向への速度を減速する
     /// </summary>
     void Decelerate(Vector2 behind){
         //rb2d.velocity = new Vector2(0,0);
-        if(rb2d.velocity.x < drive_miximum_speed_factor
-        && rb2d.velocity.x > -drive_minimum_speed_factor
-        && rb2d.velocity.y < drive_miximum_speed_factor
-        && rb2d.velocity.y > -drive_minimum_speed_factor)
-        {
-            rb2d.velocity += behind * 0.1f;
-        }else{
+        //if(rb2d.velocity.x < drive_miximum_speed_factor
+        //&& rb2d.velocity.x > -drive_minimum_speed_factor
+        //&& rb2d.velocity.y < drive_miximum_speed_factor
+        //&& rb2d.velocity.y > -drive_minimum_speed_factor)
+        //{
+        //    rb2d.velocity += behind * 0.1f;
+        //}else{
+        //    rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
+        //}
+        rb2d.velocity += behind * 0.2f;
+        if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
         }
     }

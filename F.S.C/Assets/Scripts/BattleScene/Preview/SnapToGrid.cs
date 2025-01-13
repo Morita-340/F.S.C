@@ -15,7 +15,7 @@ public class SnapToGrid : MonoBehaviour
     public float cellSize; // グリッドのセルのサイズ（正方形）
     public bool snapRotation = true; // 回転もスナップするかどうか
 
-    void Update()
+    void FixedUpdate()
     {
         //プレビュー表示範囲に入ったら、入ったタイミングに一度だけ対応する子オブジェクトを作成して設定を済ませる。範囲から出るか設置するかキャンセルをすることで子オブジェクトを消去する
         SnapObjectToGrid();

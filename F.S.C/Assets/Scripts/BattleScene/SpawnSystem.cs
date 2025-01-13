@@ -23,15 +23,17 @@ public class SpawnSystem : MonoBehaviour
     public List<GameObject> Spawn(int nowWave){
         playerCombatPower = PUDMS.CaluculateCombatPower();
         //ウェーブライブラリからウェーブを取得する。難易度調整のパラメータをどこから取るのかは要検討
-        List<GameObject> WaveEnemyList = WDB.GetAppropriateWaveData(playerCombatPower, 10,0).GetWaveEnemyList();
+        WaveData UseWave = WDB.GetAppropriateWaveData(playerCombatPower, 10,0);
+        Vector3[] InstPosRotInfo = UseWave.GetSelectedWaveShapePreset();
+        List<GameObject> WaveEnemyList = UseWave.GetWaveEnemyList();
         List<GameObject> InstEnemyList = new List<GameObject>();
         //生成座標のプリセットから一つを選ぶ
-        Vector3 InstPos = Camera.main.ViewportToWorldPoint(new Vector3(0.3f,0.8f)+new Vector3(0,0,10));
-        Quaternion InstRot = Quaternion.Euler(Vector3.zero);
-        Debug.Log("SpS"+WaveEnemyList.Count);
-        foreach (GameObject Enemy in WaveEnemyList){
+        for(int i = 0;i < WaveEnemyList.Count;i++){
+            Vector3 InstPos = Camera.main.ViewportToWorldPoint(new Vector3(InstPosRotInfo[i].x,InstPosRotInfo[i].y)+new Vector3(0,0,10));
+            Quaternion InstRot = Quaternion.Euler(new Vector3(0,0,InstPosRotInfo[i].z));
             //取得したウェーブの敵機を生成する（生成場所の計算も済ませる）
-            InstEnemyList.Add(Instantiate(Enemy,InstPos,InstRot));
+            InstEnemyList.Add(Instantiate(WaveEnemyList[i],InstPos,InstRot));
+            if(i >= InstPosRotInfo.Length){Debug.LogWarning("ウェーブの敵機数がウェーブの座標数より多いです"); break;}//生成座標の配列の外にアクセスしないようにするため
         }
         //生成した敵機の情報を渡す
         return InstEnemyList;

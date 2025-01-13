@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FSCGeneral;
+using DG.Tweening;
 
 public class ReactorEffectManager : MonoBehaviour
 {
@@ -30,7 +32,13 @@ public class ReactorEffectManager : MonoBehaviour
         
     }
     public void ExplosionActive(bool flag){
-        ExplosionObj.SetActive(flag);
+        //爆発エフェクトが徐々にフェードアウトする仕組み
+        if(flag == true){
+            ExplosionObj.SetActive(flag);
+            Vector3 ExplosionScale = ExplosionObj.transform.localScale;
+            ExplosionObj.transform.localScale = new Vector3(1,1,1);
+            StartCoroutine(DestroyObjectGradually(ExplosionObj.GetComponent<SpriteRenderer>(),ExplosionScale));
+        }else{ExplosionObj.SetActive(flag);}
     }
     public void ScopeActive(bool flag){
         EffectScope.SetActive(flag);
@@ -45,5 +53,12 @@ public class ReactorEffectManager : MonoBehaviour
     public void ChangeTransform(Transform transform){
         this.transform.position = transform.position;
         this.transform.rotation = transform.rotation;
+    }
+    public IEnumerator DestroyObjectGradually(SpriteRenderer SR,Vector3 ExplosionScale){
+        ExplosionObj.transform.DOScale(ExplosionScale,0.1f);
+        yield return new WaitUntil(() => ExplosionObj.transform.localScale == ExplosionScale);
+        SR.DOFade(0,0.5f);
+        yield return new WaitUntil(() => SR.color.a == 0);
+        Destroy(SR.gameObject);
     }
 }
