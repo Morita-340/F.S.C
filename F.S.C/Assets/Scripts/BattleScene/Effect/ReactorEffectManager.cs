@@ -4,14 +4,10 @@ using UnityEngine;
 using FSCGeneral;
 using DG.Tweening;
 
-public class ReactorEffectManager : MonoBehaviour
+public class ReactorEffectManager : AbstractEffectManager
 {
     [SerializeField,ReadOnly]
     ReactorBase ThisReactor;
-    /// <summary>
-    /// 判定用オブジェクト。リアクターの子オブジェクトだと他のユニットとの衝突を検知できないので要注意
-    /// </summary>
-    [SerializeField]GameObject ExplosionObj;
     //ｚ座標は10にすること。あまりにz座標が小さいとリンクのデバッグツールの邪魔になってしまう
     [SerializeField]GameObject EffectScope;
     public ReactorBase GetThisReactor(){
@@ -27,18 +23,9 @@ public class ReactorEffectManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
-    }
-    public void ExplosionActive(bool flag){
-        //爆発エフェクトが徐々にフェードアウトする仕組み
-        if(flag == true){
-            ExplosionObj.SetActive(flag);
-            Vector3 ExplosionScale = ExplosionObj.transform.localScale;
-            ExplosionObj.transform.localScale = new Vector3(1,1,1);
-            StartCoroutine(DestroyObjectGradually(ExplosionObj.GetComponent<SpriteRenderer>(),ExplosionScale));
-        }else{ExplosionObj.SetActive(flag);}
+        if (ThisReactor != null){this.transform.position = this.ThisReactor.transform.position+new Vector3(0,0,5);}
     }
     public void ScopeActive(bool flag){
         EffectScope.SetActive(flag);
@@ -49,16 +36,5 @@ public class ReactorEffectManager : MonoBehaviour
         ExplosionObj.transform.localScale = new Vector3(scopeRadius*2,scopeRadius*2,scopeRadius*2);
         EffectScope.transform.localPosition = new Vector3(0,0,10);
         ExplosionObj.transform.localPosition = new Vector3(0,0,10);
-    }
-    public void ChangeTransform(Transform transform){
-        this.transform.position = transform.position;
-        this.transform.rotation = transform.rotation;
-    }
-    public IEnumerator DestroyObjectGradually(SpriteRenderer SR,Vector3 ExplosionScale){
-        ExplosionObj.transform.DOScale(ExplosionScale,0.1f);
-        yield return new WaitUntil(() => ExplosionObj.transform.localScale == ExplosionScale);
-        SR.DOFade(0,0.5f);
-        yield return new WaitUntil(() => SR.color.a == 0);
-        Destroy(SR.gameObject);
     }
 }

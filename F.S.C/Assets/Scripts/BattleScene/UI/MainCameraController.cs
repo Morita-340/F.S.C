@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using Cinemachine;
 
-public class MainCameraZoomRatioController : MonoBehaviour
+public class MainCameraController : MonoBehaviour
 {
-    [SerializeField]CinemachineVirtualCamera MainCam;
+    Camera MainCam;
+    GameObject Player;
     [SerializeField]PlayerUnitDestroyManagementScript PUDMS;
     int maxDistanse = 0;
     float zoomRatio = 30f;
@@ -14,7 +13,7 @@ public class MainCameraZoomRatioController : MonoBehaviour
     public void AddToVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
         if(!VisibleUnitList.Contains(AUDMS)){
             VisibleUnitList.Add(AUDMS);
-            Debug.Log("MCZRC ListAdd");}
+            Debug.Log("MCC ListAdd");}
     }
     public void DeleteFromVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
         if(VisibleUnitList.Contains(AUDMS)){VisibleUnitList.Remove(AUDMS);}
@@ -22,19 +21,41 @@ public class MainCameraZoomRatioController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        MainCam = this.GetComponent<Camera>();
+        Player = GameObject.Find("PlayerUnit");
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        this.transform.position = Player.transform.position + new Vector3(0,0, -5);
         foreach(AbstractUnitDestroyManagementScript AUDMS in VisibleUnitList){
             int maxDistanseFromCore = AUDMS.GetMaximumDistanseFromCore();
             if(maxDistanse < maxDistanseFromCore){
                 maxDistanse = maxDistanseFromCore;
-                Debug.Log("MCZRC maxAUDMS name: " +maxDistanse + AUDMS.gameObject.name);}
+                Debug.Log("MCC maxAUDMS name: " +maxDistanse + AUDMS.gameObject.name);}
         }
         ZoomRatioControll(maxDistanse);
+    }
+    public void ExplosionShake( float duration, float magnitude )
+    {
+        StartCoroutine( Shake(duration,magnitude));
+    }
+    private IEnumerator Shake( float duration, float magnitude )
+    {
+        Vector3 pos = transform.localPosition;
+        float elapsed = 0f;
+        while ( elapsed < duration )
+        {
+            var x = pos.x + Random.Range( -1f, 1f ) * magnitude;
+            var y = pos.y + Random.Range( -1f, 1f ) * magnitude;
+            transform.localPosition =new Vector3(x,y,pos.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = pos;
     }
     //カメラに映っている敵機や自機のmaximumDistanseFromCoreを全て取得、そこにランダムイベントのオブジェクトの距離も含め、その中での最大値を採用する
     /// <summary>
@@ -50,7 +71,14 @@ public class MainCameraZoomRatioController : MonoBehaviour
         else if(distanse < 70){goalZoomValue = 50;}
         else{goalZoomValue = 90;}
         zoomRatio = Mathf.SmoothDamp(zoomRatio,goalZoomValue,ref currentVelocity,0.1f);
-        MainCam.m_Lens.OrthographicSize = zoomRatio;
-        Debug.Log("MCZRC zoomratio" + zoomRatio + " " + goalZoomValue);
+        MainCam.orthographicSize = zoomRatio;
+        Debug.Log("MCC zoomratio" + zoomRatio + " " + goalZoomValue);
+    }
+    /// <summary>
+    /// プレイヤーの座標を取得する際はGameObject.Find("Player")とかを使わずにここから取得する
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetPlayer(){
+        return Player;
     }
 }

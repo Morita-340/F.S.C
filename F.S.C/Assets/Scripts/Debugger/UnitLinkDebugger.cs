@@ -32,11 +32,10 @@ public class UnitLinkDebugger : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit2D hit2D = Physics2D.Raycast((Vector2)ray.origin, (Vector2)ray.direction);
-        //foreach(RaycastHit2D hit2D in Physics2D.RaycastAll((Vector2)ray.origin, (Vector2)ray.direction)){
             if(hit2D){
                 //Rayを照射した先にあるオブジェクトのクラスを登録
                 if(hit2D.collider.tag == GSetting.ObjTagName.PlayerUnit.ToString() ||hit2D.collider.tag == GSetting.ObjTagName.EnemyUnit.ToString()){
@@ -44,16 +43,17 @@ public class UnitLinkDebugger : MonoBehaviour
                     //カーソルを当てたユニットが格納されたUnitDataを検索する。
                     UnitBase HitObj = hit2D.collider.gameObject.GetComponent<UnitBase>();
                     //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
-                    UnitData SameData = new UnitData(null,0);
                     if(HitObj == null){Debug.Log("LLH"); return; }
-                    SameData = FM.SearchUnit(HitObj);
+                    UnitData SameData = FM.SearchUnit(HitObj);
                     Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
                     Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
                     if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
                     if(pastObject != currentObject){DestroyIcon();}
                     List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
+                        Debug.Log("LLK"+FourWayLink.Count);
                     for(int i=0; i < FourWayLink.Count; i++){
                         if(FourWayLink[i] != null){
+                            Debug.Log("LLM"+FourWayLink[i].ReturnThisUnit());
                             switch(i){
                                 case 0: UpperIcon.SetActive(true); UpperIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
                                 case 1: DownerIcon.SetActive(true); DownerIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
@@ -63,9 +63,9 @@ public class UnitLinkDebugger : MonoBehaviour
                         }
                     }
                     pastObject = hit2D.collider.gameObject.transform;
-                }else{DestroyIcon();}
+                }else if(hit2D.collider.tag != GSetting.ObjTagName.ReactorEffect.ToString()){
+                    DestroyIcon();}
             }else{DestroyIcon();}
-        //}
     }   
     void DestroyIcon(){
         UpperIcon.SetActive(false);

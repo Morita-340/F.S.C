@@ -10,7 +10,12 @@ public class UnitBase : MonoBehaviour
     [SerializeField]
     protected GSetting.ShapeType shapeType;
     [SerializeField]
+    //現在のHP
     protected int HitPoint = 5;
+    [SerializeField,ReadOnly]
+    protected MainCameraController MainCamera;
+    //生成時のHP
+    protected int InstHitPoint = 0;
     /// <summary>
     /// 素体のユニットであるかを判別する。インスペクターで予め設定する。プレイ中は一切変えない
     /// </summary>
@@ -77,7 +82,7 @@ public class UnitBase : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public virtual int GetUnitStatus(){
-        return HitPoint ;
+        return InstHitPoint ;
     }
     public GSetting.ShapeType GetShapeType(){
         return shapeType;
@@ -104,7 +109,9 @@ public class UnitBase : MonoBehaviour
         {distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition);}
     }
     protected virtual void Start(){
+        InstHitPoint = HitPoint;
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+        MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
         //Debug.Log(tag);
         GetAdjacentObjLink(tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
@@ -123,7 +130,14 @@ public class UnitBase : MonoBehaviour
         }else if(shapeType == GSetting.ShapeType.IsoscelesRightTriangle){
             downerUnit = GetDownLink(SelectedObjTag);
             rightUnit = GetRightLink(SelectedObjTag);
-        }else Debug.LogAssertion("ShapeType is null!");
+        }else if(shapeType == GSetting.ShapeType.Rectangle){
+            rightUnit = GetRightLink(SelectedObjTag);
+            leftUnit = GetLeftLink(SelectedObjTag);
+        }else if(shapeType == GSetting.ShapeType.ObtusePentagon){
+            downerUnit = GetDownLink(SelectedObjTag);
+            rightUnit = GetRightLink(SelectedObjTag);
+            leftUnit = GetLeftLink(SelectedObjTag);
+        }else {Debug.LogAssertion("ShapeType is null!");}
     }
     private void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
@@ -206,10 +220,10 @@ public class UnitBase : MonoBehaviour
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//このオブジェクトのタグをenumでswitch文の分岐判別している
         //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
             case GSetting.ObjTagName.PlayerUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.EnemyUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.DestroyedUnit://鹵獲して接続する際に離れ小島になっていないかIsNotIsolatedUnit()で判別するときに使用される。値が違うだけで計算内容は上と一緒
                 RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * RayOffsetDirection) + RayBasePosition;
@@ -224,6 +238,20 @@ public class UnitBase : MonoBehaviour
         if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
         AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
+        //Vector2 PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
+        //switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+        //    case GSetting.ObjTagName.EnemyUnit:{
+        //        if(PlayerVector.x > 90 || PlayerVector.x < -90 || PlayerVector.y >40 || PlayerVector.y < -40){
+        //            this.transform.parent.GetComponent<EnemyUnitMoveManagementScript>().MoveAroundPlayer();
+        //            }
+        //        break;}
+        //    case GSetting.ObjTagName.DestroyedUnit:{
+        //        if(PlayerVector.x > 90 || PlayerVector.x < -90 || PlayerVector.y >40 || PlayerVector.y < -40){
+        //            this.transform.parent.GetComponent<DestroyedUnitManagementScript>().MoveAroundPlayer();
+        //            }
+        //        break;}
+        //    default: break;
+        //}
         if(HitPoint <= 0){DestroyUnit();}
     }
     public virtual void NormalAttack(Vector3 TargetPosition){}
@@ -241,7 +269,10 @@ public class UnitBase : MonoBehaviour
         Destroy(thisGameObject);
     }
     private void DivideUnitLink(){
-        if(ThisUnitData != null)ThisUnitData.DeleteFourWayLink();
+        if(ThisUnitData != null){
+            ThisUnitData.DeleteFourWayLink();
+            FM.DeleteData(ThisUnitData);
+            }
         if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
     }
     /// <summary>
@@ -261,6 +292,15 @@ public class UnitBase : MonoBehaviour
         }else if(shapeType == GSetting.ShapeType.IsoscelesRightTriangle){
             if(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
             else if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else return false;
+        }else if(shapeType == GSetting.ShapeType.Rectangle){
+            if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else return false;
+        }else if(shapeType == GSetting.ShapeType.ObtusePentagon){
+            if(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
             else return false;
         }else Debug.LogWarning("Cannot Judge IsNotIsolated Bcause ShapeType is Null "); return false;
     }
@@ -318,7 +358,7 @@ public class UnitBase : MonoBehaviour
                     //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
-                        //Debug.Log("UB TriEn" +reactorBase.name + reactorBase.tag);
+                        if(reactorBase == null){break;}
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
@@ -327,6 +367,11 @@ public class UnitBase : MonoBehaviour
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                         if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
                         break;}
+                    case GSetting.ObjTagName.CoreExplosion:{
+                        CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
+                        if(HitPoint > 0)HitPoint -= coreBase.GetUnitStatus();
+                        break;
+                    }
                     default:break;
                 }
                 if(HitPoint < 0){HitPoint = 0;}
@@ -351,6 +396,7 @@ public class UnitBase : MonoBehaviour
                     //敵のリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(reactorBase == null){break;}
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency(reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
@@ -359,6 +405,12 @@ public class UnitBase : MonoBehaviour
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                         if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
                         break;}
+                    //コアが爆発すると敵味方関係なく攻撃力の分だけダメージを受ける
+                    case GSetting.ObjTagName.CoreExplosion:{
+                        CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
+                        if(HitPoint > 0)HitPoint -= coreBase.GetUnitStatus();
+                        break;
+                    }
                     default:break;
                 }
                 if(HitPoint < 0){HitPoint = 0;}
@@ -376,6 +428,7 @@ public class UnitBase : MonoBehaviour
                     //リアクターが分離または爆発した際に効果倍率を減算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(reactorBase == null){break;}
                         //引数はマイナスにすること
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
@@ -390,10 +443,27 @@ public class UnitBase : MonoBehaviour
                     //リアクターが分離または爆発した際に効果倍率を減算する
                     case GSetting.ObjTagName.ReactorEffect:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
+                        if(reactorBase == null){break;}
                         //引数はマイナスにすること
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
+                    //case GSetting.ObjTagName.DisplayScope:{
+                    //    Debug.LogWarning(gameObject.name +tag+transform.position + transform.rotation);
+                    //    this.transform.parent.GetComponent<EnemyUnitMoveManagementScript>().MoveAroundPlayer();
+                    //    break;
+                    //}
+                    default:break;
+                }
+                break;
+            }
+            case GSetting.ObjTagName.DestroyedUnit:
+            {
+                switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
+                    //case GSetting.ObjTagName.DisplayScope:{
+                    //    this.transform.parent.GetComponent<DestroyedUnitManagementScript>().MoveAroundPlayer();
+                    //    break;
+                    //}
                     default:break;
                 }
                 break;

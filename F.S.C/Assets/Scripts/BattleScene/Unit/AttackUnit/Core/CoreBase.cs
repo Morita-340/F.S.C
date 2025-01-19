@@ -6,7 +6,17 @@ using FSCGeneral;
 
 public class CoreBase : AttackUnit
 {
+    /// <summary>
+    /// 爆風だけのREMを実装したいので、REMをそのまま使用する
+    /// </summary>
+    [SerializeField]
+    protected CoreEffectManager CEM;
+    protected GameObject ReactorEffectPool;
     protected override void Start(){
+        ReactorEffectPool = GameObject.Find("ReactorEffectPool");
+        CEM.transform.SetParent(ReactorEffectPool.transform);
+        CEM.ExplosionActive(false);
+        CEM.SetThisCore(this);
         base.Start();
     }
     // Update is called once per frame
@@ -22,6 +32,7 @@ public class CoreBase : AttackUnit
     /// </summary>
     protected override void DestroyUnit()
     {
+        CEM.ExplosionActive(true);
         DestroyCore();
     }
     protected void DestroyCore(){
@@ -29,6 +40,7 @@ public class CoreBase : AttackUnit
         AUDMS.DeleteChildrenDataFromFM();
         //AUDMSの撃墜判定を書き換える処理を行う
         thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>().IsDead();
+        AUDMS.DestroyProcess(GetThisUnitData());
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
             this.gameObject.transform.root.gameObject.SetActive(false);
             }

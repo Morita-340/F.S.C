@@ -15,26 +15,14 @@ public class WeaponControllUnitBase : UnitBase
     {
         return base.UnitSetting(tagName, layerNum);
     }
-    protected override void Start(){
-        base.Start();
+    protected override void Awake(){
+        BoxCollider2D boxCollider2D = this.GetComponent<BoxCollider2D>();
+        Debug.LogWarning(name + boxCollider2D.enabled);
+        base.Awake();
     }
     protected override void Update()
     {
         //ControllWeaponUnitList.RemoveAll(weaponUnit => weaponUnit == null);
         base.Update();
     }
-    //public bool WeaponUnitExist(){
-    //    ControllWeaponUnitList.RemoveAll(weaponUnit => weaponUnit == null);
-    //    Debug.Log("WCUB CWUE"+ControllWeaponUnitList.Count);
-    //    for(int i = 0; i < ControllWeaponUnitList.Count;i++){
-    //        //Debug.Log("WCUB CWUE" +ControllWeaponUnitList[i].name + ControllWeaponUnitList[i]?.tag);
-    //        Debug.Log("WCUB CWUE" + ControllWeaponUnitList[i]?.name + ControllWeaponUnitList[i]?.tag + tag);
-    //        if(ControllWeaponUnitList[i] != null){
-    //            if(ControllWeaponUnitList[i]?.tag == tag){
-    //                return true;}
-    //        }
-    //    }
-    //    //制御対象のユニットが存在しない（破壊されているのでnull）または分離している（タグが異なる）
-    //    return false;
-    //}
 }

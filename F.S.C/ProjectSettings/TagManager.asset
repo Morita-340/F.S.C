@@ -14,6 +14,8 @@ TagManager:
   - EnemyWeapon2
   - ReactorExplosion
   - ReactorEffect
+  - CoreExplosion
+  - DisplayScope
   layers:
   - Default
   - TransparentFX
@@ -24,8 +26,8 @@ TagManager:
   - DestroyedUnit
   - PlayerUnit
   - TargetIcon
-  - 
-  - 
+  - CaptureUnit
+  - PreviewUnit
   - 
   - 
   - 

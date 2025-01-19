@@ -6,9 +6,9 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
 {
     [SerializeField]
     private AbstractUnitDestroyManagementScript AUDMS;
-    [SerializeField,Range(0f,10f)]
+    [SerializeField,Range(0.1f,10f)]
     private float normalAttackInterval = 1;
-    [SerializeField,Range(0f,10f)]
+    [SerializeField,Range(0.1f,10f)]
     protected float chargeAttackInterval =1;
     private List<UnitData> ChildrenUnitDatalist;
     bool inTimeRangeOFNormalAttack = true;

@@ -78,7 +78,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
         //}else{
         //    rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
         //}
-        rb2d.velocity += forward * 0.2f;
+        rb2d.velocity += forward * 0.3f;
         if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
         }
@@ -98,7 +98,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
         //}else{
         //    rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
         //}
-        rb2d.velocity += behind * 0.2f;
+        rb2d.velocity += behind * 0.3f;
         if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
         }

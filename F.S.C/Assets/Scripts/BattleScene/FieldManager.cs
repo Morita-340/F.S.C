@@ -34,11 +34,7 @@ namespace FSCGeneral{
         /// </summary>
         /// <param name="willDeleteData"></param>
         public void DeleteData(UnitData willDeleteData){
-            foreach(UnitData unitData in FM.UnitList){
-                if(unitData == willDeleteData){
-                    FM.UnitList.Remove(unitData);
-                }
-            }
+            FM.UnitList.Remove(willDeleteData);
         }
     }
 }

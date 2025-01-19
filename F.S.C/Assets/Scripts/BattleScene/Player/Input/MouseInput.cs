@@ -12,31 +12,30 @@ public class MouseInput : MonoBehaviour
     [SerializeField]GameObject PlayerUnit;
     [SerializeField]ChargeCursolIconController ChargeIcon;
     [SerializeField,Range(0f,2f)]float firstAttackInterval = 0.5f;
-    [SerializeField,Range(0f,10f)]private float divideLimit = 6f;
-    [SerializeField]
-    private UnitBase PlayerUnitSCore;
-    [SerializeField]
-    GameObject DestroyParentPlunderUnitect;
-    private PlayerUnitAttackManagementScript PUAMS = new PlayerUnitAttackManagementScript();
-    private PlayerUnitDestroyManagementScript PUDMS = new PlayerUnitDestroyManagementScript();
-    private PlayerUnitSimulateScript playerUnitSimulateScript = new PlayerUnitSimulateScript();
-    private DestroyedUnitManagementScript DUMS = new DestroyedUnitManagementScript();
-    private SnapToGrid snapToGrid = new SnapToGrid();
+    //[SerializeField,Range(0f,10f)]private float divideLimit = 6f;
+    //[SerializeField]
+    //private UnitBase PlayerUnitSCore;
+
+    private PlayerUnitAttackManagementScript PUAMS;
+    private PlayerUnitDestroyManagementScript PUDMS;
+    private PlayerUnitSimulateScript playerUnitSimulateScript;
+    private DestroyedUnitManagementScript DUMS;
+    private SnapToGrid snapToGrid;
     private List<GameObject> previewObjectList = new List<GameObject>(); 
     private List<Vector3> positionList = new List<Vector3>();
     private List<Quaternion> rotationList = new List<Quaternion>();
     private List<GSetting.ShapeType> shapeTypeList = new List<GSetting.ShapeType>();
     private List<UnitBase> UnitBaseList = new List<UnitBase>();
-    private List<WeaponUnitBase> DivideUnitList = new List<WeaponUnitBase>();
+    //private List<WeaponUnitBase> DivideUnitList = new List<WeaponUnitBase>();
     private Vector3 target;
     private float WheelInput = 0;
     private float chargeAttackTimer = 0;
     private float normalAttackTimer = 0;
-    private float leftClickTimer = 0;
-    private float rightClickTimer = 0;
+    //private float leftClickTimer = 0;
+    //private float rightClickTimer = 0;
     private bool isRegistered = false;
-    private bool clickCountStart = false;
-    private int clickCount;
+    //private bool clickCountStart = false;
+    //private int clickCount;
     // Start is called before the first frame update
     void Start()
     {
@@ -160,8 +159,7 @@ public class MouseInput : MonoBehaviour
                 }
                 //コライダーを無効にしておかないとDestroyedHit2Dが有効のままで登録が繰り返される
                 DUMS = ParentObject.GetComponent<DestroyedUnitManagementScript>();
-                DUMS.ChildrenSpriteTranslucent(true);
-                DUMS.ChildrenSColliderEnabled(false);
+                StartCoroutine(DUMS.ColliderAndSpriteProcess(1));
                 PreviewPositioning(wheelInput,DUMS.gameObject,positionList,rotationList,shapeTypeList);
             }
         }
@@ -178,7 +176,7 @@ public class MouseInput : MonoBehaviour
         else if(Input.GetMouseButtonDown(2)){
             DestroyedUnitManagementScript DupliDUMS = DUMS;
             Unregister();
-            StartCoroutine(WaitTimeForUnregist(1,DupliDUMS));
+            StartCoroutine(DupliDUMS?.ColliderAndSpriteProcess(2));
         }
         ////左クリックで入力検知開始
         ////timeが閾値を超えるまで入力を検知する
@@ -203,12 +201,6 @@ public class MouseInput : MonoBehaviour
         //        clickCountStart = false;
         //    }
         //}
-    }
-    IEnumerator WaitTimeForUnregist(int time,DestroyedUnitManagementScript DUMS){
-        yield return new WaitForSeconds(time);
-        //元データのコライダーと透明度を戻す
-        DUMS.ChildrenSpriteTranslucent(false);
-        DUMS.ChildrenSColliderEnabled(true);
     }
     /// <summary>
     /// PreviewUnitを生成する
@@ -248,14 +240,11 @@ public class MouseInput : MonoBehaviour
     private void Regenerate(float wheelInput){
         WheelInput = 0;
         //Simulaterの複製を削除する
-        bool isNotIsolated = false;
-        List<UnitBase> AdjacentUnitList = new List<UnitBase>();
         //PlayerUnitに複製する
         Debug.Log("MI Plunderable" + playerUnitSimulateScript.Plunderable());
         if(playerUnitSimulateScript.Plunderable()){
             //元データのコライダーと透明度を戻す
-            DUMS.ChildrenSpriteTranslucent(false);
-            DUMS.ChildrenSColliderEnabled(true);
+            StartCoroutine(DUMS.ColliderAndSpriteProcess(0));
             GameObject SelectedUnit = DUMS.gameObject;
             Debug.Log("MI SelectedUnit" +SelectedUnit);
             for(int i = 0;i < SelectedUnit.transform.childCount;i++){
@@ -265,9 +254,8 @@ public class MouseInput : MonoBehaviour
                 RegenerateAsPlayerUnit(SelectedUnit.transform.GetChild(i).gameObject,previewObjectList[i].transform.position,previewObjectList[i].transform.rotation);
             }
             snapToGrid.OriginRotation = Vector3.zero;
-            //Destroy(SelectedUnit);
             //DestroyUnitがPlayerUnitに隣接しているかを判定し、隣接しているUnitはAdjacentUnitListに登録
-            AdjacentUnitList = playerUnitSimulateScript.GetAdjacentUnitList();
+            List<UnitBase> AdjacentUnitList = playerUnitSimulateScript.GetAdjacentUnitList();
             //データの更新にAdjacentUnitListを用いる
             foreach(UnitBase unitBase in AdjacentUnitList){
                 unitBase.ReRegistData();
@@ -286,23 +274,7 @@ public class MouseInput : MonoBehaviour
     /// </summary>
     private void RegenerateAsPlayerUnit(GameObject PlunderUnit,Vector3 Position, Quaternion Rotation){
         Position = new Vector3(Position.x, Position.y,0);
-        if(PlunderUnit.GetComponent<WeaponUnitBase>()){
-            WeaponUnitBase weaponUnitBase = PlunderUnit.GetComponent<WeaponUnitBase>();
-            GameObject RegeneObj = Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform);//.GetComponent<WeaponUnitBase>().WCDChangeData(weaponUnitBase);
-            RegeneObj.tag = GSetting.ObjTagName.PlayerUnit.ToString();
-            RegeneObj.layer =(int)GSetting.ObjTagName.PlayerUnit;
-        }else if(PlunderUnit.GetComponent<WeaponControllUnitBase>()){
-            WeaponControllUnitBase WCUB = PlunderUnit.GetComponent<WeaponControllUnitBase>();
-            GameObject RegeneObj = Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform);
-            RegeneObj.tag = GSetting.ObjTagName.PlayerUnit.ToString();
-            RegeneObj.layer =(int)GSetting.ObjTagName.PlayerUnit;
-        }else{
-            //上記二つ以外のユニットだった場合
-            GameObject RegeneObj = Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform);
-            RegeneObj.tag = GSetting.ObjTagName.PlayerUnit.ToString();
-            RegeneObj.layer =(int)GSetting.ObjTagName.PlayerUnit;
-        }
-        //GameObject PUnit = Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform).GetComponent<UnitBase>()?.UnitSetting(GSetting.ObjTagName.PlayerUnit.ToString(),(int)GSetting.UniqueLayerName.PlayerUnit);
+        Instantiate(PlunderUnit,Position,Rotation,PlayerUnit.transform).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.PlayerUnit.ToString(),(int)GSetting.ObjTagName.PlayerUnit);
     }
     /// <summary>
     /// 登録中のユニットを登録解除し、再び登録できるようにデータを空にしておく
@@ -315,6 +287,7 @@ public class MouseInput : MonoBehaviour
         DUMS = null;
         positionList.Clear();
         rotationList.Clear();
+        shapeTypeList.Clear();
         //プレビューのデータを消去
         previewObjectList.Clear();
         isRegistered = false;

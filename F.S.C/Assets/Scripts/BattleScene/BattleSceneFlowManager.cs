@@ -11,6 +11,8 @@ public class BattleSceneFlowManager : MonoBehaviour
     SpawnSystem SpS;
     [SerializeField]
     PlayerUnitDestroyManagementScript PUDMS;
+    [SerializeField]
+    WaveStartEndUIController WCEUIC;
     List<GameObject> WaveEnemyList = new List<GameObject>();
     // Start is called before the first frame update
     void Start()
@@ -33,13 +35,15 @@ public class BattleSceneFlowManager : MonoBehaviour
     IEnumerator GameFlow(){
         while(nowWave <= waveNum){
             Debug.Log("BSFM "+nowWave);
+            WCEUIC.WaveStartUI(nowWave,nowWave== waveNum);
             WaveEnemyList = SpS.Spawn(nowWave);
             nowWave ++;
             //PUDMSの撃墜判定が有効ならループを直ぐに抜ける
             if(playerIsDead){Debug.Log("BSFM PlayerDead");break;}
             //WaveEnemyListの全機体が撃墜されるまで次のループに移らない
             yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList));
-            yield return new WaitForSeconds(2f);
+            WCEUIC.WaveClearUI();
+            yield return new WaitForSeconds(3f);
         }
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
         BattleEndProcess();

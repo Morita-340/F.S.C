@@ -15,7 +15,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     private UnitBase ThisUnitSCore;
     [SerializeField]
     GameObject DestroyParentUnitObject;
-    MainCameraZoomRatioController MCZRC;
+    MainCameraController MCC;
     protected GSetting.ObjTagName childObjTagName;
     protected int maximumDistanseFromCore = 0;
     [SerializeField,Range(1, 100)]
@@ -35,7 +35,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        MCZRC = GameObject.Find("Main Camera")?.GetComponent<MainCameraZoomRatioController>();
+        MCC = GameObject.Find("Main Camera")?.GetComponent<MainCameraController>();
         SetUnitData();
     }
     /// <summary>
@@ -43,19 +43,16 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     public virtual void SetUnitData(){
         ChildUnitDataList.Clear();
-        combatPower = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
             UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
                 ReloadMaxDistanse(ChildUnit);
-                combatPower += ChildUnit.GetUnitStatus();
-                Debug.Log("PUDMS PUDL set" + childUnitObject.name);
+                Debug.Log("AUDMS set" + childUnitObject.name + ChildUnit.GetUnitStatus());
             }
         }
-        Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
-        Debug.Log("PUDMS combatpower"+ combatPower);
+        CaluculateCombatPower();
     }
     /// <summary>
     /// maximumDistanseFromCoreを更新
@@ -73,18 +70,18 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="DeleteData"></param>
     public virtual void DestroyProcess(UnitData DeleteData){
-        Debug.Log("PUDMS DP");
+        Debug.Log("AUDMS DP");
         ChildUnitDataList.Remove(DeleteData);
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
+        MCC.ExplosionShake(0.3f,0.2f);
         Regenerate();
-        combatPower = 0;
+        CaluculateCombatPower();
         maximumDistanseFromCore = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
             UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
                 ReloadMaxDistanse(ChildUnit);
-                combatPower += ChildUnit.GetUnitStatus();
             }
         }
         StackCopy.Clear();
@@ -93,7 +90,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// 分離時に呼び出されるDestroyProcess
     /// </summary>
     public void DestroyProcess(){
-        Debug.Log("PUDMS DP");
+        Debug.Log("AUDMS DP");
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         Regenerate();
         maximumDistanseFromCore = 0;
@@ -109,10 +106,10 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         StackForBreathFirstSearch.Push(SerachStartUnit);
         SerachStartUnit.AlreadySearch = true;
         StackCopy.Add(SerachStartUnit);
-        Debug.Log("PUDMS UBFS Stack" + StackForBreathFirstSearch.Count);
+        Debug.Log("AUDMS UBFS Stack" + StackForBreathFirstSearch.Count);
         while(StackForBreathFirstSearch.Count > 0){
             UnitData PopData = StackForBreathFirstSearch.Pop();
-            Debug.Log("PUDMS UBFS while" + PopData.ReturnThisUnit().name);
+            Debug.Log("AUDMS UBFS while" + PopData.ReturnThisUnit().name);
             DataAddToDoubleList(PopData.ReturnFourWayLink());
         }
     }
@@ -125,9 +122,9 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     private void DataAddToDoubleList(List<UnitData> unitDataList){
         foreach(UnitData unitData in unitDataList){
-            if(unitData == null){Debug.Log("PUDMS unitData null");continue;}
-            if(unitData.AlreadySearch != false){Debug.Log("PUDMS AS true" + unitData.ReturnThisUnit().name);continue;}
-            Debug.Log("PUDMS DataAdd2WList" + unitData.ReturnThisUnit().name);
+            if(unitData == null||unitData.ReturnThisUnit() == null){Debug.Log("AUDMS unitData null");continue;}
+            if(unitData.AlreadySearch != false){Debug.Log("AUDMS AS true" + unitData.ReturnThisUnit().name);continue;}
+            Debug.Log("AUDMS DataAdd2WList" + unitData.ReturnThisUnit().name);
             StackForBreathFirstSearch.Push(unitData);
             unitData.AlreadySearch = true;
             StackCopy.Add(unitData);
@@ -135,18 +132,19 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     //未探索群の除外と再生成処理
     //名前はあとで適切なものに書き換える
-    private void Regenerate(){
+    protected virtual List<GameObject> Regenerate(){
         List<UnitData> NotResearchUnitList = new List<UnitData>();
+        List<GameObject> ParentObjectList = new List<GameObject>();
         bool regeneFirstTime = true;
         Vector3 UnitDefferenceVector = new Vector3(0,0,0);
         Vector3 regenePosition = new Vector3(0,0,0);
-        Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
+        Debug.Log("AUDMS PUDL" + ChildUnitDataList.Count);
         //foreach内で走査対象のリストを書き換えるとエラーが発生するので注意
         //未探索のユニットを別のリストに再格納
         //探索範囲を子オブジェクトのユニット全体から未探索だったユニットのみに絞っている
         foreach(UnitData unitData in ChildUnitDataList){
             if(unitData.AlreadySearch == false){
-                Debug.Log("PUDMS falseUnit" + unitData.ReturnThisUnit().name );
+                Debug.Log("AUDMS falseUnit" + unitData.ReturnThisUnit().name );
                 NotResearchUnitList.Add(unitData);
             }
         }
@@ -154,7 +152,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         while(NotResearchUnitList.Count > 0){
             //一つ選ぶ
             //探索をする
-            GameObject ParentObject = Instantiate(DestroyParentUnitObject,ThisUnitSCore.transform.position,ThisUnitSCore.transform.rotation);//除外対象の親オブジェクトを生成（生成座標は破壊されたオブジェクトに依存するようにする）
+            //除外対象の親オブジェクトを生成（生成座標は破壊されたオブジェクトに依存するようにする）
+            GameObject ParentObject = Instantiate(DestroyParentUnitObject,ThisUnitSCore.transform.position,ThisUnitSCore.transform.rotation).GetComponent<DestroyedUnitManagementScript>().SetColliderAndSpriteONFlag(true);
             UnitBreathFirstSearch(NotResearchUnitList[0]);
             //探索済みのユニットを取り出して再生成
             foreach(UnitData unitData in NotResearchUnitList){
@@ -165,18 +164,18 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                         UnitDefferenceVector = new Vector3(unitObj.transform.localPosition.x, unitObj.transform.localPosition.y,0);
                         //ベクトルだから引き算の計算を逆にしてはいけない
                         regenePosition = new Vector3(unitObj.transform.position.x - ThisUnitSCore.transform.position.x , unitObj.transform.position.y - ThisUnitSCore.transform.position.y,5);
-                        Debug.Log("PUDMS DeffVec" + UnitDefferenceVector.x + UnitDefferenceVector.y);
+                        Debug.Log("AUDMS DeffVec" + UnitDefferenceVector.x + UnitDefferenceVector.y);
                         regeneFirstTime = false;
                     }
-                    if(unitObj.GetComponent<WeaponUnitBase>()){
+                    if(unitObj.GetComponent<WeaponControllUnitBase>()){
+                        WeaponControllUnitBase WCUB = unitObj.GetComponent<WeaponControllUnitBase>();
+                        GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<WeaponControllUnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
+                        RegeneObj.transform.localPosition -= UnitDefferenceVector;
+                    }else if(unitObj.GetComponent<WeaponUnitBase>()){
                         WeaponUnitBase weaponUnitBase = unitObj.GetComponent<WeaponUnitBase>();
                         GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<WeaponUnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
                         RegeneObj.transform.localPosition -= UnitDefferenceVector;
                         RegeneObj.GetComponent<WeaponUnitBase>() .GetThisUnitData().dividable = false;
-                    }else if(unitObj.GetComponent<WeaponControllUnitBase>()){
-                        WeaponControllUnitBase WCUB = unitObj.GetComponent<WeaponControllUnitBase>();
-                        GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<WeaponControllUnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
-                        RegeneObj.transform.localPosition -= UnitDefferenceVector;
                     }else{
                         //上記二つ以外のユニットだった場合
                         GameObject RegeneObj = Instantiate(unitObj,ParentObject.transform,false).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);
@@ -190,32 +189,23 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     Destroy(unitObj);
                 }
             }
-            StartCoroutine(WaitTimeForUnregist(1,ParentObject.GetComponent<DestroyedUnitManagementScript>()));
+            //StartCoroutine(ParentObject.GetComponent<DestroyedUnitManagementScript>().ColliderAndSpriteProcess(2));
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             ParentObject.GetComponent<DestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
-            Debug.Log("PUDMS PUDL" + ChildUnitDataList.Count);
+            else{ParentObjectList.Add(ParentObject);}
+            Debug.Log("AUDMS PUDL" + ChildUnitDataList.Count);
         }
         
         //探索フラグのリセット
         ChildUnitDataList.RemoveAll(unitData => unitData.AlreadySearch == false);
-        Debug.Log("PUDMS RG StackCopy" + StackCopy.Count);
+        Debug.Log("AUDMS RG StackCopy" + StackCopy.Count);
         foreach(UnitData unitData in StackCopy){
             unitData.AlreadySearch = false;
         }
-    }
-    IEnumerator WaitTimeForUnregist(int time,DestroyedUnitManagementScript DUMS){
-        Debug.Log("AUDMS WTFU" + DUMS.gameObject.name);
-        DUMS.ChildrenSpriteTranslucent(true);
-        DUMS.ChildrenSColliderEnabled(false);
-        yield return new WaitForSeconds(time);
-        //デブリの兵装が損壊していた場合はDUMSがdestroyされるので
-        if(DUMS == null){yield break;}
-        //元データのコライダーと透明度を戻す
-        DUMS.ChildrenSpriteTranslucent(false);
-        DUMS.ChildrenSColliderEnabled(true);
+        return ParentObjectList;
     }
     public void DeleteChildrenDataFromFM(){
         FieldManager FM = FieldManager.GetInstance();
@@ -237,8 +227,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         return maximumDistanseFromCore;
     }
     public void ThisIsVisible(bool flag){
-        if(flag)MCZRC?.AddToVisibleUnitList(this);
-        else{MCZRC?.DeleteFromVisibleUnitList(this);}
+        if(flag)MCC?.AddToVisibleUnitList(this);
+        else{MCC?.DeleteFromVisibleUnitList(this);}
     }
     public int GetPrimeUnitsHP(){
         return primeUnitsHP;

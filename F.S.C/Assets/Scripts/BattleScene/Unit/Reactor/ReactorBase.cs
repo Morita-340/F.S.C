@@ -7,7 +7,6 @@ using UnityEngine;
 public class ReactorBase : UnitBase
 {
     [SerializeField]ReactorEffectManager REM;
-    ReactorEffectManager InstREM;
     protected GameObject ReactorEffectPool;
     [SerializeField,ReadOnly]int reactorEffectToOtherUnit = 0;
     /// <summary>
@@ -66,13 +65,12 @@ public class ReactorBase : UnitBase
     public void SetReactorEffectScope(){
         REM?.SetReactorEffectScope(CaluculateScopeRadius());
     }
-    [ContextMenu("CaluculateReactorEffect")]
+    [ContextMenu("CaluculateReactorEffectFromInspector")]
     public int CaluculateReactorEffect(){
         Vector2[] OffsetList = {new Vector2(0,0),new Vector2(0.5f,0.5f),new Vector2(0.5f,-0.5f),new Vector2(-0.5f,0.5f),new Vector2(-0.5f,-0.5f)};
         int previsionalNum = 0;
         SetReactorEffectScope();
         AbstractUnitDestroyManagementScript AUDMS = this.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
-        AUDMS.SetUnitData();
         if(AUDMS != null){
             for(int i = 0; i < AUDMS.transform.childCount; i++){
             AttackUnit attackUnit = AUDMS.transform.GetChild(i).gameObject.GetComponent<AttackUnit>();

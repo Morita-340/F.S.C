@@ -10,6 +10,16 @@ public class PreviewUnitManagerScript : MonoBehaviour
     SpriteRenderer spriteRenderer;
     [SerializeField]
     private bool isCovered = false;
+    [SerializeField]
+    Sprite Square;
+    [SerializeField]
+    Sprite RegularTriangle;
+    [SerializeField]
+    Sprite IsoscelesRightTriangle;
+    [SerializeField]
+    Sprite Rectangle;
+    [SerializeField]
+    Sprite ObtusePentagon;
     private GSetting.ShapeType shapeType;
     public void SetShapeType(GSetting.ShapeType shapeType){
         this.shapeType = shapeType;
@@ -18,6 +28,24 @@ public class PreviewUnitManagerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        switch(shapeType){
+            case GSetting.ShapeType.Square:{
+                spriteRenderer.sprite = Square;
+                break;}
+            case GSetting.ShapeType.RegularTriangle:{
+                spriteRenderer.sprite = RegularTriangle;
+                break;}
+            case GSetting.ShapeType.IsoscelesRightTriangle:{
+                spriteRenderer.sprite = IsoscelesRightTriangle;
+                break;}
+            case GSetting.ShapeType.Rectangle:{
+                spriteRenderer.sprite = Rectangle;
+                break;}
+            case GSetting.ShapeType.ObtusePentagon:{
+                spriteRenderer.sprite = ObtusePentagon;
+                break;}
+            default:break;
+        }
         Debug.Log("TTT");
     }
 
@@ -71,6 +99,13 @@ public class PreviewUnitManagerScript : MonoBehaviour
         }else if(shapeType == GSetting.ShapeType.IsoscelesRightTriangle){
             UnitList.Add(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
             UnitList.Add(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
+        }else if(shapeType == GSetting.ShapeType.Rectangle){
+            UnitList.Add(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
+            UnitList.Add(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
+        }else if(shapeType == GSetting.ShapeType.ObtusePentagon){
+            UnitList.Add(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
+            UnitList.Add(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
+            UnitList.Add(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString())?.GetComponent<UnitBase>());
         }else Debug.LogWarning("Cannot Judge IsNotIsolated Bcause ShapeType is Null ");
         return UnitList;
 
@@ -89,6 +124,15 @@ public class PreviewUnitManagerScript : MonoBehaviour
         }else if(shapeType == GSetting.ShapeType.IsoscelesRightTriangle){
             if(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
             else if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else return false;
+        }else if(shapeType == GSetting.ShapeType.Rectangle){
+            if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else return false;
+        }else if(shapeType == GSetting.ShapeType.ObtusePentagon){
+            if(GetDownerGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetRightGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
+            else if(GetLeftGameObject(GSetting.ObjTagName.PlayerUnit.ToString()) != null)return true;
             else return false;
         }else Debug.LogWarning("Cannot Judge IsNotIsolated Bcause ShapeType is Null "); return false;
     }
@@ -125,7 +169,7 @@ public class PreviewUnitManagerScript : MonoBehaviour
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//このオブジェクトのタグをenumでswitch文の分岐判別している
         //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
             case GSetting.ObjTagName.SimulateUnit://鹵獲して接続する際に離れ小島になっていないかIsNotIsolatedUnit()で判別するときに使用される。値が違うだけで計算内容は上と一緒
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.rotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.localRotation.eulerAngles.z + this.gameObject.transform.parent.rotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
         }
         bool playerHitFirst = true;

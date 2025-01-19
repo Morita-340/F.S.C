@@ -7,9 +7,26 @@ namespace FSCGeneral{
     {
         public enum ShapeType{
             Null = 0,
+            /// <summary>
+            /// 正方形　４方向全てのリンクを取れる
+            /// </summary>
             Square = 1,
+            /// <summary>
+            /// 普通の二等辺三角形　底辺方向のみリンクを取れる
+            /// </summary>
             RegularTriangle = 2,
+            /// <summary>
+            /// 直角二等辺三角形　隣り合う２方向のみリンクを取れる
+            /// </summary>
             IsoscelesRightTriangle = 3,
+            /// <summary>
+            /// 長方形　向かい合う２方向のみリンクを取れる
+            /// </summary>
+            Rectangle = 4,
+            /// <summary>
+            /// 鈍角五角形　上方向以外の３方向のリンクを取れる
+            /// </summary>
+            ObtusePentagon = 5,
         }
         /// <summary>
         /// Tag&LayerManager内に記述しているTagのインデックスナンバーを取得
@@ -26,7 +43,11 @@ namespace FSCGeneral{
             ReactorExplosion = 8,
             SimulateUnit = 9,
             ReactorEffect = 10,
-
+            CoreExplosion = 11,
+            /// <summary>
+            /// ユニットが画面外に出た際にプレイヤーを中心として点対称な位置に移動する為の画面外検知用の判定タグ
+            /// </summary>
+            DisplayScope = 12,
         }
         public enum WaveShapePreset{
             FourCorners = 0,
@@ -46,6 +67,8 @@ namespace FSCGeneral{
             EnemyUnit = 3,
             DestroyedUnit = 6,
             PlayerUnit = 7,
+            CaptureUnit = 9,
+            PreviewUnit = 10,
         }
         /// <summary>
         /// ノージャンルのマジックナンバーはここで一元管理

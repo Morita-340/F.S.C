@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6702906668271375354}
   - component: {fileID: 6524710758160941877}
   - component: {fileID: -4259258574583661285}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PreviewUnit
   m_TagString: SimulateUnit
   m_Icon: {fileID: 0}
@@ -101,6 +101,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1991873143887262483}
   isCovered: 0
+  Square: {fileID: -2015034132, guid: 4366a27d6d403b443ac650fc4017789f, type: 3}
+  RegularTriangle: {fileID: -170269093, guid: 6282545678a012443a43c1deebaf3282, type: 3}
+  IsoscelesRightTriangle: {fileID: 1981830682, guid: 6282545678a012443a43c1deebaf3282, type: 3}
+  Rectangle: {fileID: 2134490553, guid: 6282545678a012443a43c1deebaf3282, type: 3}
+  ObtusePentagon: {fileID: -1316168743, guid: 6282545678a012443a43c1deebaf3282, type: 3}
 --- !u!61 &6524710758160941877
 BoxCollider2D:
   m_ObjectHideFlags: 0

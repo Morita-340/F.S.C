@@ -30,8 +30,12 @@ public class AttackUnit : UnitBase
     }
     public override int GetUnitStatus(){
         SetWeaponPower();
-        return base.GetUnitStatus()/*HP*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
+        return base.GetUnitStatus()/*HPのこと*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
     }
+    /// <summary>
+    /// ウェーブの戦闘力を数値化するにあたってリアクターの効果が及ぶ範囲の強化具合を計算するために使用
+    /// </summary>
+    /// <returns></returns>
     public virtual int GetUnitAttackPower(){
         return normalAttackPower + chargeAttackPower;
     }

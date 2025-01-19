@@ -77,7 +77,17 @@ public class UnitData
         else if(DownerUnit == DestroyUnitData)DownerUnit = null;
         else if(RightUnit == DestroyUnitData)RightUnit = null;
         else if(LeftUnit == DestroyUnitData)LeftUnit = null;
-        else Debug.LogWarning("DeleteDestroyUnitLink Was Called but DestroyUnitData isNot in" + ThisUnit.gameObject.name);
+        else {
+            if(ThisUnit == null){
+                FieldManager FM = FieldManager.GetInstance();
+                FM.DeleteData(this);
+            }
+            else if(ThisUnit.gameObject == null){
+                FieldManager FM = FieldManager.GetInstance();
+                FM.DeleteData(this);
+            }
+            else{Debug.LogWarning("DeleteDestroyUnitLink Was Called but DestroyUnitData isNot in" + ThisUnit.gameObject.name);}
+        }
         return;
     }
 }
