@@ -17,6 +17,7 @@ public class WaveDataBase : ScriptableObject
     /// <param name="offSet">戦闘力の振れ幅の中央値。0ならPower+-(Range/2)が範囲となり、offSetの値だけプレイヤーの戦闘力からずれる</param>
     /// <returns></returns>
     public WaveData GetAppropriateWaveData(int playerCombatPower,int combatPowerRange,int offSet){
+        Debug.Log("WDB" + playerCombatPower);
         //初期値の設定
         if(playerCombatPower <= 0){Debug.LogWarning("playerCombatPowerInput is incorrect");playerCombatPower = 1;}
         if(playerCombatPower/6 > combatPowerRange){Debug.LogWarning("combatPowerRangeInput is incorrect");combatPowerRange = playerCombatPower/6;}
@@ -27,6 +28,7 @@ public class WaveDataBase : ScriptableObject
         int maximumValue = playerCombatPower + offSet + combatPowerRange;
         List<WaveData> AppropriateWaveList = new List<WaveData>();
         foreach(WaveData waveData in WaveDataList){
+            Debug.Log("WDB" + waveData.GetCombatPower());
             if(waveData.GetCombatPower() >= minimumValue && waveData.GetCombatPower() <= maximumValue){
                 AppropriateWaveList.Add(waveData);
             }

@@ -27,11 +27,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// 起動後最初のUpdateが呼ばれたタイミングでのみ処理を行えるようにフラグを用意した。combatpowerにリアクターの効果が初めて乗るのがメインスレッドのStart関数ではなくUpdate関数なので、UI表記をちゃんとするためにこれが必要
     /// </summary>
     protected bool initialUpdate = true;
+    protected bool caluculateFlag = false;
     protected List<UnitData> ChildUnitDataList = new List<UnitData>();
     //横型探索用のスタック用リスト
     private Stack<UnitData> StackForBreathFirstSearch = new Stack<UnitData>();
     //探索フラグ解除用のスタックデータのコピー（幅優先探索の終了条件はスタックを空にすることなので、探索終了後に対象ユニット探索フラグを解除するためにもう一度アクセスする必要がある）
     List<UnitData> StackCopy = new List<UnitData>();
+    float time = 0;
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -52,7 +54,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                 Debug.Log("AUDMS set" + childUnitObject.name + ChildUnit.GetUnitStatus());
             }
         }
-        CaluculateCombatPower();
+        caluculateFlag = true;
+        //combatPower = CaluculateCombatPower();
     }
     /// <summary>
     /// maximumDistanseFromCoreを更新
@@ -75,7 +78,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         MCC.ExplosionShake(0.3f,0.2f);
         Regenerate();
-        CaluculateCombatPower();
         maximumDistanseFromCore = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
@@ -85,6 +87,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             }
         }
         StackCopy.Clear();
+        caluculateFlag = true;
+        //combatPower = CaluculateCombatPower();
     }
     /// <summary>
     /// 分離時に呼び出されるDestroyProcess
@@ -240,16 +244,22 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         return combatPower;
     }
     public virtual int CaluculateCombatPower(){
-        combatPower = 0;
+        int combatPower = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
             AttackUnit AU = childUnitObject.GetComponent<AttackUnit>();
             WeaponControllUnitBase WCUB = childUnitObject.GetComponent<WeaponControllUnitBase>();
             ReactorBase reactorBase = childUnitObject.GetComponent<ReactorBase>();
             if(childUnitObject.tag == childObjTagName.ToString()){
-                if(AU != null){combatPower += AU.GetUnitStatus();}
-                else if(WCUB != null){combatPower += WCUB.GetUnitStatus();}
-                else if(reactorBase != null){combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();}
+                if(AU != null){
+                    combatPower += AU.GetUnitStatus();
+                    }
+                else if(WCUB != null){
+                    combatPower += WCUB.GetUnitStatus();
+                    }
+                else if(reactorBase != null){
+                    combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();
+                    }
             }
         }
         return combatPower;
@@ -268,7 +278,16 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         return isDead;
     }
     protected void Update(){
-        if(initialUpdate){initialUpdate = false;CaluculateCombatPower();}
+        if(initialUpdate){initialUpdate = false;combatPower = CaluculateCombatPower();}
+        if(time < 0){time = 0;}
+        else{
+            time -= Time.deltaTime;
+            combatPower = CaluculateCombatPower();}
+        if(caluculateFlag){caluculateFlag = false; time ++;}
         if(primeUnitsHP < 0){primeUnitsHP = 0;}
+    }
+    IEnumerator CaluculateFlagFalseGraceTime(){
+        yield return new WaitForSeconds(1f);
+        caluculateFlag = false;
     }
 }

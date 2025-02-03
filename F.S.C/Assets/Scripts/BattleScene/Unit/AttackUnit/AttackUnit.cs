@@ -70,7 +70,7 @@ public class AttackUnit : UnitBase
             NormalWeapon.tag = tagName;
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
+            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ (Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity;
         }
     }
     public override void ChargeAttack(Vector3 TargetPosition)
@@ -94,7 +94,7 @@ public class AttackUnit : UnitBase
             ChargeWeapon.tag= tagName;
             WeaponBase InstWeapon = Instantiate(ChargeWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ FR.GetTargetDelta()*10;
+            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ (Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity;
         }
     }
 }

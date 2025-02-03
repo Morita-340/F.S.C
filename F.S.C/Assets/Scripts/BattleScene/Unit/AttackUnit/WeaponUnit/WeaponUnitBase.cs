@@ -29,8 +29,7 @@ public class WeaponUnitBase : AttackUnit
     {
         //
         if(WCUB != null){
-            if(WCUB.tag == tag)ControllUnitPosition = Quaternion.Euler(-transform.rotation.eulerAngles)*(WCUB.transform.position - transform.position);//WCUB.transform.localPosition - transform.localPosition;
-            Debug.LogWarning("aaa");
+            if(WCUB.tag == tag)ControllUnitPosition = Quaternion.Euler(-transform.rotation.eulerAngles)*(WCUB.transform.position - transform.position);
             ControllUnitPosition.z = 15;
         }
         WCUB = GetThisControllUnit(ControllUnitPosition);
@@ -67,9 +66,8 @@ public class WeaponUnitBase : AttackUnit
         //WCUB = GetThisControllUnit(ControllUnitPosition);
     }
     protected WeaponControllUnitBase GetThisControllUnit(Vector3 ControllUnitPosition){
-        Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;//transform.localRotation.eulerAngles+ transform.parent.rotation.eulerAngles)* ControllUnitPosition) + transform.position;
+        Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;
         foreach(RaycastHit2D raycastHit2D in Physics2D.RaycastAll(RayPosition,Vector3.back)){
-        Debug.LogWarning(name +RayPosition +" "+ raycastHit2D.collider.tag + " "+tag);
             if(raycastHit2D.collider.tag == this.tag){
                 if(raycastHit2D.collider.gameObject.GetComponent<WeaponControllUnitBase>()){
                     return raycastHit2D.collider.GetComponent<WeaponControllUnitBase>();

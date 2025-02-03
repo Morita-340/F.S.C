@@ -21,7 +21,7 @@ public class SpawnSystem : MonoBehaviour
         
     }
     public List<GameObject> Spawn(int nowWave){
-        playerCombatPower = PUDMS.CaluculateCombatPower();
+        playerCombatPower = PUDMS.GetCombatPower();
         //ウェーブライブラリからウェーブを取得する。難易度調整のパラメータをどこから取るのかは要検討
         WaveData UseWave = WDB.GetAppropriateWaveData(playerCombatPower, 10,0);
         Vector3[] InstPosRotInfo = UseWave.GetSelectedWaveShapePreset();

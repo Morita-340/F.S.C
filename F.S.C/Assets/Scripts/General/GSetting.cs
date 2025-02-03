@@ -79,6 +79,10 @@ namespace FSCGeneral{
             /// </summary>
             AttackEfficiencyONReactorLevel = 1,
         }
+        public enum ResultSituation{
+            AllWaveClear = 0,
+            PlayerDestroyed = 1,
+        }
         public string TagEnumToString(int num)
         {
             switch (num){

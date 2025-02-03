@@ -238,20 +238,6 @@ public class UnitBase : MonoBehaviour
         if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
         spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
         AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
-        //Vector2 PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
-        //switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-        //    case GSetting.ObjTagName.EnemyUnit:{
-        //        if(PlayerVector.x > 90 || PlayerVector.x < -90 || PlayerVector.y >40 || PlayerVector.y < -40){
-        //            this.transform.parent.GetComponent<EnemyUnitMoveManagementScript>().MoveAroundPlayer();
-        //            }
-        //        break;}
-        //    case GSetting.ObjTagName.DestroyedUnit:{
-        //        if(PlayerVector.x > 90 || PlayerVector.x < -90 || PlayerVector.y >40 || PlayerVector.y < -40){
-        //            this.transform.parent.GetComponent<DestroyedUnitManagementScript>().MoveAroundPlayer();
-        //            }
-        //        break;}
-        //    default: break;
-        //}
         if(HitPoint <= 0){DestroyUnit();}
     }
     public virtual void NormalAttack(Vector3 TargetPosition){}

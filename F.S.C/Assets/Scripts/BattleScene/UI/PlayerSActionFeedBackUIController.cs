@@ -24,14 +24,19 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     float defPChangeTime = 0.1f;
     bool plComPChangeFlag = true;
     int playerCombatPower = 0;
+    int maximumPlayerCombatPower = 0;
+    int goalPlayerCombatpower = 0;
     float plComPChangeTime = 0.1f;
     int explosionComboNum = 0;
     float explosionComboTime = 0;
+    int noDamageClearedWaveNum = 0;
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
+        ChangePlayerCombatPower();
+            Debug.Log("PAFBUIC player" +plComPChangeFlag+ playerCombatPower + " "+ PUDMS.GetCombatPower());
         //プレイヤーの戦闘力の表示管理
-        if(plComPChangeFlag && playerCombatPower != PUDMS.GetCombatPower()){
+        if(plComPChangeFlag &&playerCombatPower != PUDMS.GetCombatPower()){
             if(PUDMS.GetCombatPower() != 0){//ゼロ除算対策
                 //パラメータの変化の度合に応じてある程度UIの変更時間を変えられるようにする
                 plComPChangeTime = (playerCombatPower / PUDMS.GetCombatPower() > 1) ? 1 : ((playerCombatPower / PUDMS.GetCombatPower() < 0.4f) ? 0.4f : playerCombatPower / PUDMS.GetCombatPower());
@@ -96,6 +101,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
         defPChangeFlag = true;
         Debug.Log("PAFBUIC defeatpoint" + unitCombatPower + " "+ goalDefeatPoint);
     }
+
     public void ExplosionOcurre(UnitData unitData){
         if(unitData.ReturnThisUnit() is CoreBase coreBase ||unitData.ReturnThisUnit() is ReactorBase reactorBase){
             //爆発するたびに爆発コンボのUIテキストのアニメーション実行
@@ -105,5 +111,21 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
             //コンボ数の上昇
             explosionComboNum ++;
         }
+    }
+    private void ChangePlayerCombatPower(){
+        if(goalPlayerCombatpower != PUDMS.GetCombatPower()){
+            goalPlayerCombatpower = PUDMS.GetCombatPower();
+            plComPChangeFlag = true;
+        }
+        if(maximumPlayerCombatPower < PUDMS.GetCombatPower())maximumPlayerCombatPower = PUDMS.GetCombatPower();
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>最終撃破ポイント</returns>
+    /// <returns>最大戦闘力</returns>
+    /// <returns>ノーダメージでクリアしたウェーブ数</returns>
+    public (int,int) GetPlayerFinalStatus(){
+        return (goalDefeatPoint,maximumPlayerCombatPower);
     }
 }

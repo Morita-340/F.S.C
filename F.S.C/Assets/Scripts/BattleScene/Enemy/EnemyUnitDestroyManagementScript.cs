@@ -14,7 +14,7 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
         //データ登録をする際のタグを決めている
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
         //ゲームシーン上の名前に依存しているので要注意である
-        PAFBUIC = GameObject.Find("Canvas").GetComponent<PlayerSActionFeedBackUIController>();
+        PAFBUIC = GameObject.Find("Canvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
         base.Start();
     }
     protected override List<GameObject> Regenerate()

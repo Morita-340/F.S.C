@@ -44,6 +44,10 @@ public class CoreBase : AttackUnit
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
             this.gameObject.transform.root.gameObject.SetActive(false);
             }
-        else{Destroy(this.gameObject.transform.root.gameObject);}
+        else{StartCoroutine(DestroyObj());}
+    }
+    IEnumerator DestroyObj(){
+        yield return new WaitForSeconds(0.01f);
+        Destroy(this.gameObject.transform.root.gameObject);
     }
 }

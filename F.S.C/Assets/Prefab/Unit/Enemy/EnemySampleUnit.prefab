@@ -148,6 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -436,6 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -725,6 +727,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -1011,6 +1014,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -1299,6 +1303,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -1822,6 +1827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -2233,10 +2239,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   REM: {fileID: 4758777981205333578}
-  reactorEffectToOtherUnit: 116
+  reactorEffectToOtherUnit: 90
   reactorsEfficiencyLevel: 30
 --- !u!61 &36916451620883004
 BoxCollider2D:
@@ -2485,6 +2492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SearchRader: {fileID: 2711198701320374661}
   EUAMS: {fileID: 7303565189159308569}
+  EUMMS: {fileID: 2983094214683003995}
 --- !u!114 &2711198701320374661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2647,6 +2655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -2799,7 +2808,7 @@ GameObject:
   - component: {fileID: 6763205848867093476}
   - component: {fileID: 7303565189159308569}
   - component: {fileID: 7581965655616056454}
-  - component: {fileID: 3823200365571785210}
+  - component: {fileID: 2983094214683003995}
   m_Layer: 0
   m_Name: EnemySampleUnit
   m_TagString: EnemyUnit
@@ -2873,14 +2882,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8292744894824196094}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2892,7 +2901,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &3823200365571785210
+--- !u!114 &2983094214683003995
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2901,9 +2910,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8292744894824196094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 036d1d9a97e31e843bc0886b9009fa1b, type: 3}
+  m_Script: {fileID: 11500000, guid: b3b6ed7f108000a47a62c0848e7dde4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb2d: {fileID: 7581965655616056454}
 --- !u!1 &9100306609064288684
 GameObject:
   m_ObjectHideFlags: 0
@@ -3052,6 +3062,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 5
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
 --- !u!114 &9109476805098783012

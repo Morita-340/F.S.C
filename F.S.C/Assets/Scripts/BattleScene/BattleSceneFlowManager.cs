@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using FSCGeneral;
 using UnityEngine;
 
 
 public class BattleSceneFlowManager : MonoBehaviour
 {
-    int waveNum = 10;
+    int waveNum = 3;
     int nowWave = 1;
     bool playerIsDead = false;
     SpawnSystem SpS;
@@ -13,7 +14,9 @@ public class BattleSceneFlowManager : MonoBehaviour
     PlayerUnitDestroyManagementScript PUDMS;
     [SerializeField]
     WaveStartEndUIController WCEUIC;
+    [SerializeField] ResultUIController RUC;
     List<GameObject> WaveEnemyList = new List<GameObject>();
+    string situation;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,17 +39,23 @@ public class BattleSceneFlowManager : MonoBehaviour
         while(nowWave <= waveNum){
             Debug.Log("BSFM "+nowWave);
             WCEUIC.WaveStartUI(nowWave,nowWave== waveNum);
+            yield return new WaitForSeconds(0.1f);
             WaveEnemyList = SpS.Spawn(nowWave);
             nowWave ++;
             //PUDMSの撃墜判定が有効ならループを直ぐに抜ける
-            if(playerIsDead){Debug.Log("BSFM PlayerDead");break;}
+            if(playerIsDead){
+                situation = GSetting.ResultSituation.PlayerDestroyed.ToString();
+                Debug.Log("BSFM PlayerDead");break;}
             //WaveEnemyListの全機体が撃墜されるまで次のループに移らない
             yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList));
+            NoDamageClearWaveNumCountUp();
             WCEUIC.WaveClearUI();
             yield return new WaitForSeconds(3f);
         }
+
+        if(nowWave>=waveNum){situation = GSetting.ResultSituation.AllWaveClear.ToString();}
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
-        BattleEndProcess();
+        BattleEndProcess(situation);
     }
     /// <summary>
     /// 敵機が全て撃墜されるまで処理を中断する
@@ -64,7 +73,7 @@ public class BattleSceneFlowManager : MonoBehaviour
     /// <returns></returns>
     private bool AllEnemyDead(List<GameObject> WaveEnemyList){
         foreach(GameObject WaveEnemy in WaveEnemyList){
-            if(WaveEnemy.GetComponent<EnemyUnitDestroyManagementScript>().GetIsDead() == false){
+            if(WaveEnemy?.GetComponent<EnemyUnitDestroyManagementScript>().GetIsDead() == false){
                 return false;
             }
         }
@@ -76,7 +85,12 @@ public class BattleSceneFlowManager : MonoBehaviour
     {
         playerIsDead = PUDMS.GetIsDead();
     }
-    private void BattleEndProcess(){
+    private void BattleEndProcess(string situation){
+        StartCoroutine(RUC.ResultUI(situation));
         Debug.Log("BSFM BEP");
+    }
+    private void NoDamageClearWaveNumCountUp(){
+        if(PUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}
+        PUDMS.noDamageFlagReset();
     }
 }

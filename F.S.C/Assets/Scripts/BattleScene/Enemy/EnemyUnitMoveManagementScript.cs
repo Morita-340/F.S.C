@@ -6,16 +6,18 @@ using UnityEngine;
 /// </summary>
 public class EnemyUnitMoveManagementScript : MonoBehaviour
 {
-    MainCameraController MainCamera;
-    Vector2 PlayerVector;
+    private MainCameraController MainCamera;
+    private Vector2 PlayerVector;
+    protected List<GameObject> DiscoveredObjectList = new List<GameObject>();
+    [SerializeField]protected Rigidbody2D rb2d;
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
         if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
@@ -29,9 +31,12 @@ public class EnemyUnitMoveManagementScript : MonoBehaviour
             Vector2 PlayerVector = this.transform.position - MainCamera.GetPlayer().transform.position;
             if(moveMode == 0){//x方向の移動
                 this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3( - PlayerVector.x,PlayerVector.y,0)*0.95f;
-            }else if(moveMode == 1){
+            }else if(moveMode == 1){//y方向の移動
                 this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3(PlayerVector.x, - PlayerVector.y,0)*0.95f;
             }else{Debug.LogWarning("Invalid moveMode");}
         }
+    }
+    public void SetInputObjList(List<GameObject> ObjectList){
+        DiscoveredObjectList = ObjectList;
     }
 }

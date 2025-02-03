@@ -16,13 +16,10 @@ public class WeaponControllUnitBase : UnitBase
         return base.UnitSetting(tagName, layerNum);
     }
     protected override void Awake(){
-        BoxCollider2D boxCollider2D = this.GetComponent<BoxCollider2D>();
-        Debug.LogWarning(name + boxCollider2D.enabled);
         base.Awake();
     }
     protected override void Update()
     {
-        //ControllWeaponUnitList.RemoveAll(weaponUnit => weaponUnit == null);
         base.Update();
     }
 }
