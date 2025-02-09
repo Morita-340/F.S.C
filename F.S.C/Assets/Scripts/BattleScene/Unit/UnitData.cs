@@ -5,7 +5,7 @@ using FSCGeneral;
 
 public class UnitData
 {
-    public UnitData(UnitBase thisUnit,int ShapeType){
+    public UnitData(UnitBase thisUnit,int ShapeType,bool Prime){
         //thisUnit = ThisUnit;
         //upperUnit = UpperUnit;
         //downerUnit = DownerUnit;
@@ -14,6 +14,7 @@ public class UnitData
         //ShapeType = ShapeTypeNum;
         ThisUnit = thisUnit;
         ShapeTypeNum = ShapeType;
+        isPrime = Prime;
     }
     private UnitData UpperUnit;
     private UnitData DownerUnit;
@@ -25,6 +26,7 @@ public class UnitData
     private float AttackPower;
     public bool dividable = false;
     public int ShapeTypeNum;
+    public bool isPrime;
     //探索時に探索済みであるかを判別してもらう
     public bool AlreadySearch = false;
     public UnitBase ReturnThisUnit(){

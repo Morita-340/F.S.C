@@ -10,11 +10,15 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
 {
     private PlayerSActionFeedBackUIController PAFBUIC;
     [SerializeField]GameObject WeaponControllConectedUIText;
-    protected override void Start(){
+    protected override void Awake()
+    {
         //データ登録をする際のタグを決めている
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
+        base.Awake();
+    }
+    protected override void Start(){
         //ゲームシーン上の名前に依存しているので要注意である
-        PAFBUIC = GameObject.Find("Canvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
+        if(!Setting)PAFBUIC = GameObject.Find("Canvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
         base.Start();
     }
     protected override List<GameObject> Regenerate()
@@ -34,14 +38,16 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
     }
     IEnumerator WaitUntilSuccessTextFade(float fadeTime,GameObject obj){
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(obj.transform.position);
-        RectTransform uiRectTransform = PAFBUIC.GetComponent<RectTransform>();
+        RectTransform uiRectTransform;
+        if(!Setting){uiRectTransform = PAFBUIC.GetComponent<RectTransform>();}
+        else{uiRectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();}
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             uiRectTransform, 
             screenPosition, 
             Camera.main, 
             out Vector2 localPosition
         );
-        GameObject SuccessText = Instantiate(WeaponControllConectedUIText,PAFBUIC.transform);
+        GameObject SuccessText = Instantiate(WeaponControllConectedUIText,uiRectTransform.transform);
         SuccessText.GetComponent<RectTransform>().anchoredPosition = screenPosition + localPosition;
         SuccessText.GetComponent<TextMeshProUGUI>().DOFade(0f,fadeTime);
         yield return new WaitForSeconds(fadeTime);
@@ -56,8 +62,10 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
     public override void DestroyProcess(UnitData DeleteData)
     {
         Debug.Log("EUDMS" + DeleteData.ReturnThisUnit().GetUnitStatus());
-        PAFBUIC.AddDefeatPoint(DeleteData.ReturnThisUnit().GetUnitStatus());
-        PAFBUIC.ExplosionOcurre(DeleteData);
+        if(!Setting){
+            PAFBUIC.AddDefeatPoint(DeleteData.ReturnThisUnit().GetUnitStatus());
+            PAFBUIC.ExplosionOcurre(DeleteData);
+        }
         base.DestroyProcess(DeleteData);
     }
 }

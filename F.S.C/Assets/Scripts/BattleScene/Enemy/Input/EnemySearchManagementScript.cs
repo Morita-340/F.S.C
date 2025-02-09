@@ -41,16 +41,16 @@ public class EnemySearchManagementScript : MonoBehaviour
         //重複していないか確認 重複があるなら処理を終える
         foreach(GameObject obj in DiscoveredObjectList){
             Debug.Log("VVV"+obj.name);
-            if(obj == other.gameObject){return;}
+            if(obj == other.transform.root.gameObject){return;}
         }
         //リストに格納
-        DiscoveredObjectList.Add(other.gameObject);
+        DiscoveredObjectList.Add(other.transform.root.gameObject);
         //リストをステートマシンに渡す
         EUMMS.SetInputObjList(DiscoveredObjectList);
     }
     public void OnTriggerExit2D(Collider2D other){
         //リストから消去
-        DiscoveredObjectList.Remove(other.gameObject);
+        DiscoveredObjectList.Remove(other.transform.root.gameObject);
         //リストをステートマシンに渡す
         EUMMS.SetInputObjList(DiscoveredObjectList);
     }

@@ -77,7 +77,7 @@ public class ResultUIController : MonoBehaviour
         DOTween.To(() => displayTotalScore,(x) => displayTotalScore = x,totalScore,2f);
         yield return new WaitForSeconds(2f);
         //タイトルへ戻るボタンを表示
-        TitleButton.transform.DOScaleY(1,0.5f);
+        TitleButton.transform.DOScaleX(1,0.5f);
         //表彰演出（congratulation!とか）
         switch (resultSituation){
             default:break;}

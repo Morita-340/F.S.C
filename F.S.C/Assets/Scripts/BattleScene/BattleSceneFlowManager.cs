@@ -16,7 +16,17 @@ public class BattleSceneFlowManager : MonoBehaviour
     WaveStartEndUIController WCEUIC;
     [SerializeField] ResultUIController RUC;
     List<GameObject> WaveEnemyList = new List<GameObject>();
+    [SerializeField,ReadOnly]
+    GeneralFlagManager GFM;
+    [SerializeField]
+    MouseInput MI;
     string situation;
+    void Awake(){
+        GFM = FindObjectOfType<GeneralFlagManager>();
+        GameObject Player = Instantiate(GFM.GetSelectedPlayer().Item1,Vector3.zero,Quaternion.Euler(Vector3.zero));
+        Player.GetComponent<PlayerUnitAttackManagementScript>().SetChargeWeapon(GFM.GetSelectedPlayer().Item2.GetComponent<WeaponBase>());
+        MI.SetPlayer(Player);
+    }
     // Start is called before the first frame update
     void Start()
     {

@@ -10,13 +10,19 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     private float normalAttackInterval = 1;
     [SerializeField,Range(0.1f,10f)]
     protected float chargeAttackInterval =1;
-    private List<UnitData> ChildrenUnitDatalist;
+    [SerializeField]protected List<UnitData> ChildrenUnitDatalist;
     bool inTimeRangeOFNormalAttack = true;
     float NextNormalAttack = 0f;
     bool inTimeRangeOFChargeAttack = false;
     float NextChargeAttack = 0f;
-    protected virtual void Start(){
+    protected virtual void Awake(){
         ChildrenUnitDatalist = AUDMS.GetChildUnitDataList();
+        Debug.LogWarning("KKK"+ ChildrenUnitDatalist.Count + AUDMS.GetChildUnitDataList().Count);
+        foreach (UnitData child in AUDMS.GetChildUnitDataList()){
+            Debug.LogWarning(child.isPrime);
+        }
+    }
+    protected virtual void Start(){
     }
     /// <summary>
     /// 呼び出されたら一定時間おきに各ユニットの通常攻撃を"毎フレームではなく一度だけ"実行する
@@ -27,9 +33,9 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
         if(time >= NextNormalAttack){
             Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
             foreach (UnitData child in ChildrenUnitDatalist){
+                Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 if(child.ReturnThisUnit() is AttackUnit AU){
                     AU.NormalAttack(TargetPosition);
-                    Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 }
             }
             NextNormalAttack += normalAttackInterval;

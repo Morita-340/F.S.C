@@ -7,9 +7,13 @@ using UnityEngine;
 public class PlayerUnitDestroyManagementScript : AbstractUnitDestroyManagementScript
 {
     private bool noDamageFlag = true;
-    protected override void Start(){
+    protected override void Awake()
+    {
         //データ登録をする際のタグを決めている
         childObjTagName = GSetting.ObjTagName.PlayerUnit;
+        base.Awake();
+    }
+    protected override void Start(){
         base.Start();
     }
     public override int CaluculateCombatPower(){

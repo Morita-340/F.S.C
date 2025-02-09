@@ -17,11 +17,11 @@ public class GeneralUIIconController : MonoBehaviour , IPointerEnterHandler,IPoi
     {
         Debug.Log(CursolSelected);
     }
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         CursolSelected = true;
     }
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         CursolSelected = false;
     }

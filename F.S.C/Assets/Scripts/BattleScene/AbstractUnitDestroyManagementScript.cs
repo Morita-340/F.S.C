@@ -9,12 +9,14 @@ using UnityEngine;
 /// </summary>
 public class AbstractUnitDestroyManagementScript : MonoBehaviour
 {
+    //インスペクター上での操作があるためSerializeFieldで登録しておかなければならない
     [SerializeField]
     protected GameObject ThisGameObject;
     [SerializeField]
     private UnitBase ThisUnitSCore;
     [SerializeField]
     GameObject DestroyParentUnitObject;
+    [SerializeField]protected bool Setting = false;
     MainCameraController MCC;
     protected GSetting.ObjTagName childObjTagName;
     protected int maximumDistanseFromCore = 0;
@@ -34,11 +36,14 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     //探索フラグ解除用のスタックデータのコピー（幅優先探索の終了条件はスタックを空にすることなので、探索終了後に対象ユニット探索フラグを解除するためにもう一度アクセスする必要がある）
     List<UnitData> StackCopy = new List<UnitData>();
     float time = 0;
+    protected virtual void Awake(){
+        ThisGameObject = this.gameObject;
+    }
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        MCC = GameObject.Find("Main Camera")?.GetComponent<MainCameraController>();
         SetUnitData();
+        MCC = GameObject.Find("Main Camera")?.GetComponent<MainCameraController>();
     }
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
@@ -51,7 +56,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             if(childUnitObject.tag == childObjTagName.ToString()){
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
                 ReloadMaxDistanse(ChildUnit);
-                Debug.Log("AUDMS set" + childUnitObject.name + ChildUnit.GetUnitStatus());
+                Debug.Log("AUDMS set" + childUnitObject.name + ChildUnit.GetUnitStatus() + ChildUnit.GetThisUnitData()?.isPrime);
             }
         }
         caluculateFlag = true;

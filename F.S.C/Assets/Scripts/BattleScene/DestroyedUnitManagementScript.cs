@@ -13,6 +13,7 @@ public class DestroyedUnitManagementScript : MonoBehaviour
     protected float gyrationFactor = 1;
     private GameObject DestroyedUnitManager;
     [SerializeField]private Rigidbody2D rb2D;
+    [SerializeField]bool Setting = false;
     MainCameraController MainCamera;
     Vector2 PlayerVector;
     private bool plunderFlag = false;
@@ -80,9 +81,11 @@ public class DestroyedUnitManagementScript : MonoBehaviour
         }else{
             rb2D.velocity = Vector3.zero;
         }
+        if(!Setting){
         PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
-        if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
-        if(PlayerVector.y >40 || PlayerVector.y < -40){MoveAroundPlayer(1);}
+            if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
+            if(PlayerVector.y >40 || PlayerVector.y < -40){MoveAroundPlayer(1);}
+        }
     }
     /// <summary>
     /// カーソルに沿って動くRayCastで外部から呼び出される

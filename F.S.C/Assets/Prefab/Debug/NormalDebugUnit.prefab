@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6147639704816546126}
   - component: {fileID: 1216229667017932647}
   - component: {fileID: 6251384632838190408}
-  - component: {fileID: 4973719618839968439}
   - component: {fileID: 2102013171426828298}
+  - component: {fileID: 774470048347264010}
   m_Layer: 6
   m_Name: Unit2
   m_TagString: DestroyedUnit
@@ -148,6 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -168,9 +169,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitBase: {fileID: 1216229667017932647}
   anotherUnitBase: {fileID: 0}
---- !u!120 &4973719618839968439
+--- !u!114 &2102013171426828298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699713688977399983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeRadius: 50
+  rangeRadian: 90
+  line: {fileID: 774470048347264010}
+--- !u!120 &774470048347264010
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -274,20 +289,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &2102013171426828298
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 699713688977399983}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rangeRadius: 50
-  rangeRadian: 90
 --- !u!1 &4126249200044146030
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,8 +380,8 @@ GameObject:
   - component: {fileID: 7156021674719284907}
   - component: {fileID: 5126032773588310292}
   - component: {fileID: 2892535259325308985}
-  - component: {fileID: 1504856596916394127}
   - component: {fileID: 2071529906854702576}
+  - component: {fileID: 8147604877528030118}
   m_Layer: 6
   m_Name: Unit1
   m_TagString: DestroyedUnit
@@ -514,6 +515,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -534,9 +536,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitBase: {fileID: 5126032773588310292}
   anotherUnitBase: {fileID: 0}
---- !u!120 &1504856596916394127
+--- !u!114 &2071529906854702576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5310064612624002152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeRadius: 50
+  rangeRadian: 90
+  line: {fileID: 8147604877528030118}
+--- !u!120 &8147604877528030118
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -640,20 +656,6 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &2071529906854702576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5310064612624002152}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rangeRadius: 50
-  rangeRadian: 90
 --- !u!1 &6956690897667558365
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,8 +669,8 @@ GameObject:
   - component: {fileID: 7065966481136867280}
   - component: {fileID: 3342259839647464535}
   - component: {fileID: 6039128185090527668}
-  - component: {fileID: 7481622966858304795}
   - component: {fileID: 1601678084282326788}
+  - component: {fileID: 2817502469171944951}
   m_Layer: 6
   m_Name: Unit3
   m_TagString: DestroyedUnit
@@ -802,6 +804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
+  MainCamera: {fileID: 0}
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -822,9 +825,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8172ea92ab504c4a89174e77621f4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitBase: {fileID: 3342259839647464535}
   anotherUnitBase: {fileID: 0}
---- !u!120 &7481622966858304795
+--- !u!114 &1601678084282326788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6956690897667558365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeRadius: 50
+  rangeRadian: 90
+  line: {fileID: 2817502469171944951}
+--- !u!120 &2817502469171944951
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -928,17 +945,3 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &1601678084282326788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6956690897667558365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24566af2dd138ad488fdf629d409fe38, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rangeRadius: 50
-  rangeRadian: 90

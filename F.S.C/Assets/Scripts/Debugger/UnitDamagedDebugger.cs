@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class UnitDamagedDebugger : MonoBehaviour
 {
-    [SerializeField]
     UnitBase unitBase;
     [SerializeField]
     UnitBase anotherUnitBase;
+    void Start(){
+        unitBase = GetComponent<UnitBase>();
+    }
     public void DebugDamaged(){
         unitBase.DebugDamaged();
     }

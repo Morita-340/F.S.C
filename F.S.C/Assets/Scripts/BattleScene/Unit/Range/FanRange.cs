@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 public class FanRange : MonoBehaviour
@@ -10,6 +11,7 @@ public class FanRange : MonoBehaviour
     [SerializeField,Range(1f,180f)]
     float rangeRadian = 90f;
     Vector3 TargetDelta = new Vector3(0f, 0f,0f);
+    [SerializeField]
     LineRenderer line;
     //private bool inRange = false;
     public bool InRange(Vector3 TargetPosition){

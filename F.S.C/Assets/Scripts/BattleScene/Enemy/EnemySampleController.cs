@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FSCGeneral;
+using Unity.VisualScripting;
 using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
@@ -32,10 +33,12 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
                 Player = gameObject;
             }
         }
-        if(Player?.name != null){
-            stateMachine.ChangeState(new SampleChaseMove(rb2d,Player,transform));
-            }
-        else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
+        if(Player != null){
+            if(Player.name != null){
+                stateMachine.ChangeState(new SampleChaseMove(rb2d,Player,transform));
+                }
+            else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
+        }
     }
 }
 public class SampleIdle : IdleState
@@ -83,6 +86,7 @@ public class SampleChaseMove : MoveState
     }
     public override void Update(){
         base.Update();
+        if(ChasedPlayer == null){return;}
         myRb2d.velocity = myTransform.up * 10f;
         float targetAngle = Vector2.SignedAngle(myTransform.position,ChasedPlayer.transform.position);
         Debug.Log("JJJ"+targetAngle);

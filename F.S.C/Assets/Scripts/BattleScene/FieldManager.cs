@@ -27,7 +27,7 @@ namespace FSCGeneral{
                     Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
                     return unitData;
                 }
-            }return new UnitData(null,0);
+            }return new UnitData(null,0,false);
         }
         /// <summary>
         /// ListのRemoveを使えば同じ処理が出来るのでいらない

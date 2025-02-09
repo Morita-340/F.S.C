@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class EnemyUnitMoveManagementScript : MonoBehaviour
 {
+    [SerializeField]bool Setting = false;
     private MainCameraController MainCamera;
     private Vector2 PlayerVector;
     protected List<GameObject> DiscoveredObjectList = new List<GameObject>();
@@ -19,9 +20,11 @@ public class EnemyUnitMoveManagementScript : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
+        if(!Setting){
         PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
-        if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
-        if(PlayerVector.y >40 || PlayerVector.y < -40){MoveAroundPlayer(1);}
+            if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
+            if(PlayerVector.y >40 || PlayerVector.y < -40){MoveAroundPlayer(1);}
+        }
     }
     /// <summary>
     /// カメラは常にプレイヤーを追うので、敵が画面外の離れた場所に行ってしまった際の詰み防止

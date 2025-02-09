@@ -100,7 +100,7 @@ public class UnitBase : MonoBehaviour
     {
         thisGameObject = this.gameObject;
         thisUnit = this;
-        ThisUnitData= new UnitData(thisUnit,(int)shapeType);
+        ThisUnitData= new UnitData(thisUnit,(int)shapeType,isPrime);
         FM.UnitList.Add(ThisUnitData);
         attackEfficiency = 1;
         if(this.tag == GSetting.ObjTagName.PlayerUnit.ToString()

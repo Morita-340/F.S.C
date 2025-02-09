@@ -32,6 +32,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     [SerializeField,Range(0f,11.4f)]
     float drive_miximum_speed_factor = 1.5f;
     float thisRotationZ;
+    [SerializeField]bool Setting = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +45,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
         //Debug.Log("PUMMS" + thisRotationZ +" "+ maximum_rotation +" "+ minimum_rotation);
     }
     void FixedUpdate(){
-        Drive();
+        if(!Setting)Drive();
     }
     /// <summary>
     /// このオブジェクトを前後に動かす命令

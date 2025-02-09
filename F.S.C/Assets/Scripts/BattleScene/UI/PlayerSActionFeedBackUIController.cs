@@ -13,7 +13,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     TextMeshProUGUI ScoreText;
     [SerializeField]
     TextMeshProUGUI ExplosionComboText;
-    [SerializeField]
+    [SerializeField,ReadOnly]
     PlayerUnitDestroyManagementScript PUDMS;
 
     bool defPChangeFlag = true;
@@ -30,6 +30,9 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     int explosionComboNum = 0;
     float explosionComboTime = 0;
     int noDamageClearedWaveNum = 0;
+    private void Start(){
+        PUDMS = FindObjectOfType<PlayerUnitDestroyManagementScript>();
+    }
     // Update is called once per frame
     void Update()
     {

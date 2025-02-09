@@ -6,7 +6,7 @@ public class MainCameraController : MonoBehaviour
 {
     Camera MainCam;
     GameObject Player;
-    [SerializeField]PlayerUnitDestroyManagementScript PUDMS;
+    [SerializeField]bool Setting = false;
     int maxDistanse = 0;
     float zoomRatio = 30f;
     private List<AbstractUnitDestroyManagementScript>VisibleUnitList = new List<AbstractUnitDestroyManagementScript>();
@@ -22,14 +22,14 @@ public class MainCameraController : MonoBehaviour
     void Start()
     {
         MainCam = this.GetComponent<Camera>();
-        Player = GameObject.Find("PlayerUnit");
+        if(!Setting)Player = FindObjectOfType<PlayerUnitDestroyManagementScript>().gameObject;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = Player.transform.position + new Vector3(0,0, -5);
+        if(!Setting)this.transform.position = Player.transform.position + new Vector3(0,0, -5);
         foreach(AbstractUnitDestroyManagementScript AUDMS in VisibleUnitList){
             int maxDistanseFromCore = AUDMS.GetMaximumDistanseFromCore();
             if(maxDistanse < maxDistanseFromCore){
@@ -79,6 +79,7 @@ public class MainCameraController : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public GameObject GetPlayer(){
-        return Player;
+        if(!Setting)return Player;
+        else {Debug.LogWarning("UnexpectedSituation!");return null;}
     }
 }

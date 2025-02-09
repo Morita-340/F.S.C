@@ -9,7 +9,7 @@ public class MouseInput : MonoBehaviour
 {
     [SerializeField]GameObject UnitSimulater;
     [SerializeField]GameObject PreviewUnit;
-    [SerializeField]GameObject PlayerUnit;
+    [SerializeField,ReadOnly]GameObject PlayerUnit;
     [SerializeField]ChargeCursolIconController ChargeIcon;
     [SerializeField,Range(0f,2f)]float firstAttackInterval = 0.5f;
     //[SerializeField,Range(0f,10f)]private float divideLimit = 6f;
@@ -39,6 +39,12 @@ public class MouseInput : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //シーン内のプレイヤーが単一であるため
+        PlayerUnit = FindObjectOfType<PlayerUnitDestroyManagementScript>().gameObject;
+        InitialSetting();
+    }
+    void InitialSetting(){
+        UnitSimulater = PlayerUnit.transform.Find("UnitSimulater").gameObject;
         //Cursor.visible = false;
         snapToGrid = UnitSimulater.GetComponent<SnapToGrid>();
         playerUnitSimulateScript = UnitSimulater.GetComponent<PlayerUnitSimulateScript>();
@@ -125,7 +131,6 @@ public class MouseInput : MonoBehaviour
     /// <param name="EnemyHit2D"></param>
     private void Targetting(RaycastHit2D EnemyHit2D){
         if(EnemyHit2D){
-            PUAMS.NormalAttack(chargeAttackTimer,target);
             chargeAttackTimer += Time.deltaTime;
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
@@ -342,4 +347,11 @@ public class MouseInput : MonoBehaviour
     //        DivideUnitList.Clear();
     //    }
     //}
+    public void SetPlayer(GameObject Unit){
+        if(Unit == null){this.enabled = false; return;}
+        if(Unit.GetComponent<PlayerUnitDestroyManagementScript>()){
+            PlayerUnit = Unit;
+            InitialSetting();
+        }
+    }
 }

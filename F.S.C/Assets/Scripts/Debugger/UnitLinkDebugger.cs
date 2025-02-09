@@ -8,8 +8,6 @@ using System;
 
 public class UnitLinkDebugger : MonoBehaviour
 {
-    [SerializeField]
-    GameObject DebugLinkObjIcon;
     private FieldManager FM = FieldManager.GetInstance();
     List<GameObject> IconList = new List<GameObject>();
     Transform pastObject = null;

@@ -28,6 +28,11 @@ public class AttackUnit : UnitBase
         normalAttackPower = NormalWeapon.GetAttackPower();
         chargeAttackPower = ChargeWeapon.GetAttackPower();
     }
+    public void SetChargeWeapon(WeaponBase Weapon){
+        Debug.Log("LLL" + Weapon.name);
+        ChargeWeapon = Weapon;
+        SetWeaponPower();
+    }
     public override int GetUnitStatus(){
         SetWeaponPower();
         return base.GetUnitStatus()/*HPのこと*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
