@@ -18,7 +18,7 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
     }
     protected override void Start(){
         //ゲームシーン上の名前に依存しているので要注意である
-        if(!Setting)PAFBUIC = GameObject.Find("Canvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
+        if(!Setting)PAFBUIC = GameObject.Find("UICanvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
         base.Start();
     }
     protected override List<GameObject> Regenerate()

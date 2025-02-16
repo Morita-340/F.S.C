@@ -25,8 +25,8 @@ public class AttackUnit : UnitBase
         base.Start();
     }
     public void SetWeaponPower(){
-        normalAttackPower = NormalWeapon.GetAttackPower();
-        chargeAttackPower = ChargeWeapon.GetAttackPower();
+        normalAttackPower = NormalWeapon?.GetAttackPower()?? 0;
+        chargeAttackPower = ChargeWeapon?.GetAttackPower()?? 0;
     }
     public void SetChargeWeapon(WeaponBase Weapon){
         Debug.Log("LLL" + Weapon.name);
@@ -55,6 +55,7 @@ public class AttackUnit : UnitBase
     }
     public override void NormalAttack(Vector3 TargetPosition)
     {
+        if(NormalWeapon == null){return;}
         if(FR.InRange(TargetPosition)){
             base.NormalAttack(TargetPosition);
             Vector3 FirePosition = this.transform.position;
@@ -75,11 +76,23 @@ public class AttackUnit : UnitBase
             NormalWeapon.tag = tagName;
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ (Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity;
+            WeaponLook(InstWeapon,TargetPosition);
+            Vector2 weaponVelocity = ((Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity)*NormalWeapon.GetVelocityEfficiency();
+            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+                case GSetting.ObjTagName.PlayerUnit:{
+                    break;}
+                case GSetting.ObjTagName.EnemyUnit:{
+                    weaponVelocity = 0.7f * weaponVelocity;
+                    break;
+                }
+                default:break;
+            }
+            InstWeapon.GetComponent<Rigidbody2D>().velocity = weaponVelocity;
         }
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {
+        if(ChargeWeapon == null){return;}
         if(FR.InRange(TargetPosition)){
             Vector3 FirePosition = this.transform.position;
             Quaternion FireRotation = this.transform.rotation;
@@ -99,7 +112,23 @@ public class AttackUnit : UnitBase
             ChargeWeapon.tag= tagName;
             WeaponBase InstWeapon = Instantiate(ChargeWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = /*transform.up +*/ (Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity;
+            WeaponLook(InstWeapon,TargetPosition);
+            Vector2 weaponVelocity = ((Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity)*ChargeWeapon.GetVelocityEfficiency();
+            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
+                case GSetting.ObjTagName.PlayerUnit:{
+                    break;}
+                case GSetting.ObjTagName.EnemyUnit:{
+                    weaponVelocity = 0.7f * weaponVelocity;
+                    break;
+                }
+                default:break;
+            }
+            InstWeapon.GetComponent<Rigidbody2D>().velocity = weaponVelocity;
         }
+    }
+    private void WeaponLook(WeaponBase weapon, Vector3 TargetPosition){
+        Transform myTransform = weapon.transform;
+        Vector2 direction = TargetPosition - myTransform.position;
+        myTransform.up = direction;
     }
 }

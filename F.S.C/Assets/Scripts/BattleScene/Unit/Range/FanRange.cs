@@ -41,7 +41,7 @@ public class FanRange : MonoBehaviour
         line.material.color = Color.black;
     }
     void Update(){
-        DrawFan();
+        //DrawFan();
     }
     void DrawFan(){
         // オブジェクト前方

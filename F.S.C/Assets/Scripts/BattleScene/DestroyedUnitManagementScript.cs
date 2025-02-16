@@ -83,8 +83,8 @@ public class DestroyedUnitManagementScript : MonoBehaviour
         }
         if(!Setting){
         PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
-            if(PlayerVector.x > 90 || PlayerVector.x < -90){MoveAroundPlayer(0);}
-            if(PlayerVector.y >40 || PlayerVector.y < -40){MoveAroundPlayer(1);}
+            if(PlayerVector.x > 95 || PlayerVector.x < -95){MoveAroundPlayer(0);}
+            if(PlayerVector.y >70 || PlayerVector.y < -70){MoveAroundPlayer(1);}
         }
     }
     /// <summary>

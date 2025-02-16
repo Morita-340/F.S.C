@@ -11,9 +11,6 @@ using UnityEngine;
 /// </summary>
 public class EnemySampleController : EnemyUnitMoveManagementScript
 {
-    bool playerFlag = false;
-    GameObject Player;
-    private StateMachine stateMachine;
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -31,6 +28,7 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
             Debug.Log("FFF"+gameObject.name);
             if(gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
                 Player = gameObject;
+                break;
             }
         }
         if(Player != null){

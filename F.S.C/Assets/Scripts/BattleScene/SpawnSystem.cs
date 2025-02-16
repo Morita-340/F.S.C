@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SpawnSystem : MonoBehaviour
 {
-    [SerializeField]
     PlayerUnitDestroyManagementScript PUDMS;
     [SerializeField]
     WaveDataBase WDB;
@@ -20,10 +19,17 @@ public class SpawnSystem : MonoBehaviour
     {
         
     }
+    /// <summary>
+    /// PUDMSのセット。スポーンシステムではStartにて戦闘力を取得するので、Awakeでこれを呼び出しておくこと
+    /// </summary>
+    /// <param name="newPUDMS"></param>
+    public void SetPUDMS(PlayerUnitDestroyManagementScript newPUDMS){
+        if (newPUDMS != null){this.PUDMS = newPUDMS;}
+    }
     public List<GameObject> Spawn(int nowWave){
         playerCombatPower = PUDMS.GetCombatPower();
         //ウェーブライブラリからウェーブを取得する。難易度調整のパラメータをどこから取るのかは要検討
-        WaveData UseWave = WDB.GetAppropriateWaveData(playerCombatPower, 10,0);
+        WaveData UseWave = WDB.GetAppropriateWaveData(playerCombatPower, 100,10);
         Vector3[] InstPosRotInfo = UseWave.GetSelectedWaveShapePreset();
         List<GameObject> WaveEnemyList = UseWave.GetWaveEnemyList();
         List<GameObject> InstEnemyList = new List<GameObject>();

@@ -10,7 +10,6 @@ public class BattleSceneFlowManager : MonoBehaviour
     int nowWave = 1;
     bool playerIsDead = false;
     SpawnSystem SpS;
-    [SerializeField]
     PlayerUnitDestroyManagementScript PUDMS;
     [SerializeField]
     WaveStartEndUIController WCEUIC;
@@ -22,15 +21,17 @@ public class BattleSceneFlowManager : MonoBehaviour
     MouseInput MI;
     string situation;
     void Awake(){
+        SpS = this.GetComponent<SpawnSystem>();
         GFM = FindObjectOfType<GeneralFlagManager>();
         GameObject Player = Instantiate(GFM.GetSelectedPlayer().Item1,Vector3.zero,Quaternion.Euler(Vector3.zero));
         Player.GetComponent<PlayerUnitAttackManagementScript>().SetChargeWeapon(GFM.GetSelectedPlayer().Item2.GetComponent<WeaponBase>());
+        PUDMS = Player.GetComponent<PlayerUnitDestroyManagementScript>();
+        SpS.SetPUDMS(PUDMS);
         MI.SetPlayer(Player);
     }
     // Start is called before the first frame update
     void Start()
     {
-        SpS = this.GetComponent<SpawnSystem>();
         Debug.Log("BSFM waveNum "+waveNum);
         StartCoroutine(GameFlow());
         //while(nowWave <= waveNum){

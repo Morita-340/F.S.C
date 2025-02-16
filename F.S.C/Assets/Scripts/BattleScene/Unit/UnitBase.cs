@@ -14,6 +14,8 @@ public class UnitBase : MonoBehaviour
     protected int HitPoint = 5;
     [SerializeField,ReadOnly]
     protected MainCameraController MainCamera;
+    [SerializeField,Range(-180f,180f)]
+    float offsetRotation = 0;
     //生成時のHP
     protected int InstHitPoint = 0;
     /// <summary>
@@ -220,13 +222,13 @@ public class UnitBase : MonoBehaviour
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//このオブジェクトのタグをenumでswitch文の分岐判別している
         //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
             case GSetting.ObjTagName.PlayerUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.EnemyUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.DestroyedUnit://鹵獲して接続する際に離れ小島になっていないかIsNotIsolatedUnit()で判別するときに使用される。値が違うだけで計算内容は上と一緒
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate) * RayOffsetDirection) + RayBasePosition;
+                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate +offsetRotation) * RayOffsetDirection) + RayBasePosition;
                 break;
         }
         return Physics2D.RaycastAll(RayPosition,new Vector3(0,0,1));

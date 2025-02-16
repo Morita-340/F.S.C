@@ -8,7 +8,7 @@ public class MainCameraController : MonoBehaviour
     GameObject Player;
     [SerializeField]bool Setting = false;
     int maxDistanse = 0;
-    float zoomRatio = 30f;
+    float zoomRatio = 60f;
     private List<AbstractUnitDestroyManagementScript>VisibleUnitList = new List<AbstractUnitDestroyManagementScript>();
     public void AddToVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
         if(!VisibleUnitList.Contains(AUDMS)){
@@ -63,12 +63,13 @@ public class MainCameraController : MonoBehaviour
     /// </summary>
     /// <param name="distanse">採用された最大距離</param>
     private void ZoomRatioControll(int distanse){
+        if(Setting){MainCam.orthographicSize = 30; return;}
         float goalZoomValue = 1f;
         float currentVelocity = 0;
         //距離に応じてズーム倍率を設定し、滑らかに変更する。下記マジックナンバーは
-        if(distanse < 15){goalZoomValue = 30f;}
-        else if(distanse < 40){goalZoomValue = 40;}
-        else if(distanse < 70){goalZoomValue = 50;}
+        if(distanse < 15){goalZoomValue = 60f;}
+        else if(distanse < 40){goalZoomValue = 80;}
+        else if(distanse < 70){goalZoomValue = 100;}
         else{goalZoomValue = 90;}
         zoomRatio = Mathf.SmoothDamp(zoomRatio,goalZoomValue,ref currentVelocity,0.1f);
         MainCam.orthographicSize = zoomRatio;

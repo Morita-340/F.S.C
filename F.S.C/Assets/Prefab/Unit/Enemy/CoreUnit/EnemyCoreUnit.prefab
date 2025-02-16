@@ -248,7 +248,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -318,9 +318,10 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
   attackEfficiency: 1
-  NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
+  NormalWeapon: {fileID: 0}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
   CEM: {fileID: 5087336356866416189}

@@ -12,8 +12,8 @@ public class PlayerUnitAttackManagementScript : AbstractUnitAttackManagementScri
     public override void NormalAttack(float time,Vector3 TargetPosition){
         base.NormalAttack(time,TargetPosition);
     }
-    public override void ChargeAttack(float time,float allTime,float chageTime,Vector3 TargetPosition){
-        base.ChargeAttack(time,allTime,chageTime,TargetPosition);
+    public override void ChargeAttack(float inputTime,float processSpan,float chargeTime,Vector3 TargetPosition){
+        base.ChargeAttack(inputTime,processSpan,chargeTime,TargetPosition);
     }
     /// <summary>
     /// 設定画面またはバトル開始時にチャージ武器を設定する

@@ -61,13 +61,13 @@ public class SettingMouseInput : MonoBehaviour
     {
         WheelInput += Input.GetAxis("Mouse ScrollWheel");
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,10));
-        ChargeIcon.ChangeCircleRange(chargeAttackTimer + firstAttackInterval,PUAMS,target);
         CursorControll(WheelInput);
     }
     /// <summary>
     /// カーソルを動かすことで入力をする処理まとめ
     /// </summary>
     private void CursorControll(float wheelInput){
+        //ChargeIcon.ChangeCircleRange(chargeAttackTimer + firstAttackInterval,PUAMS,target);
         Ray ray= Camera.main.ScreenPointToRay(Input.mousePosition);
         NormalAttack();
         var Hit2DList = RockOn(ray);
@@ -136,9 +136,11 @@ public class SettingMouseInput : MonoBehaviour
     private void Targetting(RaycastHit2D EnemyHit2D){
         if(EnemyHit2D){
             chargeAttackTimer += Time.deltaTime;
+            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,true);
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
             chargeAttackTimer = -firstAttackInterval;
+            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,false);
         }
     }
     /// <summary>

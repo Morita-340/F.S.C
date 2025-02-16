@@ -118,7 +118,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -149,6 +149,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -339,6 +340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gyrationFactor: 90
   rb2D: {fileID: 2491369280737064815}
+  Setting: 0
   InstMoveAndRotateVector: {x: 0, y: 0, z: 0}
 --- !u!50 &2491369280737064815
 Rigidbody2D:
@@ -485,7 +487,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -516,6 +518,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
@@ -774,7 +777,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -805,6 +808,7 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 10
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
   attackEfficiency: 1
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}

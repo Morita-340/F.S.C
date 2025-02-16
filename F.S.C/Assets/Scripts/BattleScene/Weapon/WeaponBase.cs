@@ -12,12 +12,19 @@ public class WeaponBase : MonoBehaviour
     /// 攻撃倍率
     /// </summary>
     protected int attackEfficiency = 1;
+    /// <summary>
+    /// 速度倍率
+    /// </summary>
+    [SerializeField,Range(0.1f,10f)]protected float velocityEfficiency = 1;
     public int GetAttackPower(){
         return attackPower;
     }
     public void SetAttackEfficiency(int efficiency){
         attackEfficiency = efficiency;
         if(attackEfficiency < 1){attackEfficiency = 1;}
+    }
+    public float GetVelocityEfficiency(){
+        return velocityEfficiency;
     }
     //被弾時のダメージ総量を返す
     public int GetTotalDamage(){

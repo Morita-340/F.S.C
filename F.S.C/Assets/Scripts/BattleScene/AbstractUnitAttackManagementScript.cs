@@ -14,10 +14,9 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     bool inTimeRangeOFNormalAttack = true;
     float NextNormalAttack = 0f;
     bool inTimeRangeOFChargeAttack = false;
-    float NextChargeAttack = 0f;
+    float nextChargeAttackTime = 0f;
     protected virtual void Awake(){
         ChildrenUnitDatalist = AUDMS.GetChildUnitDataList();
-        Debug.LogWarning("KKK"+ ChildrenUnitDatalist.Count + AUDMS.GetChildUnitDataList().Count);
         foreach (UnitData child in AUDMS.GetChildUnitDataList()){
             Debug.LogWarning(child.isPrime);
         }
@@ -29,7 +28,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="time">ロックオンし始めてから経過した時間。ロックオンが外れると0に戻る</param>
     public virtual void NormalAttack(float time,Vector3 TargetPosition){
-        if(time <= 0){NextNormalAttack = 0;}
+        if(time < 0){NextNormalAttack = 0;}
         if(time >= NextNormalAttack){
             Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
             foreach (UnitData child in ChildrenUnitDatalist){
@@ -45,20 +44,20 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     /// 呼び出されたら一定時間おきに各ユニットのチャージ攻撃を実行する
     /// </summary>
     /// <param name="time"></param>
-    public virtual void ChargeAttack(float time,float allTime,float chageTime,Vector3 TargetPosition){
-        if(time % allTime > chageTime){
+    public virtual void ChargeAttack(float inputTime,float processSpan,float chargeTime,Vector3 TargetPosition){
+        if(inputTime % processSpan > chargeTime){
             if(!inTimeRangeOFChargeAttack){
                 inTimeRangeOFChargeAttack = true;
-                NextChargeAttack =time;}
-            if(time >= NextChargeAttack){
-                Debug.Log("AUAMS charge" + time +" "+ NextChargeAttack);
+                nextChargeAttackTime =inputTime;}
+            if(inputTime >= nextChargeAttackTime){
+                Debug.Log("AUAMS charge" + inputTime +" "+ nextChargeAttackTime);
                 foreach (UnitData child in ChildrenUnitDatalist){
                     if(child.ReturnThisUnit() is AttackUnit AU){
                         AU.ChargeAttack(TargetPosition);
                         Debug.Log("AUAMS charge unit" + child.ReturnThisUnit().name);
                     }
                 }
-                NextChargeAttack += chargeAttackInterval;
+                nextChargeAttackTime += chargeAttackInterval;
             }
         }else{inTimeRangeOFChargeAttack = false;}
     }
