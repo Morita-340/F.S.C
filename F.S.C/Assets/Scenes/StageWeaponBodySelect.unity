@@ -1590,7 +1590,7 @@ MonoBehaviour:
   chargeThreshold: 1
   ChargeSlider: {fileID: 1973996874}
   ExecuteSlider: {fileID: 1648637174}
-  TranslateScene: {fileID: 0}
+  TranslateScene: 0
 --- !u!1 &721973489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1791,8 +1791,9 @@ MonoBehaviour:
     StageSummary: "\u60D1\u661F\u3078\u63A5\u8FD1\u3059\u308B\u653B\u6483\u90E8\u968A\u3092\u6392\u9664\u305B\u3088"
     StageAdvise: "\u8907\u6570\u56DE\u306B\u6E21\u308B\u6CE2\u72B6\u653B\u6483\u304C\u4E88\u60F3\u3055\u308C\u308B\n\u30B3\u30A2\u3092\u6483\u3061\u629C\u304D\u52B9\u7387\u3088\u304F\u5BFE\u51E6\u305B\u3088"
     StageAlreadyCleared: 0
-    scene: {fileID: 102900000, guid: 2cda990e2423bbf4892e6590ba056729, type: 3}
+    scene: 3
   SSM: {fileID: 2030818364}
+  GFM: {fileID: 854048849}
 --- !u!114 &747636038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2033,6 +2034,7 @@ MonoBehaviour:
     Body: {fileID: 2828146760691619699, guid: 766030bc6b636f04682306198aeeeb58, type: 3}
   SelectedBody: {fileID: 0}
   SelectedWeapon: {fileID: 0}
+  stageName: 
   WeaponList:
   - Name: "\u30ED\u30B1\u30C3\u30C8\u5F3E"
     isUnlocked: 1
@@ -3454,8 +3456,9 @@ MonoBehaviour:
     StageSummary: Now Reserching ...
     StageAdvise: 
     StageAlreadyCleared: 0
-    scene: {fileID: 102900000, guid: 6b90dc3d44249b44fae812df394fceb1, type: 3}
+    scene: 2
   SSM: {fileID: 2030818364}
+  GFM: {fileID: 854048849}
 --- !u!114 &1643454432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3753,7 +3756,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 466aab0e4b6eb814fb63009c37f572b1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3787,7 +3790,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 850, y: -100}
+  m_AnchoredPosition: {x: 850, y: -120}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1780993754
@@ -4014,8 +4017,9 @@ MonoBehaviour:
     StageSummary: Now Reserching ...
     StageAdvise: 
     StageAlreadyCleared: 0
-    scene: {fileID: 102900000, guid: 6b90dc3d44249b44fae812df394fceb1, type: 3}
+    scene: 2
   SSM: {fileID: 2030818364}
+  GFM: {fileID: 854048849}
 --- !u!114 &1990154700
 MonoBehaviour:
   m_ObjectHideFlags: 0

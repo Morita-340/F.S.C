@@ -154,12 +154,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUnit: {fileID: 2190800438189322223}
   rb2d: {fileID: 5805045128402096160}
-  turn_factor: 1
+  turn_factor: 5
   maximum_turn_factor: 180
   drive_speed: 0
   drive_minimum_speed_factor: 11.4
   drive_miximum_speed_factor: 11.4
-  Setting: 0
+  Setting: 1
 --- !u!114 &7405398096987392893
 MonoBehaviour:
   m_ObjectHideFlags: 0

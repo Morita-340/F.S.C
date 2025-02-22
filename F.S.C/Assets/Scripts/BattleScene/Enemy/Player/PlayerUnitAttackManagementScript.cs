@@ -20,7 +20,6 @@ public class PlayerUnitAttackManagementScript : AbstractUnitAttackManagementScri
     /// </summary>
     public void SetChargeWeapon(WeaponBase ChargeWeapon){
         foreach(UnitData unitData in ChildrenUnitDatalist){
-        Debug.LogWarning("KKK"+ unitData?.isPrime + ChildrenUnitDatalist.Count + unitData?.ReturnThisUnit().name);
             if(unitData.isPrime){
                 if(unitData.ReturnThisUnit() is AttackUnit attackUnit){
                     attackUnit.SetChargeWeapon(ChargeWeapon);

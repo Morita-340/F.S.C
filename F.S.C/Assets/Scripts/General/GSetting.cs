@@ -61,6 +61,15 @@ namespace FSCGeneral{
             UpperLeftAndLowerRight = 8,
         }
         /// <summary>
+        /// ロードするシーンをシリアライズで設定する用（SceneAssetは実行ファイルでは使用不可なので）
+        /// </summary>
+        public enum SceneName{
+            SampleScene = 0,
+            Title = 1,
+            StageWeaponBodySelect = 2,
+            InterceptEnemyForce = 3,
+        }
+        /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
         /// </summary>
         public enum UniqueLayerName{
@@ -82,34 +91,6 @@ namespace FSCGeneral{
         public enum ResultSituation{
             AllWaveClear = 0,
             PlayerDestroyed = 1,
-        }
-        public string TagEnumToString(int num)
-        {
-            switch (num){
-                case 0: return "DestroyedUnit";
-                case 1: return "PlayerUnit";
-                case 2: return "EnemyUnit";
-                case 3: return "EnemyBossUnit";
-                case 4: return "PlayerWeapon1  ";
-                case 5: return "PlayerWeapon2";
-                case 6: return "EnemyWeapon1";
-                case 7: return "EnemyWeapon2";
-                case 8: return "Weapon5";
-                default: Debug.LogAssertion("TagName Enum IsNot Registared!"); return null;
-            }   
-        }
-        public int TagStringToEnum(string name){
-            switch (name){
-                case "DestroyedUnit": return 0;
-                case "PlayerUnit": return 1;
-                case "EnemyBossUnit" : return 2;
-                case "PlayerWeapon1  ":return 3;
-                case "PlayerWeapon2": return 4;
-                case "EnemyWeapon1": return 5;
-                case "EnemyWeapon2": return 6;
-                case "Weapon5": return 7;
-                default: Debug.LogAssertion("TagName Enum IsNot Registared!"); return -1;
-            }
         }
     }
 }

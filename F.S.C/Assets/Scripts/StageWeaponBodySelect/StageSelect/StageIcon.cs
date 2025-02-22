@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine.EventSystems;
 using System;
 using Unity.VisualScripting;
+using FSCGeneral;
 
 /// <summary>
 /// ステージセレクト画面において、マップ領域に表示するステージのアイコン
@@ -15,6 +18,8 @@ public class StageIcon : GeneralUIIconController
     private StageData stageData = new StageData();
     [SerializeField]
     StageSelectManager SSM;
+    [SerializeField]
+    GeneralFlagManager GFM;
     private float chargeTime = 0;
     private float selectTime = 1;
     // Start is called before the first frame update
@@ -30,7 +35,8 @@ public class StageIcon : GeneralUIIconController
         if(CursolSelected){chargeTime += Time.deltaTime;}
         else{chargeTime = 0;}
         if(chargeTime > selectTime){
-            SSM.SetSelectedStage(this.stageData);}
+            SSM.SetSelectedStage(this.stageData);
+            GFM.SetStageName(this.stageData.StageName);}
     }
     public override void OnPointerEnter(PointerEventData eventData){
         base.OnPointerEnter(eventData);
@@ -49,5 +55,5 @@ public class StageData
     [TextArea]
     public string StageAdvise;
     public bool StageAlreadyCleared = false;
-    public SceneAsset scene;
+    public GSetting.SceneName scene;
 }

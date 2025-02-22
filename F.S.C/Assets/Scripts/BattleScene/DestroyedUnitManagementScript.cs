@@ -122,9 +122,6 @@ public class DestroyedUnitManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="flag"></param>
     private void ChildrenSpriteTranslucent(bool flag){
-        Debug.Log("DUMS CST" + DestroyedUnitManager.name + transform.position + flag);
-        //Debug.Log("DUMS CST" + DestroyedUnitManager?.name);
-        //Debug.Log("DUMS CST" + DestroyedUnitManager?.transform);
         if(DestroyedUnitManager.transform.childCount != 0){
         foreach(Transform child in DestroyedUnitManager.transform){
             SpriteRenderer spriteRenderer = child?.gameObject.GetComponent<SpriteRenderer>();

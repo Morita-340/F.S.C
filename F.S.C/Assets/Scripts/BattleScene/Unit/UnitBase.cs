@@ -23,6 +23,11 @@ public class UnitBase : MonoBehaviour
     /// </summary>
     [SerializeField]
     protected bool isPrime = false;
+    /// <summary>
+    /// 被弾時にダメージ値を表示するオブジェクト
+    /// </summary>
+    [SerializeField]
+    GameObject DamageCountObj;
     protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     protected FieldManager FM = FieldManager.GetInstance();
@@ -42,10 +47,10 @@ public class UnitBase : MonoBehaviour
     protected int EXP = 0;
     private UnitBase thisUnit;
     //以下4つのUnitBase型変数は参照渡しにだけ利用すること。このデータを使いたい場合はUnitDataからアクセスすること。
-    UnitBase upperUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
-    UnitBase downerUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
-    UnitBase rightUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
-    UnitBase leftUnit = null;//分離処理実装後でいいからこちらに他のUnitBaseのデータを残さないように（Rayを飛ばして得られた情報は直接UnitDataに登録するように）リファクタリングしたい。こんなグローバル変数があると無暗に使用してスパゲティコードになる危険性がある。
+    UnitBase upperUnit = null; 
+    UnitBase downerUnit = null;
+    UnitBase rightUnit = null; 
+    UnitBase leftUnit = null;  
     private UnitData ThisUnitData;
     public UnitData GetThisUnitData(){
         return ThisUnitData;
@@ -74,7 +79,6 @@ public class UnitBase : MonoBehaviour
     }
     IEnumerator AttackEfficiencyAddDelay(float delayTime,int reactorAttackEfficiency){
         yield return new WaitForSeconds(delayTime);
-        Debug.Log("UB AAE"+reactorAttackEfficiency+name);
         attackEfficiency += reactorAttackEfficiency;
         //処理順序とかを間違えたとしても攻撃倍率が1未満にならないようにしたい
         if(attackEfficiency < 1){attackEfficiency = 1;}
@@ -114,14 +118,12 @@ public class UnitBase : MonoBehaviour
         InstHitPoint = HitPoint;
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
         MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
-        //Debug.Log(tag);
         GetAdjacentObjLink(tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
         AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
     }
     protected virtual void GetAdjacentObjLink(string SelectedObjTag)
     {
-        //Debug.Log("LLA" + thisUnit.gameObject.name);
         if(shapeType == GSetting.ShapeType.Square){
             upperUnit = GetUpLink(SelectedObjTag);
             downerUnit = GetDownLink(SelectedObjTag);
@@ -159,9 +161,7 @@ public class UnitBase : MonoBehaviour
     private UnitBase GetDownLink(string SelectedObjTag){
         UnitBase downerUnit;
         GameObject DownerObj = GetDownerGameObject(SelectedObjTag);
-        if(DownerObj == null){
-            Debug.Log("UBase DownerObj null" + thisGameObject.name);
-            return null;}
+        if(DownerObj == null){return null;}
         downerUnit = DownerObj.GetComponent<UnitBase>();
         if(downerUnit == null)Debug.LogAssertion("DownerUnit is null;");
         return downerUnit;
@@ -192,9 +192,7 @@ public class UnitBase : MonoBehaviour
     private GameObject GetDownerGameObject(string SelectedObjTag){
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
             GameObject LeftObj = hit2D.collider.gameObject;
-            if(LeftObj.tag == SelectedObjTag){
-            Debug.Log("UB Raycast"+ this.name+ LeftObj.name);
-                return LeftObj;}
+            if(LeftObj.tag == SelectedObjTag){return LeftObj;}
         }
         return null;
     }
@@ -253,7 +251,6 @@ public class UnitBase : MonoBehaviour
         }
         DivideUnitLink();
         //分離エフェクトを実装する
-        Debug.Log("AUDMS Destroy" + thisGameObject.name + attackEfficiency);
         Destroy(thisGameObject);
     }
     private void DivideUnitLink(){
@@ -304,7 +301,6 @@ public class UnitBase : MonoBehaviour
         if(downerUnit != null)AdjacentUnitList.Add(downerUnit);
         if(rightUnit != null)AdjacentUnitList.Add(rightUnit);
         if(leftUnit != null)AdjacentUnitList.Add(leftUnit);
-        Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
         return AdjacentUnitList;
     }
     public int GetDistanseFromCore(){
@@ -314,10 +310,8 @@ public class UnitBase : MonoBehaviour
         GetAdjacentObjLink(thisGameObject.tag);
         //UnitData unitData = FM.SearchUnit(this);
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
-        Debug.Log("JJJ"+thisUnit+upperUnit+downerUnit+rightUnit+leftUnit);
     }
     public void OnTriggerEnter2D(Collider2D collision2D){
-            Debug.Log("this.gameObject.tag" + gameObject.name + this.gameObject.tag);
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             //自身がプレイヤーの場合
             case GSetting.ObjTagName.PlayerUnit: 
@@ -368,7 +362,6 @@ public class UnitBase : MonoBehaviour
             //自身が敵の場合
             case GSetting.ObjTagName.EnemyUnit:
             {
-                Debug.Log("UB TriEn" +collision2D.name + collision2D.tag);
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
@@ -436,11 +429,6 @@ public class UnitBase : MonoBehaviour
                         if(reactorBase.tag == thisGameObject.tag){
                             AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
-                    //case GSetting.ObjTagName.DisplayScope:{
-                    //    Debug.LogWarning(gameObject.name +tag+transform.position + transform.rotation);
-                    //    this.transform.parent.GetComponent<EnemyUnitMoveManagementScript>().MoveAroundPlayer();
-                    //    break;
-                    //}
                     default:break;
                 }
                 break;
@@ -448,16 +436,19 @@ public class UnitBase : MonoBehaviour
             case GSetting.ObjTagName.DestroyedUnit:
             {
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
-                    //case GSetting.ObjTagName.DisplayScope:{
-                    //    this.transform.parent.GetComponent<DestroyedUnitManagementScript>().MoveAroundPlayer();
-                    //    break;
-                    //}
                     default:break;
                 }
                 break;
             }
             default:break;
         }
+    }
+    /// <summary>
+    /// 被弾するとダメージ値を表示する
+    /// </summary>
+    /// <param name="damagePoint"></param>
+    private void DamageCount(int damagePoint){
+
     }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと

@@ -56,7 +56,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             if(childUnitObject.tag == childObjTagName.ToString()){
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
                 ReloadMaxDistanse(ChildUnit);
-                Debug.Log("AUDMS set" + childUnitObject.name + ChildUnit.GetUnitStatus() + ChildUnit.GetThisUnitData()?.isPrime);
             }
         }
         caluculateFlag = true;
@@ -70,7 +69,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         int distanseFromCore = ChildUnit.GetDistanseFromCore();
         if(maximumDistanseFromCore < distanseFromCore){
             maximumDistanseFromCore = distanseFromCore;
-            Debug.Log("AUDMS distanse " + distanseFromCore);
         }
     }
     /// <summary>
@@ -78,7 +76,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="DeleteData"></param>
     public virtual void DestroyProcess(UnitData DeleteData){
-        Debug.Log("AUDMS DP");
         ChildUnitDataList.Remove(DeleteData);
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         MCC.ExplosionShake(0.3f,0.2f);
@@ -95,30 +92,13 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         caluculateFlag = true;
         //combatPower = CaluculateCombatPower();
     }
-    /// <summary>
-    /// 分離時に呼び出されるDestroyProcess
-    /// </summary>
-    public void DestroyProcess(){
-        Debug.Log("AUDMS DP");
-        UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
-        Regenerate();
-        maximumDistanseFromCore = 0;
-        for(int i = 0; i < ThisGameObject.transform.childCount; i++){
-            GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
-            UnitBase ChildUnit = childUnitObject.GetComponent<UnitBase>();
-            if(childUnitObject.tag == childObjTagName.ToString()){ReloadMaxDistanse(ChildUnit);}
-        }
-        StackCopy.Clear();
-    }
     //幅優先探索の処理(リンクの繋がっているユニットの洗い出し)
     private void UnitBreathFirstSearch(UnitData SerachStartUnit){
         StackForBreathFirstSearch.Push(SerachStartUnit);
         SerachStartUnit.AlreadySearch = true;
         StackCopy.Add(SerachStartUnit);
-        Debug.Log("AUDMS UBFS Stack" + StackForBreathFirstSearch.Count);
         while(StackForBreathFirstSearch.Count > 0){
             UnitData PopData = StackForBreathFirstSearch.Pop();
-            Debug.Log("AUDMS UBFS while" + PopData.ReturnThisUnit().name);
             DataAddToDoubleList(PopData.ReturnFourWayLink());
         }
     }
@@ -131,9 +111,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     private void DataAddToDoubleList(List<UnitData> unitDataList){
         foreach(UnitData unitData in unitDataList){
-            if(unitData == null||unitData.ReturnThisUnit() == null){Debug.Log("AUDMS unitData null");continue;}
-            if(unitData.AlreadySearch != false){Debug.Log("AUDMS AS true" + unitData.ReturnThisUnit().name);continue;}
-            Debug.Log("AUDMS DataAdd2WList" + unitData.ReturnThisUnit().name);
+            if(unitData == null||unitData.ReturnThisUnit() == null){continue;}//ここにDebug.Logを挟まないこと。処理のスパイクが発生します
+            if(unitData.AlreadySearch != false){continue;}
             StackForBreathFirstSearch.Push(unitData);
             unitData.AlreadySearch = true;
             StackCopy.Add(unitData);
@@ -147,13 +126,11 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
         bool regeneFirstTime = true;
         Vector3 UnitDefferenceVector = new Vector3(0,0,0);
         Vector3 regenePosition = new Vector3(0,0,0);
-        Debug.Log("AUDMS PUDL" + ChildUnitDataList.Count);
         //foreach内で走査対象のリストを書き換えるとエラーが発生するので注意
         //未探索のユニットを別のリストに再格納
         //探索範囲を子オブジェクトのユニット全体から未探索だったユニットのみに絞っている
         foreach(UnitData unitData in ChildUnitDataList){
             if(unitData.AlreadySearch == false){
-                Debug.Log("AUDMS falseUnit" + unitData.ReturnThisUnit().name );
                 NotResearchUnitList.Add(unitData);
             }
         }
@@ -173,7 +150,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                         UnitDefferenceVector = new Vector3(unitObj.transform.localPosition.x, unitObj.transform.localPosition.y,0);
                         //ベクトルだから引き算の計算を逆にしてはいけない
                         regenePosition = new Vector3(unitObj.transform.position.x - ThisUnitSCore.transform.position.x , unitObj.transform.position.y - ThisUnitSCore.transform.position.y,5);
-                        Debug.Log("AUDMS DeffVec" + UnitDefferenceVector.x + UnitDefferenceVector.y);
                         regeneFirstTime = false;
                     }
                     if(unitObj.GetComponent<WeaponControllUnitBase>()){
@@ -198,19 +174,16 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     Destroy(unitObj);
                 }
             }
-            //StartCoroutine(ParentObject.GetComponent<DestroyedUnitManagementScript>().ColliderAndSpriteProcess(2));
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             ParentObject.GetComponent<DestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
             regeneFirstTime = true;
             if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
             else{ParentObjectList.Add(ParentObject);}
-            Debug.Log("AUDMS PUDL" + ChildUnitDataList.Count);
         }
         
         //探索フラグのリセット
         ChildUnitDataList.RemoveAll(unitData => unitData.AlreadySearch == false);
-        Debug.Log("AUDMS RG StackCopy" + StackCopy.Count);
         foreach(UnitData unitData in StackCopy){
             unitData.AlreadySearch = false;
         }
@@ -219,7 +192,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     public void DeleteChildrenDataFromFM(){
         FieldManager FM = FieldManager.GetInstance();
         foreach(UnitData childrenData in ChildUnitDataList){
-            Debug.Log("AUDMS DCDFFM");
             FM.UnitList.Remove(childrenData);
         }
     }

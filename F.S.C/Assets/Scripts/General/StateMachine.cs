@@ -8,7 +8,6 @@ public class StateMachine
     private IState currentState;
     public void ChangeState(IState newState)
     {
-        Debug.Log("GGG"+"\n"+currentState?.GetType() +"\n"+ newState.GetType());
         if(currentState?.GetType() == newState.GetType())return;
         currentState?.Exit();
         currentState = newState;

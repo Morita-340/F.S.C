@@ -36,6 +36,12 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
             }
         }
     }
+    /// <summary>
+    /// 武器を鹵獲できた場合にテキスト表示をする
+    /// </summary>
+    /// <param name="fadeTime"></param>
+    /// <param name="obj"></param>
+    /// <returns></returns>
     IEnumerator WaitUntilSuccessTextFade(float fadeTime,GameObject obj){
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(obj.transform.position);
         RectTransform uiRectTransform;
@@ -61,7 +67,6 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
     }
     public override void DestroyProcess(UnitData DeleteData)
     {
-        Debug.Log("EUDMS" + DeleteData.ReturnThisUnit().GetUnitStatus());
         if(!Setting){
             PAFBUIC.AddDefeatPoint(DeleteData.ReturnThisUnit().GetUnitStatus());
             PAFBUIC.ExplosionOcurre(DeleteData);

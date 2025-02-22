@@ -90,7 +90,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUnit: {fileID: 7797786967622733697}
   rb2d: {fileID: 786146057786428343}
-  turn_factor: 1
+  turn_factor: 5
   maximum_turn_factor: 180
   drive_speed: 0
   drive_minimum_speed_factor: 11.4
@@ -112,7 +112,7 @@ MonoBehaviour:
   ThisUnitSCore: {fileID: 1345618370592844781}
   DestroyParentUnitObject: {fileID: 7332052915261354937, guid: 24b41300dc6f3cd498e81441cf872e71, type: 3}
   Setting: 0
-  primeUnitsHP: 10
+  primeUnitsHP: 50
   combatPower: 0
 --- !u!114 &9062426890136840601
 MonoBehaviour:

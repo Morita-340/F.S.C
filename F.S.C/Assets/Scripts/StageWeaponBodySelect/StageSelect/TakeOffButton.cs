@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using DG.Tweening;
+using FSCGeneral;
 
 public class TakeOffButton : WindowTranslateButton
 {
@@ -18,8 +21,8 @@ public class TakeOffButton : WindowTranslateButton
         }
         base.Update();
     }
-    public void SetTranslateScene(SceneAsset sceneAsset){
-        TranslateScene = sceneAsset;
+    public void SetTranslateScene(GSetting.SceneName sceneName){
+        TranslateScene = sceneName;
         sceneRegistered = true;
     }
 }

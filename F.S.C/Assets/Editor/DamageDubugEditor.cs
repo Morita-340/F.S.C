@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
-//こういうのはエディタ拡張の一種である。
 [CustomEditor(typeof(UnitDamagedDebugger))]
 public class DamageDubugEditor : Editor
 {

@@ -26,7 +26,6 @@ public class PlayerUnitSimulateScript : MonoBehaviour
                 GameObject PreviewObject = ThisUnitSimulater.transform.GetChild(i).gameObject;
                 PreviewUnitManagerScript previewUnitManagerScript = PreviewObject.GetComponent<PreviewUnitManagerScript>();
                 if(previewUnitManagerScript.GetIsCovered() == true){
-                    Debug.Log("RRR");
                     IsPlunderable = false;
                     break;
                 }else{IsPlunderable = true;}
@@ -38,9 +37,7 @@ public class PlayerUnitSimulateScript : MonoBehaviour
                 }else{IsPlunderable = false;}
                 */
             }
-        }else{IsNotIsolated = false;}
-        Debug.Log("PUSS" + IsPlunderable + IsNotIsolated);
-        
+        }else{IsNotIsolated = false;}        
     }
     public bool Plunderable(){
         return IsPlunderable && IsNotIsolated;

@@ -22,7 +22,6 @@ public class EnemyRaidController : EnemyUnitMoveManagementScript
         base.Update();
         stateMachine.Update();
         foreach(GameObject gameObject in DiscoveredObjectList){
-            Debug.Log("FFF"+gameObject.name);
             if(gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
                 Player = gameObject;
                 break;

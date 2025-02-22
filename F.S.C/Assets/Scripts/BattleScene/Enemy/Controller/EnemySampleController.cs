@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using FSCGeneral;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager.UI;
 using UnityEngine;
 
 /// <summary>
@@ -25,7 +23,6 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
         base.Update();
         stateMachine.Update();
         foreach(GameObject gameObject in DiscoveredObjectList){
-            Debug.Log("FFF"+gameObject.name);
             if(gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
                 Player = gameObject;
                 break;
@@ -53,7 +50,6 @@ public class SampleIdle : IdleState
     public override void Update()
     {
         rotateTime += Time.deltaTime;
-        Debug.Log("SampleIdle"+rotateTime + myRb2d.velocity + myTransform.forward);
         if(rotateTime > 5){
             selectAngle = rotateAngleList[Random.Range(0, rotateAngleList.Count())];
             rotateTime = 0;
@@ -87,7 +83,6 @@ public class SampleChaseMove : MoveState
         if(ChasedPlayer == null){return;}
         myRb2d.velocity = myTransform.up * 10f;
         float targetAngle = Vector2.SignedAngle(myTransform.position,ChasedPlayer.transform.position);
-        Debug.Log("JJJ"+targetAngle);
         if(targetAngle >= 0){myRb2d.AddTorque(-(targetAngle*2));myRb2d.angularVelocity = 0;}
         else{myRb2d.AddTorque(targetAngle*2);myRb2d.angularVelocity = 0;}
     }

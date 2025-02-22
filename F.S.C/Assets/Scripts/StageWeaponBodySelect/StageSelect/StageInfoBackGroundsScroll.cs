@@ -7,9 +7,9 @@ public class StageInfoBackGroundsScroll : MonoBehaviour
 {
     [SerializeField]
     private RawImage rawImage = null;
-    [SerializeField,Range(0f,3f)]
+    [SerializeField,Range(-3f,3f)]
     private float xSpeed = 0;
-    [SerializeField,Range(0f,3f)]
+    [SerializeField,Range(-3f,3f)]
     private float ySpeed = 0;
     [SerializeField]
     private bool roop = false;

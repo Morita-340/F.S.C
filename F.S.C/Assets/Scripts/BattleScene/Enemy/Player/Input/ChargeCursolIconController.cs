@@ -24,7 +24,6 @@ public class ChargeCursolIconController : MonoBehaviour
         DrawLine(fullChargeCircle,1.1f,fullChargeCircleRange);
     }
     private void DrawLine(LineRenderer lineRenderer,float inputRadiusEfficiency,int range){
-        Debug.LogWarning(range);
         this.transform.localScale = new Vector2(this.transform.localScale.x, this.transform.localScale.x);
         CursolPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,0));
         this.transform.position = CursolPosition;
@@ -107,7 +106,6 @@ public class ChargeCursolIconController : MonoBehaviour
         chargeCircle.startColor = inputColor;
         chargeCircle.endColor = inputColor;
         chargeCircleRange = (int)(chargeTimeForAttackRatio * 360 * 1 +1);
-        Debug.LogWarning("aaa"+chargeTimeForAttackRatio +" "+chargeCircleRange + " "+chargeTime);
         fullChargeCircleRange = 361;
         fullChargeCircle.startColor = postColor;
         fullChargeCircle.endColor = postColor;
@@ -124,7 +122,6 @@ public class ChargeCursolIconController : MonoBehaviour
         chargeCircle.startColor = inputColor;
         chargeCircle.endColor = inputColor;
         chargeCircleRange = (int)((1 - timeForAttackRatio) * 360 * 1);
-        Debug.LogWarning("ccc"+timeForAttackRatio +" "+chargeCircleRange + " "+ dischargeTime +" "+inputTime );
         fullChargeCircle.startColor = Color.clear;
         fullChargeCircle.endColor = Color.clear;
     }

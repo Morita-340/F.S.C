@@ -6,7 +6,9 @@ public class SpawnSystem : MonoBehaviour
 {
     PlayerUnitDestroyManagementScript PUDMS;
     [SerializeField]
-    WaveDataBase WDB;
+    WaveDataBase normalWDB;
+    [SerializeField]
+    WaveDataBase bossWDB;
     int playerCombatPower = 0;
     // Start is called before the first frame update
     void Start()
@@ -26,10 +28,15 @@ public class SpawnSystem : MonoBehaviour
     public void SetPUDMS(PlayerUnitDestroyManagementScript newPUDMS){
         if (newPUDMS != null){this.PUDMS = newPUDMS;}
     }
-    public List<GameObject> Spawn(int nowWave){
+    public List<GameObject> Spawn(bool bossFlag){
+        WaveData UseWave;
         playerCombatPower = PUDMS.GetCombatPower();
         //ウェーブライブラリからウェーブを取得する。難易度調整のパラメータをどこから取るのかは要検討
-        WaveData UseWave = WDB.GetAppropriateWaveData(playerCombatPower, 100,10);
+        if(bossFlag){
+            UseWave = bossWDB.GetAppropriateWaveData(playerCombatPower,1000,0);
+        }else{
+            UseWave = normalWDB.GetAppropriateWaveData(playerCombatPower, 1000,0);
+        }
         Vector3[] InstPosRotInfo = UseWave.GetSelectedWaveShapePreset();
         List<GameObject> WaveEnemyList = UseWave.GetWaveEnemyList();
         List<GameObject> InstEnemyList = new List<GameObject>();

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
-using Unity.VisualScripting;
-using Microsoft.Unity.VisualStudio.Editor;
 
 public class ResultUIController : MonoBehaviour
 {

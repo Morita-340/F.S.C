@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUnit: {fileID: 2574980494636912466}
   rb2d: {fileID: 743218599281062247}
-  turn_factor: 1
+  turn_factor: 5
   maximum_turn_factor: 1
   drive_speed: 1
   drive_minimum_speed_factor: 1.5

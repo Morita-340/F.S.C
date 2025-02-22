@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using TMPro;
 
 /// <summary>
@@ -34,7 +33,7 @@ public class StageSelectManager : MonoBehaviour
         StageName.text = DisplayStageData?.StageName;
         StageSummary.text = DisplayStageData?.StageSummary;
         StageAdvise.text = DisplayStageData?.StageAdvise;
-        if(DisplayStageData == SelectedStageData){SelectedIcon.SetActive(true);}
+        if(SelectedStageData != null && DisplayStageData == SelectedStageData){SelectedIcon.SetActive(true);}
         else{SelectedIcon.SetActive(false);}
     }
     /// <summary>

@@ -74,7 +74,6 @@ public class UnitData
     /// </summary>
     /// <param name="DestroyUnitData"></param>
     protected void DeleteDestroyUnitLink(UnitData DestroyUnitData){
-        Debug.Log("PUDMS DDUL");
         if(UpperUnit == DestroyUnitData)UpperUnit = null;
         else if(DownerUnit == DestroyUnitData)DownerUnit = null;
         else if(RightUnit == DestroyUnitData)RightUnit = null;

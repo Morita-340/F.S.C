@@ -18,7 +18,6 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     protected virtual void Awake(){
         ChildrenUnitDatalist = AUDMS.GetChildUnitDataList();
         foreach (UnitData child in AUDMS.GetChildUnitDataList()){
-            Debug.LogWarning(child.isPrime);
         }
     }
     protected virtual void Start(){
@@ -30,9 +29,9 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     public virtual void NormalAttack(float time,Vector3 TargetPosition){
         if(time < 0){NextNormalAttack = 0;}
         if(time >= NextNormalAttack){
-            Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
+            //Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
             foreach (UnitData child in ChildrenUnitDatalist){
-                Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
+                //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 if(child.ReturnThisUnit() is AttackUnit AU){
                     AU.NormalAttack(TargetPosition);
                 }
@@ -50,11 +49,11 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
                 inTimeRangeOFChargeAttack = true;
                 nextChargeAttackTime =inputTime;}
             if(inputTime >= nextChargeAttackTime){
-                Debug.Log("AUAMS charge" + inputTime +" "+ nextChargeAttackTime);
+                //Debug.Log("AUAMS charge" + inputTime +" "+ nextChargeAttackTime);
                 foreach (UnitData child in ChildrenUnitDatalist){
                     if(child.ReturnThisUnit() is AttackUnit AU){
                         AU.ChargeAttack(TargetPosition);
-                        Debug.Log("AUAMS charge unit" + child.ReturnThisUnit().name);
+                        //Debug.Log("AUAMS charge unit" + child.ReturnThisUnit().name);
                     }
                 }
                 nextChargeAttackTime += chargeAttackInterval;

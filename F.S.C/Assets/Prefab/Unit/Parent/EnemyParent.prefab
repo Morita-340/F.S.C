@@ -255,10 +255,10 @@ MonoBehaviour:
   ThisGameObject: {fileID: 0}
   ThisUnitSCore: {fileID: 0}
   DestroyParentUnitObject: {fileID: 1608189194634213618, guid: bd2b738fde28fe3449c4082c17f81d6e, type: 3}
+  Setting: 0
   primeUnitsHP: 10
   combatPower: 0
   WeaponControllConectedUIText: {fileID: 4981675544005101895, guid: 53195e3a6ec206a42819c4751215c1f3, type: 3}
-  Setting: 0
 --- !u!114 &6977689880444978359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AUDMS: {fileID: 6587598530369248843}
-  normalAttackInterval: 1
+  normalAttackInterval: 5
   chargeAttackInterval: 1
 --- !u!50 &1288895544562122458
 Rigidbody2D:

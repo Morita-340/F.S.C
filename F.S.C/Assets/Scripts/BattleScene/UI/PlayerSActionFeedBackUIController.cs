@@ -37,7 +37,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     void Update()
     {
         ChangePlayerCombatPower();
-            Debug.Log("PAFBUIC player" +plComPChangeFlag+ playerCombatPower + " "+ PUDMS.GetCombatPower());
+        //Debug.Log("PAFBUIC player" +plComPChangeFlag+ playerCombatPower + " "+ PUDMS.GetCombatPower());
         //プレイヤーの戦闘力の表示管理
         if(plComPChangeFlag &&playerCombatPower != PUDMS.GetCombatPower()){
             if(PUDMS.GetCombatPower() != 0){//ゼロ除算対策
@@ -102,7 +102,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     public void AddDefeatPoint(int unitCombatPower){
         goalDefeatPoint += unitCombatPower;
         defPChangeFlag = true;
-        Debug.Log("PAFBUIC defeatpoint" + unitCombatPower + " "+ goalDefeatPoint);
+        //Debug.Log("PAFBUIC defeatpoint" + unitCombatPower + " "+ goalDefeatPoint);
     }
 
     public void ExplosionOcurre(UnitData unitData){

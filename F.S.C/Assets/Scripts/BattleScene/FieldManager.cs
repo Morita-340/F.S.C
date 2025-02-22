@@ -24,7 +24,6 @@ namespace FSCGeneral{
         public UnitData SearchUnit(UnitBase serachUnit){
             foreach(UnitData unitData in FM.UnitList){
                 if(unitData.ReturnThisUnit()==serachUnit){
-                    Debug.Log("LLJ"+unitData.ReturnThisUnit() + serachUnit);
                     return unitData;
                 }
             }return new UnitData(null,0,false);

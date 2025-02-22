@@ -15,7 +15,6 @@ public class GeneralUIIconController : MonoBehaviour , IPointerEnterHandler,IPoi
     // Update is called once per frame
     protected virtual void Update()
     {
-        Debug.Log(CursolSelected);
     }
     public virtual void OnPointerEnter(PointerEventData eventData)
     {

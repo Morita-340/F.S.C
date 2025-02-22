@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUnit: {fileID: 2828146760691619699}
   rb2d: {fileID: 7266828432852549522}
-  turn_factor: 0.7
+  turn_factor: 4
   maximum_turn_factor: 180
   drive_speed: 0
   drive_minimum_speed_factor: 7
@@ -1070,19 +1070,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5550387651946207011, guid: 971b8e4c16de4e74896f5f48be6f5c58, type: 3}
       propertyPath: m_SpriteTilingProperty.border.w
-      value: 0.125
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 5550387651946207011, guid: 971b8e4c16de4e74896f5f48be6f5c58, type: 3}
       propertyPath: m_SpriteTilingProperty.border.x
-      value: 0.125
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 5550387651946207011, guid: 971b8e4c16de4e74896f5f48be6f5c58, type: 3}
       propertyPath: m_SpriteTilingProperty.border.y
-      value: 0.125
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 5550387651946207011, guid: 971b8e4c16de4e74896f5f48be6f5c58, type: 3}
       propertyPath: m_SpriteTilingProperty.border.z
-      value: 0.125
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 7540291055821978927, guid: 971b8e4c16de4e74896f5f48be6f5c58, type: 3}
       propertyPath: m_LocalPosition.x

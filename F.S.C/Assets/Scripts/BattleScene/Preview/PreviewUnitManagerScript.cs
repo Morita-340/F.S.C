@@ -46,7 +46,6 @@ public class PreviewUnitManagerScript : MonoBehaviour
                 break;}
             default:break;
         }
-        Debug.Log("TTT");
     }
 
     // Update is called once per frame
@@ -70,21 +69,18 @@ public class PreviewUnitManagerScript : MonoBehaviour
         if(collider.tag == "PlayerUnit"){
             //stayCovered  = true;
             isCovered = true;
-            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTC");
         }
     }
     void OnTriggerEnter2D(Collider2D collider){
         if(collider.tag == "PlayerUnit"){
             //enterCovered= true;
             isCovered = false;
-            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTS");
         }
     }
     void OnTriggerExit2D(Collider2D collider){
         if(collider.tag == "PlayerUnit"){
             //exitCovered = true;
             isCovered = false;
-            Debug.Log(collider.transform.gameObject.name + gameObject.transform.localPosition + "TTF");
         }
     }
     public List<UnitBase> GetAdjacentPlayerUnit(){
@@ -182,11 +178,9 @@ public class PreviewUnitManagerScript : MonoBehaviour
                         PlayerHit2D = hit2D;
                     }
                     Debug.DrawRay(RayPosition,new(0.3f,0,0),Color.green);
-                    Debug.Log("PUMS Ray" +this.gameObject + RayPosition + hit2D.transform);
                 }else{Debug.DrawRay(RayPosition,new(0.3f,0,0),Color.red);}
             }else{playerHitFirst = true;}
             if(PlayerHit2D){
-                Debug.Log("PUMS RaycastToPlayer");
                 break;}
         }
         return PlayerHit2D;

@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using FSCGeneral;
 
 public class WindowTranslateButton : GeneralUIIconController
 {
@@ -12,7 +11,7 @@ public class WindowTranslateButton : GeneralUIIconController
     [SerializeField,Range(0.5f,2f)]float chargeThreshold = 1;
     [SerializeField]RectTransform ChargeSlider;
     [SerializeField]RectTransform ExecuteSlider;
-    [SerializeField]protected SceneAsset TranslateScene;
+    [SerializeField]protected GSetting.SceneName TranslateScene;
     float initImageWide;
     bool executeFlag = false;
 
@@ -44,7 +43,6 @@ public class WindowTranslateButton : GeneralUIIconController
         }
         if(nowChargeTime > chargeThreshold){
             //ボタンの効力発揮
-            Debug.Log("ボタン押したぞ");
             executeFlag = true;
         }
     }
@@ -57,7 +55,7 @@ public class WindowTranslateButton : GeneralUIIconController
     IEnumerator SceneTranslate(){
         if(TranslateScene == null){Debug.LogAssertion("TranslateScene is null");yield break;}
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene(TranslateScene.name);
+        SceneManager.LoadScene(TranslateScene.ToString());
     }
     void ExecuteUISlider(){
         //チャージ完了なら見た目を更に変える

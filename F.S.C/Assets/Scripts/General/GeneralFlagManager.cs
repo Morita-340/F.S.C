@@ -14,6 +14,7 @@ public sealed class GeneralFlagManager : MonoBehaviour
     /// </summary>
     [SerializeField,ReadOnly]private GameObject SelectedBody;
     [SerializeField,ReadOnly]private GameObject SelectedWeapon;
+    [SerializeField,ReadOnly]private string stageName;
     [SerializeField]
     private List<WeaponFlag> WeaponList = new List<WeaponFlag>(){};
     public List<BodyFlag> GetBodyList(){
@@ -33,6 +34,12 @@ public sealed class GeneralFlagManager : MonoBehaviour
     }
     public (GameObject,GameObject) GetSelectedPlayer(){
         return (SelectedBody,SelectedWeapon);
+    }
+    public void SetStageName(string inputName){
+        stageName = inputName;
+    }
+    public string GetStageName(){
+        return stageName;
     }
 }
 /// <summary>

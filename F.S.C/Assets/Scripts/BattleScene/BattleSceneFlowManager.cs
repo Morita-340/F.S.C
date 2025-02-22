@@ -49,22 +49,28 @@ public class BattleSceneFlowManager : MonoBehaviour
     IEnumerator GameFlow(){
         while(nowWave <= waveNum){
             Debug.Log("BSFM "+nowWave);
-            WCEUIC.WaveStartUI(nowWave,nowWave== waveNum);
-            yield return new WaitForSeconds(0.1f);
-            WaveEnemyList = SpS.Spawn(nowWave);
+            //最終ウェーブであるかを判定する
+            bool finalwaveFlag = nowWave == waveNum;
+            //ウェーブ開始演出
+            yield return WCEUIC.WaveStartUI(nowWave,finalwaveFlag,GFM.GetStageName());
+            //yield return new WaitForSeconds(0.1f);
+            //敵スポーン
+            WaveEnemyList = SpS.Spawn(finalwaveFlag);
             nowWave ++;
+            //WaveEnemyListの全機体が撃墜されるまで次のループに移らない
             //PUDMSの撃墜判定が有効ならループを直ぐに抜ける
+            yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList) || playerIsDead);
             if(playerIsDead){
                 situation = GSetting.ResultSituation.PlayerDestroyed.ToString();
-                Debug.Log("BSFM PlayerDead");break;}
-            //WaveEnemyListの全機体が撃墜されるまで次のループに移らない
-            yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList));
+                Debug.Log("BSFM PlayerDead");
+                yield return new WaitForSeconds(3f);
+                break;}
             NoDamageClearWaveNumCountUp();
             WCEUIC.WaveClearUI();
             yield return new WaitForSeconds(3f);
+            if(nowWave>=waveNum){situation = GSetting.ResultSituation.AllWaveClear.ToString();}
         }
 
-        if(nowWave>=waveNum){situation = GSetting.ResultSituation.AllWaveClear.ToString();}
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
         BattleEndProcess(situation);
     }
@@ -95,10 +101,10 @@ public class BattleSceneFlowManager : MonoBehaviour
     void Update()
     {
         playerIsDead = PUDMS.GetIsDead();
+        Debug.LogWarning("FFF" + PUDMS.GetIsDead());
     }
     private void BattleEndProcess(string situation){
         StartCoroutine(RUC.ResultUI(situation));
-        Debug.Log("BSFM BEP");
     }
     private void NoDamageClearWaveNumCountUp(){
         if(PUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}

@@ -40,7 +40,6 @@ public class EnemySearchManagementScript : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other){
         //重複していないか確認 重複があるなら処理を終える
         foreach(GameObject obj in DiscoveredObjectList){
-            Debug.Log("VVV"+obj.name);
             if(obj == other.transform.root.gameObject){return;}
         }
         //リストに格納

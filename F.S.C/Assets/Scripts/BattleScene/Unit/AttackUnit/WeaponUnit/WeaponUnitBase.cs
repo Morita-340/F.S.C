@@ -56,14 +56,11 @@ public class WeaponUnitBase : AttackUnit
                 icon.SetActive(true);
             }else{icon.SetActive(false);}
         }
-        Debug.Log(WCUB== null);
-        Debug.Log("AAAAAA"+ReactorLevelUISSpRenderer);
         if(WCUB == null){ReactorLevelUISSpRenderer.enabled = false;}
         else{ReactorLevelUISSpRenderer.enabled=true;}
 
         Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;
         if(ControllUnitPosition != Vector3.zero)Debug.DrawLine(RayPosition, transform.position);
-        //WCUB = GetThisControllUnit(ControllUnitPosition);
     }
     protected WeaponControllUnitBase GetThisControllUnit(Vector3 ControllUnitPosition){
         Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;

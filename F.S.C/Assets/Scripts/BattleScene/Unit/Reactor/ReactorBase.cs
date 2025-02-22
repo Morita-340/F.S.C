@@ -84,7 +84,6 @@ public class ReactorBase : UnitBase
                         else{
                             previsionalNum += attackUnit.GetUnitAttackPower();
                         }
-                        Debug.Log(previsionalNum);
                         break;
                     }
                 }
@@ -92,7 +91,6 @@ public class ReactorBase : UnitBase
         }
         reactorEffectToOtherUnit = previsionalNum * reactorsEfficiencyLevel;
         if(reactorEffectToOtherUnit < 0)reactorEffectToOtherUnit = 0;
-        Debug.Log(" "+reactorEffectToOtherUnit);
         return reactorEffectToOtherUnit;
     }
 }

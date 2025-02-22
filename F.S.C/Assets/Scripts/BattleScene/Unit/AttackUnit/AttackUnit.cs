@@ -29,7 +29,6 @@ public class AttackUnit : UnitBase
         chargeAttackPower = ChargeWeapon?.GetAttackPower()?? 0;
     }
     public void SetChargeWeapon(WeaponBase Weapon){
-        Debug.Log("LLL" + Weapon.name);
         ChargeWeapon = Weapon;
         SetWeaponPower();
     }
@@ -77,7 +76,7 @@ public class AttackUnit : UnitBase
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
-            Vector2 weaponVelocity = ((Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity)*NormalWeapon.GetVelocityEfficiency();
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ this.transform.root.GetComponent<Rigidbody2D>().velocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
                 case GSetting.ObjTagName.PlayerUnit:{
                     break;}
@@ -113,7 +112,7 @@ public class AttackUnit : UnitBase
             WeaponBase InstWeapon = Instantiate(ChargeWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
-            Vector2 weaponVelocity = ((Vector2)FR.GetTargetDelta()*10 + this.transform.root.GetComponent<Rigidbody2D>().velocity)*ChargeWeapon.GetVelocityEfficiency();
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *ChargeWeapon.GetVelocityEfficiency()+ this.transform.root.GetComponent<Rigidbody2D>().velocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
                 case GSetting.ObjTagName.PlayerUnit:{
                     break;}
