@@ -13,7 +13,7 @@ public class EnemyRaidController : EnemyUnitMoveManagementScript
     {
         base.Start();
         stateMachine = new StateMachine();
-        stateMachine.ChangeState(new IdleState());
+        stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));
     }
 
     // Update is called once per frame

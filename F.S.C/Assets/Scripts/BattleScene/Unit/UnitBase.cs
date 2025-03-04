@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using FSCGeneral;
-using Unity.VisualScripting;
+using TMPro;
+using DG.Tweening;
 using UnityEngine;
 
 public class UnitBase : MonoBehaviour
@@ -27,7 +28,7 @@ public class UnitBase : MonoBehaviour
     /// 被弾時にダメージ値を表示するオブジェクト
     /// </summary>
     [SerializeField]
-    GameObject DamageCountObj;
+    GameObject DamageCountText;
     protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     protected FieldManager FM = FieldManager.GetInstance();
@@ -51,7 +52,9 @@ public class UnitBase : MonoBehaviour
     UnitBase downerUnit = null;
     UnitBase rightUnit = null; 
     UnitBase leftUnit = null;  
-    private UnitData ThisUnitData;
+    protected UnitData ThisUnitData;
+    private RectTransform uiRectTransform;
+    [SerializeField,ReadOnly] protected SoundController SCer;
     public UnitData GetThisUnitData(){
         return ThisUnitData;
     }
@@ -104,6 +107,7 @@ public class UnitBase : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Awake()
     {
+        SCer = GetComponent<SoundController>();
         thisGameObject = this.gameObject;
         thisUnit = this;
         ThisUnitData= new UnitData(thisUnit,(int)shapeType,isPrime);
@@ -113,6 +117,7 @@ public class UnitBase : MonoBehaviour
         || this.tag == GSetting.ObjTagName.EnemyUnit.ToString()
         ||this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
         {distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition);}
+        uiRectTransform  = GameObject.Find("UICanvas").GetComponent<RectTransform>();
     }
     protected virtual void Start(){
         InstHitPoint = HitPoint;
@@ -240,7 +245,9 @@ public class UnitBase : MonoBehaviour
         AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
         if(HitPoint <= 0){DestroyUnit();}
     }
-    public virtual void NormalAttack(Vector3 TargetPosition){}
+    public virtual IEnumerator NormalAttack(Vector3 TargetPosition){
+        yield return null;
+    }
     public virtual void ChargeAttack(Vector3 TargetPosition){}
     //HPが0になった時の破壊処理（分離の処理はAUDMSが行う）
     protected virtual void DestroyUnit(){
@@ -258,7 +265,7 @@ public class UnitBase : MonoBehaviour
             ThisUnitData.DeleteFourWayLink();
             FM.DeleteData(ThisUnitData);
             }
-        if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData);
+        if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData,false);
     }
     /// <summary>
     /// 離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している。合体時に使用
@@ -321,21 +328,28 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.EnemyWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
                         if(HitPoint >0){
+                            SCer.PlaySE(0);
                             //素体ユニットであるかどうかで減算対象を変える
                             if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
-                            else{HitPoint -= HitWeapon.GetTotalDamage();}
+                            else{
+                                DamageCount(HitWeapon.GetTotalDamage());
+                                }
                         }
                         break;}
                     case GSetting.ObjTagName.EnemyWeapon2:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
                         if(HitPoint >0){
+                            SCer.PlaySE(0);
                             //素体ユニットであるかどうかで減算対象を変える
                             if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
-                            else{HitPoint -= HitWeapon.GetTotalDamage();}
+                            else{
+                                DamageCount(HitWeapon.GetTotalDamage());
+                                }
                         }
                         break;}
                     case GSetting.ObjTagName.EnemyUnit:{
-                        HitPoint = 0;
+                        SCer.PlaySE(0);
+                        DamageCount(HitPoint);
                         break;}
                     //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
@@ -347,11 +361,11 @@ public class UnitBase : MonoBehaviour
                     //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
                     case GSetting.ObjTagName.ReactorExplosion:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
-                        if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
+                        if(HitPoint >0)DamageCount(reactorBase.GetReactorsEfficiencyLevel());
                         break;}
                     case GSetting.ObjTagName.CoreExplosion:{
                         CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
-                        if(HitPoint > 0)HitPoint -= coreBase.GetUnitStatus();
+                        if(HitPoint > 0)DamageCount(coreBase.GetUnitStatus());
                         break;
                     }
                     default:break;
@@ -365,14 +379,17 @@ public class UnitBase : MonoBehaviour
                 switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), collision2D!.transform.tag,true)){
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
-                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
+                        SCer.PlaySE(0);
+                        if(HitPoint >0){DamageCount(HitWeapon.GetTotalDamage());}
                         break;}
                     case GSetting.ObjTagName.PlayerWeapon2:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
-                        if(HitPoint >0)HitPoint -= HitWeapon.GetTotalDamage();
+                        SCer.PlaySE(0);
+                        if(HitPoint >0)DamageCount(HitWeapon.GetTotalDamage());
                         break;}
                     case GSetting.ObjTagName.PlayerUnit:{
-                        HitPoint = 0;
+                        SCer.PlaySE(0);
+                        DamageCount(HitPoint);
                         break;}
                     //敵のリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
@@ -384,12 +401,12 @@ public class UnitBase : MonoBehaviour
                     //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
                     case GSetting.ObjTagName.ReactorExplosion:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
-                        if(HitPoint >0)HitPoint -= reactorBase.GetReactorsEfficiencyLevel();
+                        if(HitPoint >0)DamageCount(reactorBase.GetReactorsEfficiencyLevel());
                         break;}
                     //コアが爆発すると敵味方関係なく攻撃力の分だけダメージを受ける
                     case GSetting.ObjTagName.CoreExplosion:{
                         CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
-                        if(HitPoint > 0)HitPoint -= coreBase.GetUnitStatus();
+                        if(HitPoint > 0)DamageCount(coreBase.GetUnitStatus());
                         break;
                     }
                     default:break;
@@ -448,7 +465,21 @@ public class UnitBase : MonoBehaviour
     /// </summary>
     /// <param name="damagePoint"></param>
     private void DamageCount(int damagePoint){
-
+        float fadeTime = 0.5f;
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(this.transform.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            uiRectTransform, 
+            screenPosition, 
+            Camera.main, 
+            out Vector2 localPosition
+        );
+        GameObject DamageObj = Instantiate(DamageCountText,uiRectTransform.transform);
+        DamageObj.GetComponent<RectTransform>().anchoredPosition = screenPosition + localPosition + new Vector2(UnityEngine.Random.Range(-0.5f,0.5f),UnityEngine.Random.Range(-0.5f,0.5f));
+        TextMeshProUGUI Text = DamageObj.GetComponent<TextMeshProUGUI>();
+        Text.text = damagePoint.ToString();
+        Text.DOFade(0f,fadeTime);
+        HitPoint -= damagePoint;
+        SCer.PlaySE(0);
     }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと
@@ -456,6 +487,6 @@ public class UnitBase : MonoBehaviour
     public void DebugDamaged(){
         //素体ユニットであるかどうかで減算対象を変える
         if(isPrime){AUDMS?.DecreasePrimeUnitsHP(1);}
-        else{HitPoint -= 1;}
+        else{DamageCount(1);}
     }
 }

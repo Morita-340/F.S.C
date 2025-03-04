@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5778742301698727825}
   - component: {fileID: 3058440813967483839}
   - component: {fileID: 781686125089175486}
+  - component: {fileID: 3340433952822821662}
   m_Layer: 3
   m_Name: NormalUnit
   m_TagString: EnemyUnit
@@ -149,7 +150,9 @@ MonoBehaviour:
   MainCamera: {fileID: 0}
   offsetRotation: 0
   isPrime: 1
+  DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
   attackEfficiency: 1
+  SCer: {fileID: 0}
 --- !u!114 &781686125089175486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,3 +166,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anotherUnitBase: {fileID: 0}
+--- !u!114 &3340433952822821662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5483537342526521292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: d5e34ea7b9c2f084ba8697419eb9b844, type: 3}
+  playOnAwake: 0

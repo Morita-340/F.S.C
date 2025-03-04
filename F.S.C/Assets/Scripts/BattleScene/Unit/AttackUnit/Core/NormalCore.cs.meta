@@ -3,7 +3,13 @@ guid: 5020915b38495994eaa696e10bf1fccf
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MainCamera: {instanceID: 0}
+  - DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
+  - NormalWeapon: {instanceID: 0}
+  - ChargeWeapon: {instanceID: 0}
+  - ReactorLevelUI: {instanceID: 0}
+  - CEM: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

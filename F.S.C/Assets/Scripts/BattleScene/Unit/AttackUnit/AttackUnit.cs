@@ -12,11 +12,19 @@ public class AttackUnit : UnitBase
     protected GameObject InstReactorLevelUI;
     protected SpriteRenderer ReactorLevelUISSpRenderer;
     protected FanRange FR;
+    /// <summary>
+    /// AUAMS→AttackUnitの攻撃処理がすべての子オブジェクトに対して同時に行われているので、AttackUnit側で攻撃タイミングをずらすことで、弾幕を張ることができ、弾を当てやすくなる
+    /// </summary>
+    protected float attackTimeOffset;
+    protected override void Awake(){
+        FR = GetComponent<FanRange>();
+        base.Awake();
+    }
     // Start is called before the first frame update
     protected override void Start()
     {
         SetWeaponPower();
-        FR = this.gameObject.GetComponent<FanRange>();
+        attackTimeOffset = UnityEngine.Random.Range(0.1f,0.9f);
         if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()||tag == GSetting.ObjTagName.DestroyedUnit.ToString()){
             InstReactorLevelUI = Instantiate(ReactorLevelUI,this.gameObject.transform);
             InstReactorLevelUI.transform.position = this.transform.position + new Vector3(0,0,-2);
@@ -52,11 +60,11 @@ public class AttackUnit : UnitBase
         }
         base.Update();
     }
-    public override void NormalAttack(Vector3 TargetPosition)
+    public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
-        if(NormalWeapon == null){return;}
+        if(NormalWeapon == null){yield break;}
         if(FR.InRange(TargetPosition)){
-            base.NormalAttack(TargetPosition);
+            yield return base.NormalAttack(TargetPosition);
             Vector3 FirePosition = this.transform.position;
             Quaternion FireRotation = this.transform.rotation;
             //ロケット弾を前方に射出
@@ -76,6 +84,7 @@ public class AttackUnit : UnitBase
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
+            yield return new WaitForSeconds(attackTimeOffset);
             Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ this.transform.root.GetComponent<Rigidbody2D>().velocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
                 case GSetting.ObjTagName.PlayerUnit:{
@@ -86,7 +95,7 @@ public class AttackUnit : UnitBase
                 }
                 default:break;
             }
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = weaponVelocity;
+            InstWeapon.SetVelocity(weaponVelocity);
         }
     }
     public override void ChargeAttack(Vector3 TargetPosition)

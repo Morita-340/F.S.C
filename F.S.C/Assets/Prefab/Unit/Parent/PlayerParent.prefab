@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 9166066148463581606}
   - component: {fileID: 6016136927163931872}
   - component: {fileID: 4589075023536695908}
+  - component: {fileID: 5215722536920419664}
   m_Layer: 0
   m_Name: PlayerParent
   m_TagString: PlayerUnit
@@ -146,6 +147,7 @@ MonoBehaviour:
   drive_speed: 1
   drive_minimum_speed_factor: 1.5
   drive_miximum_speed_factor: 1.5
+  Setting: 0
 --- !u!114 &6016136927163931872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,8 +163,10 @@ MonoBehaviour:
   ThisGameObject: {fileID: 8135838303104816697}
   ThisUnitSCore: {fileID: 0}
   DestroyParentUnitObject: {fileID: 7332052915261354937, guid: 24b41300dc6f3cd498e81441cf872e71, type: 3}
+  Setting: 0
   primeUnitsHP: 10
   combatPower: 0
+  SCer: {fileID: 0}
 --- !u!114 &4589075023536695908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,3 +182,19 @@ MonoBehaviour:
   AUDMS: {fileID: 6016136927163931872}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+--- !u!114 &5215722536920419664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8135838303104816697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0

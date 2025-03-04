@@ -14,7 +14,7 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
     {
         base.Start();
         stateMachine = new StateMachine();
-        stateMachine.ChangeState(new IdleState());
+        stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));
     }
 
     // Update is called once per frame
@@ -55,7 +55,7 @@ public class SampleIdle : IdleState
             rotateTime = 0;
         }
         if(rotateTime > 4){
-            myRb2d.AddTorque(selectAngle);
+            //myRb2d.AddTorque(selectAngle);
             myRb2d.angularVelocity = 0;
         }else{
         myRb2d.velocity = myTransform.up * 10f;
@@ -84,7 +84,9 @@ public class SampleChaseMove : MoveState
         myRb2d.velocity = myTransform.up * 10f;
         float targetAngle = Vector2.SignedAngle(myTransform.position,ChasedPlayer.transform.position);
         if(targetAngle >= 0){myRb2d.AddTorque(-(targetAngle*2));myRb2d.angularVelocity = 0;}
-        else{myRb2d.AddTorque(targetAngle*2);myRb2d.angularVelocity = 0;}
+        else{
+            myRb2d.AddTorque(targetAngle*2);
+            myRb2d.angularVelocity = 0;}
     }
 }
 public class HyperAttackState : AttackState

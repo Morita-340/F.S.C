@@ -12,7 +12,7 @@ public class MouseInput : MonoBehaviour
     [SerializeField,ReadOnly]GameObject PlayerUnit;
     [SerializeField]ChargeCursolIconController ChargeIcon;
     [SerializeField,Range(0f,2f)]float firstAttackInterval = 0.5f;
-
+    [SerializeField,ReadOnly]protected SoundController SCer;
     private PlayerUnitAttackManagementScript PUAMS;
     private PlayerUnitDestroyManagementScript PUDMS;
     private PlayerUnitSimulateScript playerUnitSimulateScript;
@@ -35,6 +35,7 @@ public class MouseInput : MonoBehaviour
         //シーン内のプレイヤーが単一であるため
         PlayerUnit = FindObjectOfType<PlayerUnitDestroyManagementScript>().gameObject;
         InitialSetting();
+        SCer = GetComponent<SoundController>();
     }
     void InitialSetting(){
         UnitSimulater = PlayerUnit.transform.Find("UnitSimulater").gameObject;
@@ -123,13 +124,13 @@ public class MouseInput : MonoBehaviour
     /// </summary>
     /// <param name="EnemyHit2D"></param>
     private void Targetting(RaycastHit2D EnemyHit2D){
-        if(EnemyHit2D){
+        if(EnemyHit2D && PUDMS.GetUnitCore().InCoreRange(target)){
             chargeAttackTimer += Time.deltaTime;
-            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,true);
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,true);
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
-            chargeAttackTimer = -firstAttackInterval;
-            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,false);
+            chargeAttackTimer = 0;
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,false);
         }
     }
     /// <summary>
@@ -144,6 +145,7 @@ public class MouseInput : MonoBehaviour
             if(isRegistered == false){
                 //isRegisteredはここでのみtrueとする
                 isRegistered = true;
+                SCer.PlaySE(0);
                 GameObject ParentObject = DestroyedHit2D.collider.gameObject.transform.parent.gameObject;
                 //Previewを動かすために補正対象として登録する
                 //snapToGrid.Origin = ParentObject.transform;
@@ -172,10 +174,12 @@ public class MouseInput : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0)){
             Regenerate(wheelInput);
+            SCer.PlaySE(1);
         }
         else if(Input.GetMouseButtonDown(2)){
             DestroyedUnitManagementScript DupliDUMS = DUMS;
             Unregister();
+            SCer.PlaySE(2);
             StartCoroutine(DupliDUMS?.ColliderAndSpriteProcess(2));
         }
     }

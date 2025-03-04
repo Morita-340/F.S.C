@@ -21,9 +21,11 @@ public class WaveStartEndUIController : MonoBehaviour
     GameObject WarningDown;
     [SerializeField]
     TextMeshProUGUI StageNameText;
+    SoundController SCer;
     // Start is called before the first frame update
     void Start()
     {
+        SCer = GetComponent<SoundController>();
     }
 
     // Update is called once per frame
@@ -51,13 +53,18 @@ public class WaveStartEndUIController : MonoBehaviour
         StartCoroutine(UIFadeGradually(WaveText));
         if(waveNum == 1){StartCoroutine(UIFadeGradually(StageNameText));}
         if(finalWaveFlag){
-            StartCoroutine(WarningPerfomance());
+            yield return StartCoroutine(WarningPerfomance());
+        }else{
+            SCer.PlaySE(0);
+            StartCoroutine(SCer.PlayBGM(0));
         }
         yield return null;
     }
     public void WaveClearUI(){
         WaveClearText.color = new Color(1,1,1,1);
         StartCoroutine(UIFadeGradually(WaveClearText));
+        //クリア音声の再生
+        SCer.PlaySE(1);
     }
     private IEnumerator UIFadeGradually(TextMeshProUGUI text){
         float moveTime = 1f;
@@ -66,6 +73,9 @@ public class WaveStartEndUIController : MonoBehaviour
         text.DOFade(0,0.5f);
     }
     private IEnumerator WarningPerfomance(){
+        //警告音の再生
+        SCer.StopBGM();
+        SCer.PlaySE(2);
         //警告背景のスケールを大きくしながら表示
         WarningBack.gameObject.SetActive(true);
         WarningBack.gameObject.transform.DOScaleY(1,0.1f);
@@ -108,5 +118,10 @@ public class WaveStartEndUIController : MonoBehaviour
         WarningDown.SetActive(false);
         yield return new WaitForSeconds(1f);
         WarningBack.gameObject.SetActive(false);
+        SCer.FadeSE();
+        StartCoroutine(SCer.PlayBGM(1));
+    }
+    public void BattleEnd(){
+        SCer.StopBGM();
     }
 }

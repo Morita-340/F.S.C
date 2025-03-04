@@ -12,6 +12,7 @@ public class ChargeCursolIconController : MonoBehaviour
     private int fullChargeCircleRange = 0;
     private float nowDischargeTime = 0;
     private float nowChargeTime = 0;
+    private bool fullCharge = false;
     Vector3 CursolPosition;
 
     private void Start()
@@ -22,6 +23,7 @@ public class ChargeCursolIconController : MonoBehaviour
     {
         DrawLine(chargeCircle,1,chargeCircleRange);
         DrawLine(fullChargeCircle,1.1f,fullChargeCircleRange);
+        Debug.Log("AAA"+chargeCircleRange);
     }
     private void DrawLine(LineRenderer lineRenderer,float inputRadiusEfficiency,int range){
         this.transform.localScale = new Vector2(this.transform.localScale.x, this.transform.localScale.x);
@@ -57,42 +59,52 @@ public class ChargeCursolIconController : MonoBehaviour
     /// <returns>チャージ攻撃をするタイミングであるかどうか</returns>
     public void ChargeCommand(float inputTime,PlayerUnitAttackManagementScript PUAMS,Vector3 TargetPosition,bool lockOn)
     {
-        int chargeAttackSpan = 3;
-        int attackableTime = 2;
+        int chargeAttackSpan = 2;
+        float attackableTime = 2f;
+        float chargeTime = 0.8f;
+        int dischargeTime = 1;
         float time = inputTime;
-        if(lockOn){
-            //チャージ中
-            if(time <= chargeAttackSpan - attackableTime){
-                nowChargeTime += Time.deltaTime;
-                //else{nowChargeTime -= Time.deltaTime;}
-                IconCharge(Color.cyan,Color.clear,nowChargeTime,chargeAttackSpan - attackableTime);
-                nowDischargeTime = 0;
-                //chargeCircle.startColor = Color.red;
-                //chargeCircle.endColor = Color.red;
-                //chargeCircleRange = (int)(chargeTime * 121) * 1;
-            //チャージ完了
-            }else{
-                nowChargeTime = 0;
-                //IconCharge(Color.clear,Color.cyan,0,1);
-                //チャージ攻撃
-                if(Input.GetMouseButtonDown(1)){time = (time % chargeAttackSpan > attackableTime) ? time:(time % chargeAttackSpan > attackableTime -1)? time + 1:time + 2;}//押し始めたタイミングで最速で一発撃てるようにしたい
-                if(Input.GetMouseButton(1)){
-                    if(nowDischargeTime < attackableTime){
-                    nowDischargeTime += Time.deltaTime;
-                    PUAMS.ChargeAttack(time,chargeAttackSpan,attackableTime,TargetPosition);
-                    IconDischarge(Color.cyan,nowDischargeTime,attackableTime);
-                    }
-                }else{nowDischargeTime = 0;}
-                //chargeCircle.startColor = Color.green;
-                //chargeCircle.endColor = Color.green;
-                //chargeCircleRange = (int)((5 - chargeTime) * 180) * 1;
-                }
-        }else{
-            nowDischargeTime = 0;
-            nowChargeTime = 0;
-            chargeCircle.startColor = Color.clear;
-            chargeCircle.endColor = Color.clear;
+        Debug.LogWarning("AAA"+nowChargeTime +" "+chargeTime +" "+ time);
+        if(fullCharge){
+            ChargeAttackCommand(chargeAttackSpan,attackableTime,chargeTime,time,PUAMS,TargetPosition);
         }
+        else{
+            if(lockOn){
+                //チャージ中　増える
+                if(time <= chargeTime){
+                    if(nowChargeTime <= chargeTime){
+                    nowChargeTime += Time.deltaTime;
+                    IconCharge(Color.cyan,Color.clear,nowChargeTime,chargeTime);
+                    }
+                //チャージ完了　満タン
+                }else{
+                    //チャージ攻撃　減っていく
+                    //ChargeAttackCommand(chargeAttackSpan,attackableTime,chargeTime,time,PUAMS,TargetPosition);
+                }
+            }else{
+                //かざしていない　減っていく
+                if(nowChargeTime > 0){
+                    nowChargeTime -= Time.deltaTime;
+                }else{nowChargeTime = 0;} 
+                IconDischarge(Color.cyan,dischargeTime - nowChargeTime * (dischargeTime / chargeTime),dischargeTime);
+            }
+        }
+    }
+    private void ChargeAttackCommand(int chargeAttackSpan,float attackableTime,float chargeTime,float time,PlayerUnitAttackManagementScript PUAMS,Vector3 TargetPosition)
+    {
+        if(Input.GetMouseButtonDown(1)){
+            time = Mathf.Floor(time);
+            PUAMS.ChargeAttack(TargetPosition);
+            //押し始めたタイミングで最速で一発撃てるようにしたいので、timeが如何なる値であろうと即時PUAMS.ChargeAttack内で弾丸を発射するようにする
+            }
+        if(Input.GetMouseButton(1)){
+            if(nowChargeTime > 0){
+            nowChargeTime -= Time.deltaTime;
+            //PUAMS.ChargeAttack(time,chargeAttackSpan,attackableTime,TargetPosition);
+            float dischargeInputTime = attackableTime - nowChargeTime *(attackableTime/chargeTime);
+            IconDischarge(Color.cyan,dischargeInputTime,attackableTime);
+            }else{nowChargeTime = 0;}
+        }  
     }
     /// <summary>
     /// チャージアイコンの上昇
@@ -100,13 +112,14 @@ public class ChargeCursolIconController : MonoBehaviour
     /// <param name="inputColor">UIの色</param>
     /// <param name="inputTime">入力される時間情報</param>
     /// <param name="chargeTime">チャージに要する時間</param>
-    public void IconCharge(Color inputColor,Color postColor,float inputTime, int chargeTime){
-        float chargeTimeForAttackRatio = inputTime /chargeTime;
-        if(chargeTimeForAttackRatio < 0){chargeTimeForAttackRatio = 0;}
+    public void IconCharge(Color inputColor,Color postColor,float inputTime, float chargeTime){
+        float chargeTimeForAttackRatio = inputTime /chargeTime;Debug.LogWarning(inputTime +" "+chargeTime);
+        if(chargeTimeForAttackRatio < 0){chargeTimeForAttackRatio = 0;Debug.LogWarning("AAAA");}
         chargeCircle.startColor = inputColor;
         chargeCircle.endColor = inputColor;
         chargeCircleRange = (int)(chargeTimeForAttackRatio * 360 * 1 +1);
         fullChargeCircleRange = 361;
+        if(chargeCircleRange >= 360){fullCharge = true;}
         fullChargeCircle.startColor = postColor;
         fullChargeCircle.endColor = postColor;
     }
@@ -116,12 +129,16 @@ public class ChargeCursolIconController : MonoBehaviour
     /// <param name="inputColor">UIの色</param>
     /// <param name="inputTime"></param>
     /// <param name="dischargeTime">アイコンの減衰時間＝攻撃可能時間</param>
-    public void IconDischarge(Color inputColor,float inputTime,int dischargeTime){
-        float timeForAttackRatio = inputTime / dischargeTime;
-        if(timeForAttackRatio < 0){timeForAttackRatio = 0;}
+    public void IconDischarge(Color inputColor,float inputTime,float dischargeTime){
+        float timeForAttackRatio =0;
+        if(inputTime <= dischargeTime)timeForAttackRatio = inputTime / dischargeTime;
+        else{timeForAttackRatio = 1;}
+        //else timeForAttackRatio = 1;Debug.LogWarning("AAAA");
+        if(timeForAttackRatio < 0){timeForAttackRatio = 0;Debug.LogWarning("AAAA");}
         chargeCircle.startColor = inputColor;
         chargeCircle.endColor = inputColor;
         chargeCircleRange = (int)((1 - timeForAttackRatio) * 360 * 1);
+        if(chargeCircleRange <= 0){fullCharge = false;}
         fullChargeCircle.startColor = Color.clear;
         fullChargeCircle.endColor = Color.clear;
     }

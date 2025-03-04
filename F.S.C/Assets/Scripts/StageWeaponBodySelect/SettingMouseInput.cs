@@ -16,6 +16,7 @@ public class SettingMouseInput : MonoBehaviour
     GameObject PlayerUnit;
     [SerializeField]ChargeCursolIconController ChargeIcon;
     [SerializeField,Range(0f,2f)]float firstAttackInterval = 0.5f;
+    [SerializeField,ReadOnly]protected SoundController SCer;
     //[SerializeField,Range(0f,10f)]private float divideLimit = 6f;
     //[SerializeField]
     //private UnitBase PlayerUnitSCore;
@@ -46,6 +47,7 @@ public class SettingMouseInput : MonoBehaviour
         //シーン内のプレイヤーが単一であるため
         if(PlayerUnit == null){this.enabled = false;}
         else{InitialSetting();}
+        SCer = GetComponent<SoundController>();
     }
     void InitialSetting(){
         UnitSimulater = PlayerUnit.transform.Find("UnitSimulater").gameObject;
@@ -134,13 +136,13 @@ public class SettingMouseInput : MonoBehaviour
     /// </summary>
     /// <param name="EnemyHit2D"></param>
     private void Targetting(RaycastHit2D EnemyHit2D){
-        if(EnemyHit2D){
+        if(EnemyHit2D&& PUDMS.GetUnitCore().InCoreRange(target)){
             chargeAttackTimer += Time.deltaTime;
-            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,true);
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,true);
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
-            chargeAttackTimer = -firstAttackInterval;
-            ChargeIcon.ChargeCommand(chargeAttackTimer + firstAttackInterval,PUAMS,target,false);
+            chargeAttackTimer = 0;
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,false);
         }
     }
     /// <summary>
@@ -153,6 +155,7 @@ public class SettingMouseInput : MonoBehaviour
         //Rayを照射した瞬間即ちかざしたタイミングで一度だけDestroyedUnitを登録しPreviewを作成する
         if(DestroyedHit2D){
             if(isRegistered == false){
+                SCer.PlaySE(0);
                 //isRegisteredはここでのみtrueとする
                 isRegistered = true;
                 GameObject ParentObject = DestroyedHit2D.collider.gameObject.transform.parent.gameObject;
@@ -183,35 +186,14 @@ public class SettingMouseInput : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0)){
             Regenerate(wheelInput);
+            SCer.PlaySE(1);
         }
         else if(Input.GetMouseButtonDown(2)){
             DestroyedUnitManagementScript DupliDUMS = DUMS;
             Unregister();
+            SCer.PlaySE(2);
             StartCoroutine(DupliDUMS?.ColliderAndSpriteProcess(2));
         }
-        ////左クリックで入力検知開始
-        ////timeが閾値を超えるまで入力を検知する
-        ////入力検知終了後クリック回数を基にダブルクリックとシングルクリックを判別する
-        ////値の初期化と入力検知開始を行う
-        ////Debug.Log("MI " + clickCountStart +" " + leftClickTimer+" "  + clickCount);
-        //if(Input.GetMouseButtonDown(0) && clickCountStart == false){
-        //    clickCountStart = true;
-        //    clickCount =0;
-        //    leftClickTimer =0;
-        //}
-        ////一定時間内のクリック回数を計測する
-        //if(clickCountStart){
-        //    if(leftClickTimer < 0.3f){
-        //        leftClickTimer += Time.deltaTime;
-        //        if(Input.GetMouseButtonDown(0)){
-        //        clickCount ++;
-        //        }
-        //    }else{
-        //        //計測後のクリック回数に基づき処理を行う
-        //        LeftClickProcessing(clickCount,wheelInput);
-        //        clickCountStart = false;
-        //    }
-        //}
     }
     /// <summary>
     /// PreviewUnitを生成する
@@ -228,23 +210,6 @@ public class SettingMouseInput : MonoBehaviour
             previewObjectList.Add(Preview);
         }
     }
-    /// <summary>
-    /// ダブルクリックとシングルクリックを検知できるメソッド
-    /// </summary>
-    /// <param name="clickCount"></param>
-    /// <param name="wheelInput"></param>
-    //private void LeftClickProcessing(int clickCount,float wheelInput){
-    //    if(clickCount<1){Debug.LogAssertion("チートかバグが出てるぞ");}
-    //    else if(clickCount == 1){
-    //        Debug.Log("MI OneClick");
-    //        Regenerate(wheelInput);
-    //    }
-    //    else if(clickCount > 1){
-    //        Debug.Log("MI MultiClick");
-    //        Unregister();
-    //        isRegistered = false;
-    //    }
-    //}
     /// <summary>
     /// 右クリックを使って鹵獲、PlayerUnitとして再生成する処理
     /// </summary>
@@ -305,54 +270,6 @@ public class SettingMouseInput : MonoBehaviour
         //元データを消去
         UnitBaseList.Clear();
     }
-    /// <summary>
-    /// 選択したプレイヤーユニットのリンクを削除することでHP0になった時と同じように分離できるようにする
-    /// 選択したユニットはdividableがtrue
-    /// リストにぶちこまれているので、周囲のリンク（dividableがfalseのやつ）を削除
-    /// HP0の時と同様にリンク上でも孤立するので、その状態で探索、分離操作を行えば安全に分離できる
-    /// </summary>
-    /// <param name="PlayerHit2D"></param>
-    //private void PlayerDivided(RaycastHit2D PlayerHit2D){
-    //    //かざされたら一度だけ分離対象リストに登録
-    //    if(PlayerHit2D){
-    //        Debug.Log("MI PD PlayerHit2D" + PlayerHit2D.collider.name);
-    //        //分離できるのは武器ユニットだけなので予め調べておく
-    //        WeaponUnitBase PlayerWeaponUnit = PlayerHit2D.collider.GetComponent<WeaponUnitBase>();
-    //        //かざされたユニットが分離できない状態であれば（初期状態ではdividableはfalse）分離できるようにする
-    //        if(PlayerWeaponUnit?.GetThisUnitData()?.dividable == false){
-    //            DivideUnitList.Add(PlayerWeaponUnit);
-    //            rightClickTimer = divideLimit;
-    //            PlayerWeaponUnit.GetThisUnitData().dividable = true;
-    //        }
-    //    }
-    //    if(rightClickTimer >0){
-    //        rightClickTimer -= Time.deltaTime;
-    //        if(Input.GetMouseButtonDown(1)){
-    //            //GameObject ParentObject = Instantiate(DestroyParentPlunderUnitect,PlayerUnitSCore.transform.position,PlayerUnitSCore.transform.rotation);
-    //            //dividableなユニットを分離させる
-    //            //分離させたい対象ユニットをリストに格納→周囲とのリンクを消去し、AUDMSのChildrenListからも消去しておく→
-    //            //dividableなやつらだけの状態で探索を行ってまとまりで分離させる。
-    //            foreach(WeaponUnitBase unitBase in DivideUnitList){
-    //                unitBase.GetThisUnitData().DeleteFourWayLinkThatIsNotDividable();
-    //                unitBase.gameObject.tag = GSetting.ObjTagName.DestroyedUnit.ToString();
-    //                unitBase.gameObject.layer = (int)GSetting.UniqueLayerName.DestroyedUnit;
-    //                //unitBase.gameObject.transform.SetParent(ParentObject.transform,false);
-    //            }
-    //            //DeleteFourWayLinkThatIsNotDividable()の際にdividableの値が使われるので、対象のユニット全てに対してメソッドの実行が終了してからfalseに書き換えなおさないといけない
-    //            foreach(WeaponUnitBase unitBase in DivideUnitList){
-    //                Debug.Log("MI PD Dividable"+ unitBase.gameObject.name);
-    //                unitBase.GetThisUnitData().dividable = false;
-    //            }
-    //            PUDMS.DestroyProcess();
-    //            DivideUnitList.Clear();
-    //        }
-    //    }else{
-    //        foreach(WeaponUnitBase unitBase in DivideUnitList){
-    //            unitBase.GetThisUnitData().dividable = false;
-    //        }
-    //        DivideUnitList.Clear();
-    //    }
-    //}
     public void SetPlayer(GameObject Unit){
         if(Unit == null){this.enabled = false; return;}
         if(Unit.GetComponent<PlayerUnitDestroyManagementScript>()){

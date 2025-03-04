@@ -17,7 +17,7 @@ public class ReactorBase : UnitBase
         return reactorsEfficiencyLevel;
     }
     protected override void Awake(){
-        ReactorEffectPool = GameObject.Find("ReactorEffectPool");
+        ReactorEffectPool = GameObject.Find(GSetting.UniqueObjectName.ReactorEffectPool.ToString());
         SetReactorEffectScope();
         REM.SetThisReactor(this);
         REM.transform.SetParent(ReactorEffectPool.transform);

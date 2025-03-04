@@ -77,6 +77,8 @@ GameObject:
   - component: {fileID: 4317762153673143707}
   - component: {fileID: 6634150662363395581}
   - component: {fileID: 3870781825343869007}
+  - component: {fileID: 4710475936934087893}
+  - component: {fileID: -7947840150967706994}
   m_Layer: 0
   m_Name: SettingAlphaBody-W
   m_TagString: PlayerUnit
@@ -174,6 +176,7 @@ MonoBehaviour:
   drive_minimum_speed_factor: 9
   drive_miximum_speed_factor: 9
   Setting: 1
+  Scer: {fileID: -7947840150967706994}
 --- !u!114 &6634150662363395581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +195,7 @@ MonoBehaviour:
   Setting: 1
   primeUnitsHP: 25
   combatPower: 0
+  SCer: {fileID: 4710475936934087893}
 --- !u!114 &3870781825343869007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +211,38 @@ MonoBehaviour:
   AUDMS: {fileID: 6634150662363395581}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+--- !u!114 &4710475936934087893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5104531851624797636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0
+--- !u!114 &-7947840150967706994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5104531851624797636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: 03df3483ffaf3c3439b0e41f0284c6a7, type: 3}
+  playOnAwake: 0
 --- !u!1001 &329448897759107272
 PrefabInstance:
   m_ObjectHideFlags: 0

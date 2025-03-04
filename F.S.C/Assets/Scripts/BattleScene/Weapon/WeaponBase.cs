@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WeaponBase : MonoBehaviour
 {
+    [SerializeField,ReadOnly]
+    protected Rigidbody2D thisRb2D;
     /// <summary>
     /// 武器の攻撃力
     /// </summary>
@@ -16,6 +18,7 @@ public class WeaponBase : MonoBehaviour
     /// 速度倍率
     /// </summary>
     [SerializeField,Range(0.1f,10f)]protected float velocityEfficiency = 1;
+    [SerializeField,ReadOnly]protected SoundController SCer;
     public int GetAttackPower(){
         return attackPower;
     }
@@ -30,10 +33,18 @@ public class WeaponBase : MonoBehaviour
     public int GetTotalDamage(){
         return attackPower*attackEfficiency;
     }
+    public void SetVelocity(Vector2 velocity){
+        thisRb2D.velocity = velocity;
+        SCer.PlaySE(1);
+    }
+    protected virtual void Awake(){
+        thisRb2D = GetComponent<Rigidbody2D>();
+    }
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-        
+        SCer = GetComponent<SoundController>();
+        SCer.PlaySE(0);
     }
 
     // Update is called once per frame

@@ -14,6 +14,7 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
     {
         //データ登録をする際のタグを決めている
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
+        SCer = GetComponent<SoundController>();
         base.Awake();
     }
     protected override void Start(){
@@ -21,9 +22,9 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
         if(!Setting)PAFBUIC = GameObject.Find("UICanvas").transform.Find("PlayerSActionFeedBackUI").GetComponent<PlayerSActionFeedBackUIController>();
         base.Start();
     }
-    protected override List<GameObject> Regenerate()
+    protected override List<GameObject> Regenerate(bool inputIsDead)
     {
-        List<GameObject> ParentObjectList = base.Regenerate();
+        List<GameObject> ParentObjectList = base.Regenerate(inputIsDead);
         StartCoroutine(wait(0.1f,ParentObjectList));
         return ParentObjectList;
     }
@@ -46,7 +47,7 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(obj.transform.position);
         RectTransform uiRectTransform;
         if(!Setting){uiRectTransform = PAFBUIC.GetComponent<RectTransform>();}
-        else{uiRectTransform = GameObject.Find("Canvas").GetComponent<RectTransform>();}
+        else{uiRectTransform = GameObject.Find(GSetting.UniqueObjectName.UICanvas.ToString()).GetComponent<RectTransform>();}
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             uiRectTransform, 
             screenPosition, 
@@ -65,12 +66,17 @@ public class EnemyUnitDestroyManagementScript : AbstractUnitDestroyManagementScr
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
         return base.CaluculateCombatPower();
     }
-    public override void DestroyProcess(UnitData DeleteData)
+    public override void DestroyProcess(UnitData DeleteData,bool inputIsDead)
     {
         if(!Setting){
             PAFBUIC.AddDefeatPoint(DeleteData.ReturnThisUnit().GetUnitStatus());
             PAFBUIC.ExplosionOcurre(DeleteData);
         }
-        base.DestroyProcess(DeleteData);
+        base.DestroyProcess(DeleteData,inputIsDead);
+    }
+    public override void DeleteAllRangeMesh()
+    {
+        transform.Find("SearchRader").GetComponent<EnemySearchManagementScript>().DestroyRMM();
+        base.DeleteAllRangeMesh();
     }
 }

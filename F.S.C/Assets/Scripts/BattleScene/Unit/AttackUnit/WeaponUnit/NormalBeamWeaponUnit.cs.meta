@@ -4,10 +4,13 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - spriteRenderer: {instanceID: 0}
+  - MainCamera: {instanceID: 0}
+  - DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
+  - NormalWeapon: {instanceID: 0}
+  - ChargeWeapon: {instanceID: 0}
+  - ReactorLevelUI: {instanceID: 0}
   - DividableIcon: {fileID: 733320706746789941, guid: c890a1348a141c54596a42a142eef5ae, type: 3}
-  - RocketBomb: {instanceID: 0}
-  - Bomb: {instanceID: 0}
+  - WCUB: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

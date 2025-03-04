@@ -77,6 +77,8 @@ GameObject:
   - component: {fileID: 69731647178238728}
   - component: {fileID: 7405398096987392893}
   - component: {fileID: 5973929492238199111}
+  - component: {fileID: 2647242940284312608}
+  - component: {fileID: -6155601932729616295}
   m_Layer: 0
   m_Name: SettingBatWing
   m_TagString: PlayerUnit
@@ -160,6 +162,7 @@ MonoBehaviour:
   drive_minimum_speed_factor: 11.4
   drive_miximum_speed_factor: 11.4
   Setting: 1
+  Scer: {fileID: -6155601932729616295}
 --- !u!114 &7405398096987392893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,6 +181,7 @@ MonoBehaviour:
   Setting: 1
   primeUnitsHP: 10
   combatPower: 0
+  SCer: {fileID: 2647242940284312608}
 --- !u!114 &5973929492238199111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,6 +197,38 @@ MonoBehaviour:
   AUDMS: {fileID: 7405398096987392893}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+--- !u!114 &2647242940284312608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2190800438189322223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0
+--- !u!114 &-6155601932729616295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2190800438189322223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: 03df3483ffaf3c3439b0e41f0284c6a7, type: 3}
+  playOnAwake: 0
 --- !u!1001 &781984024298478158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1116,6 +1152,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3725477333399233092}
     m_Modifications:
+    - target: {fileID: 754898267010757983, guid: 22bde43845b43514ab347bfbae1ab249, type: 3}
+      propertyPath: rangeRadius
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6727118828627115226, guid: 22bde43845b43514ab347bfbae1ab249, type: 3}
       propertyPath: m_Name
       value: PlayerCoreUnit

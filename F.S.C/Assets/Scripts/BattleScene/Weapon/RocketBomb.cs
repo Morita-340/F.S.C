@@ -7,8 +7,6 @@ using FSCGeneral;
 
 public class RocketBomb : WeaponBase
 {
-    [SerializeField]
-    Rigidbody2D thisRb2D;
     //[SerializeField]
     //float firstSpeed = 1f;
     //生成後何にも当たらずに漂える時間
@@ -17,8 +15,9 @@ public class RocketBomb : WeaponBase
     private float nowTime = 0;
     private bool rocketHit = false;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
     }
 
     // Update is called once per frame

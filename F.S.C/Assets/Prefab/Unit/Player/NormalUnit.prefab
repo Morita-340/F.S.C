@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5550387651946207011}
   - component: {fileID: 2050846614938157260}
   - component: {fileID: 2183880625306018302}
+  - component: {fileID: -3654447086591759822}
   m_Layer: 7
   m_Name: NormalUnit
   m_TagString: PlayerUnit
@@ -121,7 +122,7 @@ BoxCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0.0625, y: 0.0625, z: 0.0625, w: 0.0625}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 1, y: 1}
     newSize: {x: 1, y: 1}
@@ -147,8 +148,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 1
+  DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
   attackEfficiency: 1
+  SCer: {fileID: 0}
 --- !u!114 &2183880625306018302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,3 +166,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anotherUnitBase: {fileID: 0}
+--- !u!114 &-3654447086591759822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4029011422581992644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: d5e34ea7b9c2f084ba8697419eb9b844, type: 3}
+  playOnAwake: 0

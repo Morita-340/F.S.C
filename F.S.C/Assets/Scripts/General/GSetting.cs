@@ -88,6 +88,12 @@ namespace FSCGeneral{
             /// </summary>
             AttackEfficiencyONReactorLevel = 1,
         }
+        public enum UniqueObjectName{
+            RangeMesh = 0,
+            ReactorEffectPool = 1,
+            RangeMeshPool = 2,
+            UICanvas = 3,
+        }
         public enum ResultSituation{
             AllWaveClear = 0,
             PlayerDestroyed = 1,

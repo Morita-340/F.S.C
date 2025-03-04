@@ -21,10 +21,10 @@ public class PlayerUnitDestroyManagementScript : AbstractUnitDestroyManagementSc
         childObjTagName = GSetting.ObjTagName.PlayerUnit;
         return base.CaluculateCombatPower();
     }
-    public override void DestroyProcess(UnitData DeleteData)
+    public override void DestroyProcess(UnitData DeleteData,bool inputIsDead)
     {
         noDamageFlag = false;
-        base.DestroyProcess(DeleteData);
+        base.DestroyProcess(DeleteData,inputIsDead);
     }
     public void noDamageFlagReset(){
         noDamageFlag = true;

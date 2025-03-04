@@ -24,6 +24,12 @@ public class WeaponUnitBase : AttackUnit
         if(isPrime || WCUB != null){return base.GetUnitAttackPower();}
         else{return 0;}
     }
+    protected override void Awake()
+    {
+        base.Awake();
+        if(WCUB != null){FR.InitialSetting();}
+        else{FR.DestroyRMM();}
+    }
     // Start is called before the first frame update
     protected override void Start()
     {
@@ -73,9 +79,9 @@ public class WeaponUnitBase : AttackUnit
         }
         return null;
     }
-    public override void NormalAttack(Vector3 TargetPosition)
+    public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
-        if(isPrime||WCUB != null)base.NormalAttack(TargetPosition);
+        if(isPrime||WCUB != null)yield return base.NormalAttack(TargetPosition);
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {
@@ -89,5 +95,13 @@ public class WeaponUnitBase : AttackUnit
         WCUB = GetThisControllUnit(ControllUnitPosition);
         if(WCUB != null)return WCUB.tag == this.tag;
         else return false;
+    }
+    protected override void DestroyUnit()
+    {
+        if(WCUB != null){FR.DestroyRMM();}
+        base.DestroyUnit();
+    }
+    public void DestroyFRMesh(){
+        if(WCUB != null){FR?.DestroyRMM();}
     }
 }

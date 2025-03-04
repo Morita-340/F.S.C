@@ -13,7 +13,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     [SerializeField]
     protected GameObject ThisGameObject;
     [SerializeField]
-    private UnitBase ThisUnitSCore;
+    private CoreBase ThisUnitSCore;
     [SerializeField]
     GameObject DestroyParentUnitObject;
     [SerializeField]protected bool Setting = false;
@@ -36,6 +36,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     //探索フラグ解除用のスタックデータのコピー（幅優先探索の終了条件はスタックを空にすることなので、探索終了後に対象ユニット探索フラグを解除するためにもう一度アクセスする必要がある）
     List<UnitData> StackCopy = new List<UnitData>();
     float time = 0;
+    [SerializeField]protected SoundController SCer;
     protected virtual void Awake(){
         ThisGameObject = this.gameObject;
     }
@@ -75,11 +76,14 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// 破壊時に呼び出されるDestroyProcess
     /// </summary>
     /// <param name="DeleteData"></param>
-    public virtual void DestroyProcess(UnitData DeleteData){
+    /// <param name="inputIsDead">コアの破壊により機体が撃墜されたかどうかを識別</param>
+    public virtual void DestroyProcess(UnitData DeleteData,bool inputIsDead){
         ChildUnitDataList.Remove(DeleteData);
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         MCC.ExplosionShake(0.3f,0.2f);
-        Regenerate();
+        Regenerate(inputIsDead);
+        //破壊音を再生
+        SCer.PlaySE(0);
         maximumDistanseFromCore = 0;
         for(int i = 0; i < ThisGameObject.transform.childCount; i++){
             GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
@@ -88,6 +92,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                 ReloadMaxDistanse(ChildUnit);
             }
         }
+        //DeleteAllRangeMesh();
         StackCopy.Clear();
         caluculateFlag = true;
         //combatPower = CaluculateCombatPower();
@@ -102,13 +107,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             DataAddToDoubleList(PopData.ReturnFourWayLink());
         }
     }
-    private void DataAddToDoubleList(UnitData unitData){
-        if(unitData == null)return;
-        if(unitData.AlreadySearch != false)return;
-        StackForBreathFirstSearch.Push(unitData);
-        unitData.AlreadySearch = true;
-        StackCopy.Add(unitData);
-    }
     private void DataAddToDoubleList(List<UnitData> unitDataList){
         foreach(UnitData unitData in unitDataList){
             if(unitData == null||unitData.ReturnThisUnit() == null){continue;}//ここにDebug.Logを挟まないこと。処理のスパイクが発生します
@@ -120,7 +118,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     //未探索群の除外と再生成処理
     //名前はあとで適切なものに書き換える
-    protected virtual List<GameObject> Regenerate(){
+    protected virtual List<GameObject> Regenerate(bool inputIsDead){
         List<UnitData> NotResearchUnitList = new List<UnitData>();
         List<GameObject> ParentObjectList = new List<GameObject>();
         bool regeneFirstTime = true;
@@ -182,12 +180,29 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             else{ParentObjectList.Add(ParentObject);}
         }
         
-        //探索フラグのリセット
+        //探索フラグのリセット。何かのミスで消去出来なかったデータが生まれた場合にここでリセットする
         ChildUnitDataList.RemoveAll(unitData => unitData.AlreadySearch == false);
+        if(inputIsDead){IsDead();}
         foreach(UnitData unitData in StackCopy){
             unitData.AlreadySearch = false;
         }
         return ParentObjectList;
+    }
+    /// <summary>
+    /// 撃墜された際はこれを呼び出し撃墜判定をtrueにする。これによりゲームフローが進む
+    /// </summary>
+    public virtual void IsDead(){
+        //DeleteAllRangeMesh();
+        isDead = true;
+    }
+    public virtual void DeleteAllRangeMesh(){
+        foreach(UnitData childUnitData in ChildUnitDataList){
+            if(childUnitData == null){continue;}
+            if(childUnitData.ReturnThisUnit() == null){continue;}
+            if(childUnitData.ReturnThisUnit() is WeaponUnitBase weaponUnitBase){
+                weaponUnitBase.DestroyFRMesh();
+            }
+        }
     }
     public void DeleteChildrenDataFromFM(){
         FieldManager FM = FieldManager.GetInstance();
@@ -201,7 +216,7 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     public int GetChildNum(){
         return ChildUnitDataList.Count;
     }
-    public UnitBase GetUnitCore(){
+    public CoreBase GetUnitCore(){
         return ThisUnitSCore;
     }
     public int GetMaximumDistanseFromCore(){
@@ -240,12 +255,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
             }
         }
         return combatPower;
-    }
-    /// <summary>
-    /// 撃墜された際はこれを呼び出し撃墜判定をtrueにする。これによりゲームフローが進む
-    /// </summary>
-    public void IsDead(){
-        isDead = true;
     }
     /// <summary>
     /// isDeadを参照する際に呼び出す

@@ -14,10 +14,12 @@ public class WindowTranslateButton : GeneralUIIconController
     [SerializeField]protected GSetting.SceneName TranslateScene;
     float initImageWide;
     bool executeFlag = false;
+    bool soundPlaying = false;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         initImageWide = ChargeSlider.sizeDelta.x;
     }
 
@@ -54,6 +56,11 @@ public class WindowTranslateButton : GeneralUIIconController
     }
     IEnumerator SceneTranslate(){
         if(TranslateScene == null){Debug.LogAssertion("TranslateScene is null");yield break;}
+        if(soundPlaying == false){
+            SCer.PlaySE(1);
+            yield return SCer.FadeBGM();
+            soundPlaying = true;
+        }
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene(TranslateScene.ToString());
     }

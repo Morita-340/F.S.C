@@ -12,14 +12,14 @@ public class BattleSceneFlowManager : MonoBehaviour
     SpawnSystem SpS;
     PlayerUnitDestroyManagementScript PUDMS;
     [SerializeField]
-    WaveStartEndUIController WCEUIC;
+    WaveStartEndUIController WSEUIC;
     [SerializeField] ResultUIController RUC;
     List<GameObject> WaveEnemyList = new List<GameObject>();
     [SerializeField,ReadOnly]
     GeneralFlagManager GFM;
     [SerializeField]
     MouseInput MI;
-    string situation;
+    GSetting.ResultSituation situation;
     void Awake(){
         SpS = this.GetComponent<SpawnSystem>();
         GFM = FindObjectOfType<GeneralFlagManager>();
@@ -52,7 +52,7 @@ public class BattleSceneFlowManager : MonoBehaviour
             //最終ウェーブであるかを判定する
             bool finalwaveFlag = nowWave == waveNum;
             //ウェーブ開始演出
-            yield return WCEUIC.WaveStartUI(nowWave,finalwaveFlag,GFM.GetStageName());
+            yield return WSEUIC.WaveStartUI(nowWave,finalwaveFlag,GFM.GetStageName());
             //yield return new WaitForSeconds(0.1f);
             //敵スポーン
             WaveEnemyList = SpS.Spawn(finalwaveFlag);
@@ -61,14 +61,14 @@ public class BattleSceneFlowManager : MonoBehaviour
             //PUDMSの撃墜判定が有効ならループを直ぐに抜ける
             yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList) || playerIsDead);
             if(playerIsDead){
-                situation = GSetting.ResultSituation.PlayerDestroyed.ToString();
+                situation = GSetting.ResultSituation.PlayerDestroyed;
                 Debug.Log("BSFM PlayerDead");
                 yield return new WaitForSeconds(3f);
                 break;}
             NoDamageClearWaveNumCountUp();
-            WCEUIC.WaveClearUI();
+            WSEUIC.WaveClearUI();
             yield return new WaitForSeconds(3f);
-            if(nowWave>=waveNum){situation = GSetting.ResultSituation.AllWaveClear.ToString();}
+            if(nowWave>=waveNum){situation = GSetting.ResultSituation.AllWaveClear;}
         }
 
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
@@ -101,9 +101,9 @@ public class BattleSceneFlowManager : MonoBehaviour
     void Update()
     {
         playerIsDead = PUDMS.GetIsDead();
-        Debug.LogWarning("FFF" + PUDMS.GetIsDead());
     }
-    private void BattleEndProcess(string situation){
+    private void BattleEndProcess(GSetting.ResultSituation situation){
+        WSEUIC.BattleEnd();
         StartCoroutine(RUC.ResultUI(situation));
     }
     private void NoDamageClearWaveNumCountUp(){

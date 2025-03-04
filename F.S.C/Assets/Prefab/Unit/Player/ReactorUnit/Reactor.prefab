@@ -234,6 +234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ExplosionObj: {fileID: 234551347965006423}
+  SCer: {fileID: 0}
   ThisReactor: {fileID: 0}
   EffectScope: {fileID: 2426727256954281177}
 --- !u!1 &7455625997493960732
@@ -249,6 +250,7 @@ GameObject:
   - component: {fileID: 8442978992373639592}
   - component: {fileID: 5880696557557609460}
   - component: {fileID: 1113969428438662244}
+  - component: {fileID: 8760043805990270718}
   m_Layer: 7
   m_Name: Reactor
   m_TagString: PlayerUnit
@@ -339,7 +341,9 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
   attackEfficiency: 1
   REM: {fileID: 4780675345486015671}
   reactorEffectToOtherUnit: 0
@@ -402,3 +406,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anotherUnitBase: {fileID: 0}
+--- !u!114 &8760043805990270718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7455625997493960732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: 9c6bab0e6c33af844b954050fb62db1a, type: 3}
+  playOnAwake: 0

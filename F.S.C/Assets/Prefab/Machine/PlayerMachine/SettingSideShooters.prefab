@@ -77,6 +77,8 @@ GameObject:
   - component: {fileID: 5528252969688596769}
   - component: {fileID: 4583307526756852788}
   - component: {fileID: 785788453649245851}
+  - component: {fileID: 6205688216862344465}
+  - component: {fileID: 8335567770908793285}
   m_Layer: 0
   m_Name: SettingSideShooters
   m_TagString: PlayerUnit
@@ -162,6 +164,7 @@ MonoBehaviour:
   drive_minimum_speed_factor: 1.5
   drive_miximum_speed_factor: 1.5
   Setting: 1
+  Scer: {fileID: 8335567770908793285}
 --- !u!114 &4583307526756852788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +183,7 @@ MonoBehaviour:
   Setting: 1
   primeUnitsHP: 10
   combatPower: 0
+  SCer: {fileID: 6205688216862344465}
 --- !u!114 &785788453649245851
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -195,6 +199,38 @@ MonoBehaviour:
   AUDMS: {fileID: 4583307526756852788}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+--- !u!114 &6205688216862344465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574980494636912466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0
+--- !u!114 &8335567770908793285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2574980494636912466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: 03df3483ffaf3c3439b0e41f0284c6a7, type: 3}
+  playOnAwake: 0
 --- !u!1001 &1042392447282004916
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -149,8 +149,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
@@ -184,7 +187,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 1407171230900678052}
+  RMM: {fileID: 0}
 --- !u!120 &1407171230900678052
 LineRenderer:
   serializedVersion: 2
@@ -438,8 +441,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
@@ -473,7 +479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 7608491957018129142}
+  RMM: {fileID: 0}
 --- !u!120 &7608491957018129142
 LineRenderer:
   serializedVersion: 2
@@ -727,8 +733,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
@@ -762,7 +771,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 6957987848766478269}
+  RMM: {fileID: 0}
 --- !u!120 &6957987848766478269
 LineRenderer:
   serializedVersion: 2
@@ -1016,8 +1025,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
@@ -1051,7 +1063,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 1381452290400218117}
+  RMM: {fileID: 0}
 --- !u!120 &1381452290400218117
 LineRenderer:
   serializedVersion: 2
@@ -1305,8 +1317,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
   NormalWeapon: {fileID: 2757329305833664535, guid: 3ed4d75086cebc849b8ae8d198350ba5, type: 3}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
@@ -1340,7 +1355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 4670063495650722240}
+  RMM: {fileID: 0}
 --- !u!120 &4670063495650722240
 LineRenderer:
   serializedVersion: 2
@@ -1458,6 +1473,7 @@ GameObject:
   - component: {fileID: 7303565189159308569}
   - component: {fileID: 7581965655616056454}
   - component: {fileID: 2983094214683003995}
+  - component: {fileID: 2361499285104107658}
   m_Layer: 0
   m_Name: EnemySampleUnit
   m_TagString: EnemyUnit
@@ -1508,6 +1524,7 @@ MonoBehaviour:
   Setting: 0
   primeUnitsHP: 10
   combatPower: 0
+  SCer: {fileID: 0}
   WeaponControllConectedUIText: {fileID: 4981675544005101895, guid: 53195e3a6ec206a42819c4751215c1f3, type: 3}
 --- !u!114 &7303565189159308569
 MonoBehaviour:
@@ -1565,6 +1582,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Setting: 0
   rb2d: {fileID: 7581965655616056454}
+--- !u!114 &2361499285104107658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8292744894824196094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0
 --- !u!1001 &5628423415832299964
 PrefabInstance:
   m_ObjectHideFlags: 0

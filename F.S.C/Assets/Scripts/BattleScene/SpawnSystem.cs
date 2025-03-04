@@ -45,7 +45,7 @@ public class SpawnSystem : MonoBehaviour
             Vector3 InstPos = Camera.main.ViewportToWorldPoint(new Vector3(InstPosRotInfo[i].x,InstPosRotInfo[i].y)+new Vector3(0,0,10));
             Quaternion InstRot = Quaternion.Euler(new Vector3(0,0,InstPosRotInfo[i].z));
             //取得したウェーブの敵機を生成する（生成場所の計算も済ませる）
-            InstEnemyList.Add(Instantiate(WaveEnemyList[i],InstPos,InstRot));
+            InstEnemyList.Add(Instantiate(WaveEnemyList[i],InstPos * 1.2f,InstRot));
             if(i >= InstPosRotInfo.Length){Debug.LogWarning("ウェーブの敵機数がウェーブの座標数より多いです"); break;}//生成座標の配列の外にアクセスしないようにするため
         }
         //生成した敵機の情報を渡す

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using FSCGeneral;
 
 public class ResultUIController : MonoBehaviour
 {
@@ -24,9 +25,11 @@ public class ResultUIController : MonoBehaviour
     private int displayNoDamageBonus; 
     private int totalScore;
     private int displayTotalScore;
+    private SoundController SCer;
     // Start is called before the first frame update
     void Start()
     {
+        SCer = GetComponent<SoundController>();
         rectTransform = GetComponent<RectTransform>();
         ResultSituation     .text = " ";
         DefeatPoint         .text = " ";
@@ -46,9 +49,12 @@ public class ResultUIController : MonoBehaviour
     /// <summary>
     /// ゲームマネージャーで呼び出すリザルトUIの表示制御関数
     /// </summary>
-    public IEnumerator ResultUI(string situation){
+    public IEnumerator ResultUI(GSetting.ResultSituation situation){
         //目標値の設定
-        resultSituation = situation;
+        bool isClear = IsThisSituationClear(situation);
+        if(isClear){StartCoroutine(SCer.PlayBGM(0));}
+        else{StartCoroutine(SCer.PlayBGM(1));}
+        resultSituation = situation.ToString();
         var resultStatus = PAFBUC.GetPlayerFinalStatus();
         defeatpoint = resultStatus.Item1;
         maximumCombatPower = resultStatus.Item2;
@@ -63,16 +69,24 @@ public class ResultUIController : MonoBehaviour
         ResultSituation.text = resultSituation;
         yield return new WaitForSeconds(1f);
         ////撃破ポイントの表示
+        SCer.PlaySE(0);
         DOTween.To(() => displayDefeatPoint,(x) => displayDefeatPoint = x,defeatpoint,1f);
+        SCer.StopSE();
         yield return new WaitForSeconds(1f);
         ////最大戦闘力の表示
+        SCer.PlaySE(0);
         DOTween.To(() => displayMaximumCombatPower,(x) => displayMaximumCombatPower = x,maximumCombatPower,1f);
+        SCer.StopSE();
         yield return new WaitForSeconds(1f);
         ////ノーダメージボーナスを表示
+        SCer.PlaySE(0);
         DOTween.To(() => displayNoDamageBonus,(x) => displayNoDamageBonus = x, noDamageBonus,1f);
+        SCer.StopSE();
         yield return new WaitForSeconds(1f);
         ////最終結果を表示
+        SCer.PlaySE(0);
         DOTween.To(() => displayTotalScore,(x) => displayTotalScore = x,totalScore,2f);
+        SCer.StopSE();
         yield return new WaitForSeconds(2f);
         //タイトルへ戻るボタンを表示
         TitleButton.transform.DOScaleX(1,0.5f);
@@ -82,5 +96,19 @@ public class ResultUIController : MonoBehaviour
     }
     public void noDamageClearWaveNumCountUp(){
         noDamageClearWaveNum ++;
+    }
+    /// <summary>
+    /// 入力のシチュエーションが成功なのか失敗なのかを識別する
+    /// </summary>
+    /// <param name="resultSituation"></param>
+    /// <returns></returns>
+    protected bool IsThisSituationClear(GSetting.ResultSituation resultSituation){
+        bool isClear;
+        switch (resultSituation){
+            case GSetting.ResultSituation.AllWaveClear:{isClear = true;break;}
+            case GSetting.ResultSituation.PlayerDestroyed:{isClear = false;break;}
+            default : isClear = false;break;
+        }
+        return isClear;
     }
 }

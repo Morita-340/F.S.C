@@ -15,9 +15,9 @@ public class SettingEnemyUnitDestroyManagementScript : AbstractUnitDestroyManage
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
         base.Start();
     }
-    protected override List<GameObject> Regenerate()
+    protected override List<GameObject> Regenerate(bool inputIsDead)
     {
-        List<GameObject> ParentObjectList = base.Regenerate();
+        List<GameObject> ParentObjectList = base.Regenerate(inputIsDead);
         StartCoroutine(wait(0.1f,ParentObjectList));
         return ParentObjectList;
     }
@@ -52,9 +52,9 @@ public class SettingEnemyUnitDestroyManagementScript : AbstractUnitDestroyManage
         childObjTagName = GSetting.ObjTagName.EnemyUnit;
         return base.CaluculateCombatPower();
     }
-    public override void DestroyProcess(UnitData DeleteData)
+    public override void DestroyProcess(UnitData DeleteData,bool inputIsDead)
     {
         Debug.Log("EUDMS" + DeleteData.ReturnThisUnit().GetUnitStatus());
-        base.DestroyProcess(DeleteData);
+        base.DestroyProcess(DeleteData,inputIsDead);
     }
 }

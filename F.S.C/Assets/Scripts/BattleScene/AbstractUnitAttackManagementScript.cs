@@ -33,7 +33,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
             foreach (UnitData child in ChildrenUnitDatalist){
                 //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 if(child.ReturnThisUnit() is AttackUnit AU){
-                    AU.NormalAttack(TargetPosition);
+                    StartCoroutine(AU.NormalAttack(TargetPosition));
                 }
             }
             NextNormalAttack += normalAttackInterval;
@@ -49,15 +49,20 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
                 inTimeRangeOFChargeAttack = true;
                 nextChargeAttackTime =inputTime;}
             if(inputTime >= nextChargeAttackTime){
-                //Debug.Log("AUAMS charge" + inputTime +" "+ nextChargeAttackTime);
                 foreach (UnitData child in ChildrenUnitDatalist){
                     if(child.ReturnThisUnit() is AttackUnit AU){
                         AU.ChargeAttack(TargetPosition);
-                        //Debug.Log("AUAMS charge unit" + child.ReturnThisUnit().name);
                     }
                 }
                 nextChargeAttackTime += chargeAttackInterval;
             }
         }else{inTimeRangeOFChargeAttack = false;}
+    }
+    public void ChargeAttack(Vector3 TargetPosition){
+        foreach (UnitData child in ChildrenUnitDatalist){
+            if(child.ReturnThisUnit() is AttackUnit AU){
+                AU.ChargeAttack(TargetPosition);
+            }
+        }
     }
 }

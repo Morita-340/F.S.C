@@ -33,9 +33,11 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     float drive_miximum_speed_factor = 1.5f;
     float thisRotationZ;
     [SerializeField]bool Setting = false;
+    [SerializeField]protected SoundController Scer;
     // Start is called before the first frame update
     void Start()
     {
+        Scer = GetComponent<SoundController>();
     }
 
     // Update is called once per frame
@@ -58,27 +60,25 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
             rb2d.velocity = Vector2.zero;
         }
         else if(Input.GetKey(KeyCode.S)){
+            if(Input.GetKeyDown(KeyCode.S)){
+                //ブースト音
+                Scer.PlaySE(0);
+            }
             Decelerate(-forward);
         }else if (Input.GetKey(KeyCode.W)){
+            if(Input.GetKeyDown(KeyCode.W)){
+                //ブースト音
+                Scer.PlaySE(0);
+            }
             Accelerate(forward);
+        }else{
+            Scer.FadeSE();
         }
-        //else{
-        //    rb2d.velocity = forward * drive_speed;
-        //    //Debug.Log("c");
-        //}
     }
     /// <summary>
     /// 正面方向へ加速する
     /// </summary>
     void Accelerate(Vector2 forward){
-        ////rb2d.velocity = new Vector2(0,0);
-        //if((rb2d.velocity.x < drive_miximum_speed_factor && rb2d.velocity.x > -drive_minimum_speed_factor)
-        //&& (rb2d.velocity.y < drive_miximum_speed_factor&& rb2d.velocity.y > -drive_minimum_speed_factor))
-        //{
-        //    rb2d.velocity += forward * 0.1f;
-        //}else{
-        //    rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
-        //}
         rb2d.velocity += forward * 0.3f;
         if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
@@ -89,16 +89,6 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// 正面方向への速度を減速する
     /// </summary>
     void Decelerate(Vector2 behind){
-        //rb2d.velocity = new Vector2(0,0);
-        //if(rb2d.velocity.x < drive_miximum_speed_factor
-        //&& rb2d.velocity.x > -drive_minimum_speed_factor
-        //&& rb2d.velocity.y < drive_miximum_speed_factor
-        //&& rb2d.velocity.y > -drive_minimum_speed_factor)
-        //{
-        //    rb2d.velocity += behind * 0.1f;
-        //}else{
-        //    rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
-        //}
         rb2d.velocity += behind * 0.3f;
         if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);

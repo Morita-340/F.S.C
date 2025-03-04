@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 2757329305833664535}
   - component: {fileID: 8177833823725131474}
   - component: {fileID: 6417315516432665736}
+  - component: {fileID: -6414698322949659913}
   m_Layer: 0
   m_Name: RocketBomb
-  m_TagString: EnemyWeapon1
+  m_TagString: PlayerWeapon1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,9 +100,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb40ed47eb8799a41aa9ba99eb322739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thisRb2D: {fileID: 8177833823725131474}
   attackPower: 3
   velocityEfficiency: 3
-  thisRb2D: {fileID: 8177833823725131474}
+  SCer: {fileID: 0}
   graceTime: 5
 --- !u!50 &8177833823725131474
 Rigidbody2D:
@@ -175,3 +177,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &-6414698322949659913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1119540286865686011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b860df88d9ef8db49b08bcbf2dcde86a, type: 3}
+  - {fileID: 8300000, guid: a23e7c9e94bd8a3488ca3231a7fee08e, type: 3}
+  playOnAwake: 0

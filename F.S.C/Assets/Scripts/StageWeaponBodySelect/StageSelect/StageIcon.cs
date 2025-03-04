@@ -22,10 +22,11 @@ public class StageIcon : GeneralUIIconController
     GeneralFlagManager GFM;
     private float chargeTime = 0;
     private float selectTime = 1;
+    protected bool executeOnce = true;
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        
+        base.Start();
     }
 
     // Update is called once per frame
@@ -33,10 +34,16 @@ public class StageIcon : GeneralUIIconController
     {
         base.Update();
         if(CursolSelected){chargeTime += Time.deltaTime;}
-        else{chargeTime = 0;}
+        else{chargeTime = 0;
+            executeOnce = true;}
         if(chargeTime > selectTime){
             SSM.SetSelectedStage(this.stageData);
-            GFM.SetStageName(this.stageData.StageName);}
+            GFM.SetStageName(this.stageData.StageName);
+            if(executeOnce){
+                executeOnce = false;
+                SCer.PlaySE(1);
+            }
+        }
     }
     public override void OnPointerEnter(PointerEventData eventData){
         base.OnPointerEnter(eventData);

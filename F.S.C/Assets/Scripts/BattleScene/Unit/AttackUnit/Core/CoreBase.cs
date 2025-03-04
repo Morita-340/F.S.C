@@ -12,8 +12,13 @@ public class CoreBase : AttackUnit
     [SerializeField]
     protected CoreEffectManager CEM;
     protected GameObject ReactorEffectPool;
+    protected override void Awake()
+    {
+        base.Awake();
+        FR.InitialSetting();
+    }
     protected override void Start(){
-        ReactorEffectPool = GameObject.Find("ReactorEffectPool");
+        ReactorEffectPool = GameObject.Find(GSetting.UniqueObjectName.ReactorEffectPool.ToString());
         CEM.transform.SetParent(ReactorEffectPool.transform);
         CEM.ExplosionActive(false);
         CEM.SetThisCore(this);
@@ -30,21 +35,24 @@ public class CoreBase : AttackUnit
     protected override void DestroyUnit()
     {
         CEM.ExplosionActive(true);
+        FR.DestroyRMM();
         DestroyCore();
     }
     protected void DestroyCore(){
         if(spriteRenderer.isVisible){AUDMS.ThisIsVisible(false);}
-        AUDMS.DeleteChildrenDataFromFM();
-        //AUDMSの撃墜判定を書き換える処理を行う
-        thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>().IsDead();
-        AUDMS.DestroyProcess(GetThisUnitData());
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
             this.gameObject.transform.root.gameObject.SetActive(false);
             }
         else{StartCoroutine(DestroyObj());}
+        AUDMS.IsDead();
     }
     IEnumerator DestroyObj(){
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.1f);
+        AUDMS.DeleteAllRangeMesh();
+        FM.DeleteData(ThisUnitData);
         Destroy(this.gameObject.transform.root.gameObject);
+    }
+    public bool InCoreRange(Vector3 TargetPositon){
+        return FR.InRange(TargetPositon);
     }
 }

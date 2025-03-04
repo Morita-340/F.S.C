@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5624797923364600743}
   - component: {fileID: 6898755681416403118}
   - component: {fileID: 771970994152194259}
+  - component: {fileID: 4360239529112270849}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: PlayerWeapon2
@@ -126,9 +127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb40ed47eb8799a41aa9ba99eb322739, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thisRb2D: {fileID: 5624797923364600743}
   attackPower: 5
   velocityEfficiency: 7
-  thisRb2D: {fileID: 5624797923364600743}
+  SCer: {fileID: 0}
   graceTime: 2
 --- !u!58 &771970994152194259
 CircleCollider2D:
@@ -165,3 +167,20 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.45
+--- !u!114 &4360239529112270849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 873231942375347747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b860df88d9ef8db49b08bcbf2dcde86a, type: 3}
+  - {fileID: 8300000, guid: a23e7c9e94bd8a3488ca3231a7fee08e, type: 3}
+  playOnAwake: 0

@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 9196457214515212830}
   - component: {fileID: 6555278195146362002}
   - component: {fileID: 9062426890136840601}
+  - component: {fileID: 4272162860938362651}
+  - component: {fileID: 9103599137402798685}
   m_Layer: 0
   m_Name: BatWing
   m_TagString: PlayerUnit
@@ -96,6 +98,7 @@ MonoBehaviour:
   drive_minimum_speed_factor: 11.4
   drive_miximum_speed_factor: 11.4
   Setting: 0
+  Scer: {fileID: 4272162860938362651}
 --- !u!114 &6555278195146362002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +117,7 @@ MonoBehaviour:
   Setting: 0
   primeUnitsHP: 50
   combatPower: 0
+  SCer: {fileID: 9103599137402798685}
 --- !u!114 &9062426890136840601
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -129,6 +133,38 @@ MonoBehaviour:
   AUDMS: {fileID: 6555278195146362002}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+--- !u!114 &4272162860938362651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7797786967622733697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: 902d9a0f25bc031409d54164c7545af8, type: 3}
+  playOnAwake: 0
+--- !u!114 &9103599137402798685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7797786967622733697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  playOnAwake: 0
 --- !u!1 &8633528782619480667
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,6 +330,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3008041417443810803}
     m_Modifications:
+    - target: {fileID: 754898267010757983, guid: 22bde43845b43514ab347bfbae1ab249, type: 3}
+      propertyPath: rangeRadian
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 754898267010757983, guid: 22bde43845b43514ab347bfbae1ab249, type: 3}
+      propertyPath: rangeRadius
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 3069367820162737056, guid: 22bde43845b43514ab347bfbae1ab249, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1156,6 +1200,14 @@ PrefabInstance:
     - target: {fileID: 7775456036394597249, guid: b175fce7da1af2846b85c063987bc57d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8071696584443756800, guid: b175fce7da1af2846b85c063987bc57d, type: 3}
+      propertyPath: rangeRadian
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8071696584443756800, guid: b175fce7da1af2846b85c063987bc57d, type: 3}
+      propertyPath: rangeRadius
+      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
