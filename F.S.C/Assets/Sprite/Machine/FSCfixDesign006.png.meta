@@ -1,0 +1,1723 @@
+fileFormatVersion: 2
+guid: 46b0955b4af14eb4bacb48d299719e66
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 8
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FSCfixDesign006_0
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 232
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23228d735d35c834f80209995d7843ba
+      internalID: 2089281529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_1
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 232
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f5db24c95d3dd934e9f4b946e2b63694
+      internalID: 122441278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_2
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 224
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02e8e0ab2211f2043b071040f881653f
+      internalID: -1989209574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 224
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a7b230e9eb7c044a9403f46c98a064e
+      internalID: 1083672790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_4
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 224
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67142a1de6cfddc47826ffe8ee081d96
+      internalID: -727466619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_5
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 224
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9c79e7808fd6fc419f63305b7d2bdcd
+      internalID: 1588136324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_6
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 216
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8a1a3446d2909a41a808914ba193529
+      internalID: -1083088922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_7
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 216
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f70c67a03bae09b499cf9a05ecba775b
+      internalID: -1387283893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_8
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 216
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e64fa2cd80fc4cf4c9a915fb66d531da
+      internalID: -599999564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_9
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 216
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a04aa896a2e789a44a53ab21e6554bbc
+      internalID: -398640814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_10
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 208
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31a17e47ef2c83a4cb38bc5954ee648a
+      internalID: -294136848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_11
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 208
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c0d3936b188f0a4e94ae6434afdee24
+      internalID: 1659320807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_14
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 208
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 336fc17409f51a842b539e703d8ddd14
+      internalID: -36911226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_15
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 208
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96437dcb64d18ef4686a9bcfa4dd9026
+      internalID: -1326981513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_16
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 200
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebb3b9393771a5f4e81f8c0e034054d4
+      internalID: -989446429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_17
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 200
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a0a43097788a81428651254135ef12b
+      internalID: -1649452233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_22
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 200
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb17a27eaf4def646beccff5b5b270be
+      internalID: -1132111629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_23
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 200
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c22baa09f3c6e5748a7a6fc802b636d6
+      internalID: -523520157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_24
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c7bc3ab3beb74e4d8168a7e96aab536
+      internalID: 1715188402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_25
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f4c032478ee8184a80364ccece8eff2
+      internalID: -1344543641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_26
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7188049cbce5de44990db2dec2a9508b
+      internalID: 65271433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_27
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 574da8e053330b540b44eb1b57f37d4c
+      internalID: -1147245183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_28
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9148de8282fe6f4bbc1e6a14b7b45d8
+      internalID: 779076634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_29
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ebb81c677783d848b43dcad47d380d4
+      internalID: -1154033661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_30
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b74571b0c6962bb4889016fe22e2e44a
+      internalID: 1021506833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_31
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 070ff3d958649f94995a0c977e349a4d
+      internalID: 540494703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_32
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2f584f88d2357a44941cf0c1eb7b259
+      internalID: -995962661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_33
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 192
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84cdaa87bbb40f6429608033c16abe85
+      internalID: 1315976253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_34
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 184
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fe4003a4616a234a8642786d103c8f0
+      internalID: 254706975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_35
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 176
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11d39a360be5f744a9be5a6ea6a0b9e7
+      internalID: -1750491619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_36
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 168
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4c642168bb5a484fa33b1e132555a5c
+      internalID: -115377830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_37
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 168
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e7831d74757a854ebaa1be86a7f6361
+      internalID: 247805484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_40
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 160
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 596b675a85ae13c4fa17bd7a90de4526
+      internalID: 1327907547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_41
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 160
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a0ec634f7fadeef4eb9b8aded4e7086d
+      internalID: 660258894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_42
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 160
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc64c8a927da40e4eaa2788dde11813d
+      internalID: -968030128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_46
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 152
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a6c6d0675f3e2645a5a6c8e325d796d
+      internalID: -1643611079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_47
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 152
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19cc8d041082c1f49afbb44300ac1c1d
+      internalID: -1467304383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_48
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 152
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 066019bd543e5b740a730c948462c4f7
+      internalID: 1720403333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_54
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 144
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c97660bdc6ceca445a120ca466ce1514
+      internalID: -1963763705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_55
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 144
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9634578f3a8909841816d4a86ca385a1
+      internalID: -1611484107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_56
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 144
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cf2a38804e9e6943857473cf47102aa
+      internalID: -393718395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_65
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d57d6eee6e3800446a96cd1f0b521b6e
+      internalID: 379766977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_66
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 788eed6693bc58a4ba04e4c7228fd56d
+      internalID: 1945465535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_71
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c80c86ed4159c94a9a779bc2b95e198
+      internalID: 1278337212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_76
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 418df9958923fe74dac4c93b767019b0
+      internalID: -1607406166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_86
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 128
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2af976bf069ca4a44a58d4229834d6e5
+      internalID: 988338487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_87
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 128
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a74fee3f3f06a4b469ac275d79eb64e7
+      internalID: -938843384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_104
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 120
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70907071333bfc94c99b151beb78e2a6
+      internalID: -1989823494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_105
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 120
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 70af0d48fa695be49ab7f955748c2ff6
+      internalID: -1030978258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_106
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 120
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1cb6f9ef98d9bfd4d8e9b9d43550b6d1
+      internalID: -726091018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_107
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 120
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cd0f9a6901bd14428240f0482bdb819
+      internalID: 467334302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_108
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 120
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c7fd8e52b80a6e74389b8f070216f8d6
+      internalID: 1468796440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_125
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 112
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bcc987ff13876347b5bea4fb57ab531
+      internalID: 1213280050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_126
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 112
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c75fe13112e31d143abd97b0a81e1afc
+      internalID: -835112152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_145
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 104
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84b7f758d861a21408a2e8228f447052
+      internalID: 208576277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_147
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 104
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5eb1d9004397c942a494959fda35373
+      internalID: 1812087223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_158
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8acbd1ebb0b78c40b04be416cd02f88
+      internalID: 1322605315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_166
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 88
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fbd437aec810b447b955b8a9fd488ac
+      internalID: -850377624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_172
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 80
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 816329d913e104148b566fd332d1e7e6
+      internalID: -1077017782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_176
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 72
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f6220442c17d56489dbe360401ff3f2
+      internalID: -1483674133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_177
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe929a61b32bfbc48b98fbbffa0bbd72
+      internalID: 1592140207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_178
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 56
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 33fe3f2e842e3ef4a9294f812cbc4a71
+      internalID: 375209847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_12
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 200
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 271aad0eca68f9248b9159e7ca6b573b
+      internalID: -109669924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FSCfixDesign006_13
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 136
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14d7457756737d443858078838a0ce85
+      internalID: -919060617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      FSCfixDesign006_0: 2089281529
+      FSCfixDesign006_1: 122441278
+      FSCfixDesign006_10: -294136848
+      FSCfixDesign006_100: 1466321048
+      FSCfixDesign006_101: 212069630
+      FSCfixDesign006_102: -1197854485
+      FSCfixDesign006_103: -872176803
+      FSCfixDesign006_104: -1989823494
+      FSCfixDesign006_105: -1030978258
+      FSCfixDesign006_106: -726091018
+      FSCfixDesign006_107: 467334302
+      FSCfixDesign006_108: 1468796440
+      FSCfixDesign006_109: 1554595655
+      FSCfixDesign006_11: 1659320807
+      FSCfixDesign006_110: 84197875
+      FSCfixDesign006_111: -547754619
+      FSCfixDesign006_112: -1517431778
+      FSCfixDesign006_113: 106771106
+      FSCfixDesign006_114: 786000941
+      FSCfixDesign006_115: 820298357
+      FSCfixDesign006_116: 1757800948
+      FSCfixDesign006_117: -1235963551
+      FSCfixDesign006_118: -1231588145
+      FSCfixDesign006_119: 1173747941
+      FSCfixDesign006_12: -109669924
+      FSCfixDesign006_120: 1259059344
+      FSCfixDesign006_121: 22329767
+      FSCfixDesign006_122: 617143706
+      FSCfixDesign006_123: -342487387
+      FSCfixDesign006_124: -698710120
+      FSCfixDesign006_125: 1213280050
+      FSCfixDesign006_126: -835112152
+      FSCfixDesign006_127: -849180627
+      FSCfixDesign006_128: -1097330531
+      FSCfixDesign006_129: -1555985723
+      FSCfixDesign006_13: -919060617
+      FSCfixDesign006_130: -604919961
+      FSCfixDesign006_131: 41293748
+      FSCfixDesign006_132: -385188227
+      FSCfixDesign006_133: -1631209506
+      FSCfixDesign006_134: -1347176688
+      FSCfixDesign006_135: 827496396
+      FSCfixDesign006_136: -1979518020
+      FSCfixDesign006_137: -1889498324
+      FSCfixDesign006_138: -566474440
+      FSCfixDesign006_139: 149499482
+      FSCfixDesign006_14: -36911226
+      FSCfixDesign006_140: 275899816
+      FSCfixDesign006_141: 1507929669
+      FSCfixDesign006_142: -1723912730
+      FSCfixDesign006_143: 1084747782
+      FSCfixDesign006_144: -634426287
+      FSCfixDesign006_145: 208576277
+      FSCfixDesign006_146: -2037299211
+      FSCfixDesign006_147: 1812087223
+      FSCfixDesign006_148: -1073375419
+      FSCfixDesign006_149: 1036195621
+      FSCfixDesign006_15: -1326981513
+      FSCfixDesign006_150: 1194647685
+      FSCfixDesign006_151: -606121606
+      FSCfixDesign006_152: -177663026
+      FSCfixDesign006_153: 501912671
+      FSCfixDesign006_154: 2028643314
+      FSCfixDesign006_155: -1859962325
+      FSCfixDesign006_156: -1941461392
+      FSCfixDesign006_157: -2026525512
+      FSCfixDesign006_158: 1322605315
+      FSCfixDesign006_159: 1607700987
+      FSCfixDesign006_16: -989446429
+      FSCfixDesign006_160: 1082697699
+      FSCfixDesign006_161: 2065461602
+      FSCfixDesign006_162: 597993055
+      FSCfixDesign006_163: 1255707340
+      FSCfixDesign006_164: -1564103988
+      FSCfixDesign006_165: -1515682007
+      FSCfixDesign006_166: -850377624
+      FSCfixDesign006_167: -1376124727
+      FSCfixDesign006_168: -568447162
+      FSCfixDesign006_169: 1220131277
+      FSCfixDesign006_17: -1649452233
+      FSCfixDesign006_170: -921214760
+      FSCfixDesign006_171: 741356360
+      FSCfixDesign006_172: -1077017782
+      FSCfixDesign006_173: 1778189398
+      FSCfixDesign006_174: 1649736324
+      FSCfixDesign006_175: 1813800887
+      FSCfixDesign006_176: -1483674133
+      FSCfixDesign006_177: 1592140207
+      FSCfixDesign006_178: 375209847
+      FSCfixDesign006_179: 431877190
+      FSCfixDesign006_18: 2070686875
+      FSCfixDesign006_180: -734642434
+      FSCfixDesign006_181: -731569605
+      FSCfixDesign006_182: 1018387942
+      FSCfixDesign006_183: -283460461
+      FSCfixDesign006_184: -298105111
+      FSCfixDesign006_185: 1378445552
+      FSCfixDesign006_186: -1970284857
+      FSCfixDesign006_187: 90033511
+      FSCfixDesign006_188: 318935638
+      FSCfixDesign006_189: 866247216
+      FSCfixDesign006_19: 1548726626
+      FSCfixDesign006_190: -2756556
+      FSCfixDesign006_191: -832566282
+      FSCfixDesign006_192: 1197393281
+      FSCfixDesign006_193: -1393596423
+      FSCfixDesign006_194: -1234560529
+      FSCfixDesign006_195: 420726597
+      FSCfixDesign006_196: 1915979777
+      FSCfixDesign006_197: -848951278
+      FSCfixDesign006_198: -710220234
+      FSCfixDesign006_199: 1417665313
+      FSCfixDesign006_2: -1989209574
+      FSCfixDesign006_20: -126637277
+      FSCfixDesign006_200: 1547368013
+      FSCfixDesign006_201: 240329361
+      FSCfixDesign006_202: 1297029335
+      FSCfixDesign006_203: 4830376
+      FSCfixDesign006_204: 673697618
+      FSCfixDesign006_205: 75792278
+      FSCfixDesign006_206: 1774481229
+      FSCfixDesign006_207: -270033534
+      FSCfixDesign006_208: 1095158174
+      FSCfixDesign006_209: -1999180332
+      FSCfixDesign006_21: 958182149
+      FSCfixDesign006_210: 300970287
+      FSCfixDesign006_211: 1989982093
+      FSCfixDesign006_212: -908996531
+      FSCfixDesign006_22: -1132111629
+      FSCfixDesign006_23: -523520157
+      FSCfixDesign006_24: 1715188402
+      FSCfixDesign006_25: -1344543641
+      FSCfixDesign006_26: 65271433
+      FSCfixDesign006_27: -1147245183
+      FSCfixDesign006_28: 779076634
+      FSCfixDesign006_29: -1154033661
+      FSCfixDesign006_3: 1083672790
+      FSCfixDesign006_30: 1021506833
+      FSCfixDesign006_31: 540494703
+      FSCfixDesign006_32: -995962661
+      FSCfixDesign006_33: 1315976253
+      FSCfixDesign006_34: 254706975
+      FSCfixDesign006_35: -1750491619
+      FSCfixDesign006_36: -115377830
+      FSCfixDesign006_37: 247805484
+      FSCfixDesign006_38: 757345629
+      FSCfixDesign006_39: -677845623
+      FSCfixDesign006_4: -727466619
+      FSCfixDesign006_40: 1327907547
+      FSCfixDesign006_41: 660258894
+      FSCfixDesign006_42: -968030128
+      FSCfixDesign006_43: 3306277
+      FSCfixDesign006_44: 761878111
+      FSCfixDesign006_45: 1345669730
+      FSCfixDesign006_46: -1643611079
+      FSCfixDesign006_47: -1467304383
+      FSCfixDesign006_48: 1720403333
+      FSCfixDesign006_49: 373081137
+      FSCfixDesign006_5: 1588136324
+      FSCfixDesign006_50: 1154440490
+      FSCfixDesign006_51: -370528389
+      FSCfixDesign006_52: -1860677235
+      FSCfixDesign006_53: -474528504
+      FSCfixDesign006_54: -1963763705
+      FSCfixDesign006_55: -1611484107
+      FSCfixDesign006_56: -393718395
+      FSCfixDesign006_57: -858497858
+      FSCfixDesign006_58: 1687878364
+      FSCfixDesign006_59: 1977466657
+      FSCfixDesign006_6: -1083088922
+      FSCfixDesign006_60: -1940620413
+      FSCfixDesign006_61: 1057228405
+      FSCfixDesign006_62: 1150686872
+      FSCfixDesign006_63: -727262029
+      FSCfixDesign006_64: -2023950230
+      FSCfixDesign006_65: 379766977
+      FSCfixDesign006_66: 1945465535
+      FSCfixDesign006_67: -481856013
+      FSCfixDesign006_68: -1125746613
+      FSCfixDesign006_69: 1990227211
+      FSCfixDesign006_7: -1387283893
+      FSCfixDesign006_70: -873192691
+      FSCfixDesign006_71: 1278337212
+      FSCfixDesign006_72: 1164706172
+      FSCfixDesign006_73: 2095853281
+      FSCfixDesign006_74: 914032622
+      FSCfixDesign006_75: 1174730648
+      FSCfixDesign006_76: -1607406166
+      FSCfixDesign006_77: 1901146114
+      FSCfixDesign006_78: 1641308259
+      FSCfixDesign006_79: 72306573
+      FSCfixDesign006_8: -599999564
+      FSCfixDesign006_80: -439840952
+      FSCfixDesign006_81: -426551172
+      FSCfixDesign006_82: 318436606
+      FSCfixDesign006_83: 680385321
+      FSCfixDesign006_84: -267760553
+      FSCfixDesign006_85: 820460784
+      FSCfixDesign006_86: 988338487
+      FSCfixDesign006_87: -938843384
+      FSCfixDesign006_88: 1680668214
+      FSCfixDesign006_89: 1786817365
+      FSCfixDesign006_9: -398640814
+      FSCfixDesign006_90: 1615675088
+      FSCfixDesign006_91: 155843045
+      FSCfixDesign006_92: 1504972121
+      FSCfixDesign006_93: -1054228173
+      FSCfixDesign006_94: -1309727921
+      FSCfixDesign006_95: -688484044
+      FSCfixDesign006_96: 1576610507
+      FSCfixDesign006_97: 387540148
+      FSCfixDesign006_98: -580330878
+      FSCfixDesign006_99: -909458793
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

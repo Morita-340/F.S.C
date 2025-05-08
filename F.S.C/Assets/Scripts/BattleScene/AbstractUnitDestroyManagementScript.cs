@@ -169,14 +169,14 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
                     //複製元の消去
                     FieldManager FM = FieldManager.GetInstance();
                     FM.UnitList.Remove(unitData);
-                    Destroy(unitObj);
+                    DestroyImmediate(unitObj);
                 }
             }
             NotResearchUnitList.RemoveAll(unitData => unitData.AlreadySearch == true);
             ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
             ParentObject.GetComponent<DestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
             regeneFirstTime = true;
-            if(ParentObject.transform.childCount <= 0){Destroy(ParentObject);}
+            if(ParentObject.transform.childCount <= 0){DestroyImmediate(ParentObject);}
             else{ParentObjectList.Add(ParentObject);}
         }
         
@@ -197,8 +197,15 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     }
     public virtual void DeleteAllRangeMesh(){
         foreach(UnitData childUnitData in ChildUnitDataList){
-            if(childUnitData == null){continue;}
-            if(childUnitData.ReturnThisUnit() == null){continue;}
+            if(childUnitData == null){
+                Debug.LogWarning("AAA");
+                continue;}
+            if(childUnitData.ReturnThisUnit() == null){
+                Debug.LogWarning("AAA");
+                continue;}
+            if(childUnitData.ReturnThisUnit() is CoreBase coreBase){
+                coreBase.DestroyFRMesh();
+            }
             if(childUnitData.ReturnThisUnit() is WeaponUnitBase weaponUnitBase){
                 weaponUnitBase.DestroyFRMesh();
             }
@@ -275,5 +282,27 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     IEnumerator CaluculateFlagFalseGraceTime(){
         yield return new WaitForSeconds(1f);
         caluculateFlag = false;
+    }
+    /// <summary>
+    /// ダメージを受けるとユニット全体（被弾したユニットをのぞく）にもダメージを受ける
+    /// これにより「とりあえず攻撃を当てれば倒せる」ようになる
+    /// </summary>
+    /// <param name="damagedUnit"></param>
+    public void DamageStore(UnitData damagedUnit,int damagePoint){
+        int storeDamagePoint = damagePoint/3;
+        if(storeDamagePoint <= 0){storeDamagePoint = 1;}
+        //被弾したユニットがハードユニットならダメージ蓄積はしない
+        if(damagedUnit?.ReturnThisUnit() is HardUnit){return;}
+        foreach(UnitData unit in ChildUnitDataList){
+            //引数のデータが消えていたとしてもダメージ蓄積は行う
+            if(damagedUnit != null){
+                unit.ReturnThisUnit().TakeDamage(storeDamagePoint);
+                continue;
+            }
+            if(unit != damagedUnit){
+                unit.ReturnThisUnit().TakeDamage(storeDamagePoint);
+            }
+            
+        }
     }
 }

@@ -7,6 +7,11 @@ using UnityEngine;
 /// </summary>
 public sealed class GeneralFlagManager : MonoBehaviour
 {
+    /// <summary>
+    /// ゲーム全体の音ボリューム。これを弄れるようにすることでプレイヤーが簡単に音量調整できる
+    /// </summary>
+    [SerializeField,ReadOnly]
+    private float generalSoundVolume = 1;
     [SerializeField]
     private List<BodyFlag> BodyList = new List<BodyFlag>(){};
     /// <summary>
@@ -17,6 +22,22 @@ public sealed class GeneralFlagManager : MonoBehaviour
     [SerializeField,ReadOnly]private string stageName;
     [SerializeField]
     private List<WeaponFlag> WeaponList = new List<WeaponFlag>(){};
+    public float GetSoundVolume(){
+        return generalSoundVolume;
+    }
+    /// <summary>
+    /// 音量設定関数
+    /// </summary>
+    /// <param name="volume">入力下限を0とした音量ツマミの角度変化量</param>
+    /// <param name="volumeRange">入力上限-入力下限</param>
+    public void SetSoundVolume(float volume,float inputVolumeRange){
+        float volumeRange = inputVolumeRange;
+        if(volume < 0){return;}
+        if(volumeRange == 0){volume = 1;}
+        Debug.LogWarning(volume + " " + volumeRange);
+        //AudioSourceコンポーネントでは0-1で調整するのでそれに合うようにする
+        generalSoundVolume = volume/volumeRange;
+    }
     public List<BodyFlag> GetBodyList(){
         return BodyList;
     }
@@ -32,6 +53,10 @@ public sealed class GeneralFlagManager : MonoBehaviour
     public void SetSelectedWeapon(WeaponFlag weapon){
         SelectedWeapon = weapon.Weapon;
     }
+    /// <summary>
+    /// 設定画面で選んだ兵装と武器を引き渡し生成に用いる
+    /// </summary>
+    /// <returns></returns>
     public (GameObject,GameObject) GetSelectedPlayer(){
         return (SelectedBody,SelectedWeapon);
     }

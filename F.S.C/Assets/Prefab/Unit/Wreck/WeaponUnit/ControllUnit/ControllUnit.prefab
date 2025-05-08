@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -977799589, guid: 63c5a2b33eb044c4da969dbe8a5920a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -149,8 +149,11 @@ MonoBehaviour:
   shapeType: 1
   HitPoint: 5
   MainCamera: {fileID: 0}
+  offsetRotation: 0
   isPrime: 0
+  DamageCountText: {fileID: 0}
   attackEfficiency: 1
+  SCer: {fileID: 0}
 --- !u!114 &1101226759315317605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,7 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 50
   rangeRadian: 45
-  line: {fileID: 3131678748191118481}
+  RMM: {fileID: 0}
 --- !u!120 &3131678748191118481
 LineRenderer:
   serializedVersion: 2

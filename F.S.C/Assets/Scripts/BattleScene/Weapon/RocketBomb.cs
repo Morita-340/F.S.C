@@ -21,13 +21,26 @@ public class RocketBomb : WeaponBase
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
+        base.Update();
         nowTime += Time.deltaTime;
-        if(nowTime > graceTime){Destroy(this.gameObject);}
-        else if(rocketHit){Destroy(this.gameObject);}
+        if(nowTime > graceTime){NotHit();}
+        else if(rocketHit){Hit();}
     }
-    public void OnTriggerEnter2D(Collider2D other){
+    /// <summary>
+    /// 何にも当たらず猶予時間を過ぎた場合の処理
+    /// </summary>
+    protected virtual void NotHit(){
+        Destroy(this.gameObject);
+    }
+    /// <summary>
+    /// 指定したオブジェクトに直撃し、rovketHit==trueとなった場合の処理
+    /// </summary>
+    protected virtual void Hit(){
+        Destroy(this.gameObject);
+    }
+    public virtual void OnTriggerEnter2D(Collider2D other){
         //if(true)rocketHit = true;//敵に当たれば爆発する。タグで判別する
         switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
             case GSetting.ObjTagName.PlayerWeapon1: 

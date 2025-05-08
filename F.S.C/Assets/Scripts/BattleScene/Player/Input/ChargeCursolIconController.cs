@@ -23,7 +23,6 @@ public class ChargeCursolIconController : MonoBehaviour
     {
         DrawLine(chargeCircle,1,chargeCircleRange);
         DrawLine(fullChargeCircle,1.1f,fullChargeCircleRange);
-        Debug.Log("AAA"+chargeCircleRange);
     }
     private void DrawLine(LineRenderer lineRenderer,float inputRadiusEfficiency,int range){
         this.transform.localScale = new Vector2(this.transform.localScale.x, this.transform.localScale.x);
@@ -57,16 +56,15 @@ public class ChargeCursolIconController : MonoBehaviour
     /// </summary>
     /// <param name="chargeTime">チャージ時間（敵にかざし続けている時間）</param>
     /// <returns>チャージ攻撃をするタイミングであるかどうか</returns>
-    public void ChargeCommand(float inputTime,PlayerUnitAttackManagementScript PUAMS,Vector3 TargetPosition,bool lockOn)
+    public void ChargeCommand(float inputTime,PlayerUnitAttackManagementScript PUAMS,bool lockOn)
     {
         int chargeAttackSpan = 2;
         float attackableTime = 2f;
-        float chargeTime = 0.8f;
+        float chargeTime = 0.4f;
         int dischargeTime = 1;
         float time = inputTime;
-        Debug.LogWarning("AAA"+nowChargeTime +" "+chargeTime +" "+ time);
         if(fullCharge){
-            ChargeAttackCommand(chargeAttackSpan,attackableTime,chargeTime,time,PUAMS,TargetPosition);
+            ChargeAttackCommand(chargeAttackSpan,attackableTime,chargeTime,time,PUAMS);
         }
         else{
             if(lockOn){
@@ -90,11 +88,11 @@ public class ChargeCursolIconController : MonoBehaviour
             }
         }
     }
-    private void ChargeAttackCommand(int chargeAttackSpan,float attackableTime,float chargeTime,float time,PlayerUnitAttackManagementScript PUAMS,Vector3 TargetPosition)
+    private void ChargeAttackCommand(int chargeAttackSpan,float attackableTime,float chargeTime,float time,PlayerUnitAttackManagementScript PUAMS)
     {
         if(Input.GetMouseButtonDown(1)){
             time = Mathf.Floor(time);
-            PUAMS.ChargeAttack(TargetPosition);
+            PUAMS.ChargeAttack();
             //押し始めたタイミングで最速で一発撃てるようにしたいので、timeが如何なる値であろうと即時PUAMS.ChargeAttack内で弾丸を発射するようにする
             }
         if(Input.GetMouseButton(1)){
@@ -113,7 +111,7 @@ public class ChargeCursolIconController : MonoBehaviour
     /// <param name="inputTime">入力される時間情報</param>
     /// <param name="chargeTime">チャージに要する時間</param>
     public void IconCharge(Color inputColor,Color postColor,float inputTime, float chargeTime){
-        float chargeTimeForAttackRatio = inputTime /chargeTime;Debug.LogWarning(inputTime +" "+chargeTime);
+        float chargeTimeForAttackRatio = inputTime /chargeTime;//Debug.LogWarning(inputTime +" "+chargeTime);
         if(chargeTimeForAttackRatio < 0){chargeTimeForAttackRatio = 0;Debug.LogWarning("AAAA");}
         chargeCircle.startColor = inputColor;
         chargeCircle.endColor = inputColor;

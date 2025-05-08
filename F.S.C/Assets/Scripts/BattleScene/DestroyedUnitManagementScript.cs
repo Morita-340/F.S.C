@@ -75,6 +75,7 @@ public class DestroyedUnitManagementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(transform.childCount == 0){Destroy(gameObject);}
         if(!plunderFlag){
             rb2D.velocity = new Vector3(InstMoveAndRotateVector.x,InstMoveAndRotateVector.y,0);
             transform.Rotate(0,0,InstMoveAndRotateVector.z);

@@ -19,6 +19,7 @@ public class CoreBase : AttackUnit
     }
     protected override void Start(){
         ReactorEffectPool = GameObject.Find(GSetting.UniqueObjectName.ReactorEffectPool.ToString());
+        //CEM.SetSCer(GetComponent<SoundController>());
         CEM.transform.SetParent(ReactorEffectPool.transform);
         CEM.ExplosionActive(false);
         CEM.SetThisCore(this);
@@ -43,14 +44,16 @@ public class CoreBase : AttackUnit
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
             this.gameObject.transform.root.gameObject.SetActive(false);
             }
-        else{StartCoroutine(DestroyObj());}
+        else{
+        StartCoroutine(DestroyObj());
+        }
         AUDMS.IsDead();
     }
     IEnumerator DestroyObj(){
-        yield return new WaitForSeconds(0.1f);
         AUDMS.DeleteAllRangeMesh();
         FM.DeleteData(ThisUnitData);
-        Destroy(this.gameObject.transform.root.gameObject);
+        yield return new WaitForSeconds(0.1f);
+        DestroyImmediate(this.gameObject.transform.root.gameObject);
     }
     public bool InCoreRange(Vector3 TargetPositon){
         return FR.InRange(TargetPositon);

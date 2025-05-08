@@ -10,15 +10,18 @@ public class UnitBase : MonoBehaviour
 {
     [SerializeField]
     protected GSetting.ShapeType shapeType;
-    [SerializeField]
+    [SerializeField,Range(1,100)]
     //現在のHP
     protected int HitPoint = 5;
+    /// <summary>
+    /// 生成時のHP
+    /// </summary>
+    [SerializeField,ReadOnly]
+    protected int InstHitPoint = 0;
     [SerializeField,ReadOnly]
     protected MainCameraController MainCamera;
     [SerializeField,Range(-180f,180f)]
     float offsetRotation = 0;
-    //生成時のHP
-    protected int InstHitPoint = 0;
     /// <summary>
     /// 素体のユニットであるかを判別する。インスペクターで予め設定する。プレイ中は一切変えない
     /// </summary>
@@ -78,7 +81,7 @@ public class UnitBase : MonoBehaviour
         float delayTime = 0f;
         //減算時＝リアクターが破壊された時は爆風で破壊されたユニットのステータスをスコアに加算しないといけないが、即時減算だとリアクターによる強化がスコアに反映されないので、体感では分からない程度に処理を遅らせる
         if(reactorAttackEfficiency < 0){delayTime = 0.2f;}
-        StartCoroutine(AttackEfficiencyAddDelay(delayTime,reactorAttackEfficiency));
+        if(gameObject.activeSelf)StartCoroutine(AttackEfficiencyAddDelay(delayTime,reactorAttackEfficiency));
     }
     IEnumerator AttackEfficiencyAddDelay(float delayTime,int reactorAttackEfficiency){
         yield return new WaitForSeconds(delayTime);
@@ -120,12 +123,14 @@ public class UnitBase : MonoBehaviour
         uiRectTransform  = GameObject.Find("UICanvas").GetComponent<RectTransform>();
     }
     protected virtual void Start(){
+        AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
+        if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
         InstHitPoint = HitPoint;
+        if(InstHitPoint <= 0){InstHitPoint = 1;}
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
         MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
         GetAdjacentObjLink(tag);//RegistData()に格納するとなぜか動かなくなるので注意
         RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
-        AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
     }
     protected virtual void GetAdjacentObjLink(string SelectedObjTag)
     {
@@ -241,7 +246,8 @@ public class UnitBase : MonoBehaviour
     {
         //素体ユニットならAUDMS側で共有しているHPに変更する
         if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
-        spriteRenderer.color = new Color(25f*HitPoint/255f, 25f*HitPoint/255f, 25f*HitPoint/255f,spriteRenderer.color.a);
+        float HPRatio = (float)HitPoint/(float)InstHitPoint;
+        spriteRenderer.color = new Color(HPRatio,HPRatio,HPRatio,spriteRenderer.color.a);
         AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
         if(HitPoint <= 0){DestroyUnit();}
     }
@@ -349,7 +355,10 @@ public class UnitBase : MonoBehaviour
                         break;}
                     case GSetting.ObjTagName.EnemyUnit:{
                         SCer.PlaySE(0);
-                        DamageCount(HitPoint);
+                        //素体ユニットであるかどうかで減算対象を変える
+                        if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitPoint);}
+                        else{
+                        DamageCount(HitPoint);}
                         break;}
                     //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
@@ -361,13 +370,31 @@ public class UnitBase : MonoBehaviour
                     //リアクターが爆発すると敵味方関係なくレベルの分だけダメージを受ける
                     case GSetting.ObjTagName.ReactorExplosion:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
-                        if(HitPoint >0)DamageCount(reactorBase.GetReactorsEfficiencyLevel());
+                        if(HitPoint >0){
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(reactorBase.GetReactorsEfficiencyLevel());}
+                            else{
+                                DamageCount(reactorBase.GetReactorsEfficiencyLevel());
+                            }
+                        }
                         break;}
                     case GSetting.ObjTagName.CoreExplosion:{
                         CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
-                        if(HitPoint > 0)DamageCount(coreBase.GetUnitStatus());
-                        break;
-                    }
+                        if(HitPoint > 0){
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(coreBase.GetUnitStatus());}
+                            else{
+                            DamageCount(coreBase.GetUnitStatus());
+                            }
+                        }
+                        break;}
+                    case GSetting.ObjTagName.GrenadeExplosion:{
+                        GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
+                        if(HitPoint > 0){
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
+                            else{
+                                DamageCount(GEM.GetExplosionDamage());
+                            }
+                        }
+                        break;}
                     default:break;
                 }
                 if(HitPoint < 0){HitPoint = 0;}
@@ -409,6 +436,15 @@ public class UnitBase : MonoBehaviour
                         if(HitPoint > 0)DamageCount(coreBase.GetUnitStatus());
                         break;
                     }
+                    case GSetting.ObjTagName.GrenadeExplosion:{
+                        GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
+                        if(HitPoint > 0){
+                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
+                            else{
+                                DamageCount(GEM.GetExplosionDamage());
+                            }
+                        }
+                        break;}
                     default:break;
                 }
                 if(HitPoint < 0){HitPoint = 0;}
@@ -429,6 +465,7 @@ public class UnitBase : MonoBehaviour
                         if(reactorBase == null){break;}
                         //引数はマイナスにすること
                         if(reactorBase.tag == thisGameObject.tag){
+                            if(HitPoint <= 0){break;}//HPが0以下ならばこの処理を行ったところで意味がないし、コルーチンの無駄な呼び出しになるから
                             AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
                     default:break;
@@ -444,6 +481,7 @@ public class UnitBase : MonoBehaviour
                         if(reactorBase == null){break;}
                         //引数はマイナスにすること
                         if(reactorBase.tag == thisGameObject.tag){
+                            if(HitPoint <= 0){break;}//HPが0以下ならばこの処理を行ったところで意味がないし、コルーチンの無駄な呼び出しになるから
                             AddAttackEfficiency( - reactorBase.GetReactorsEfficiencyLevel());}
                         break;}
                     default:break;
@@ -478,8 +516,12 @@ public class UnitBase : MonoBehaviour
         TextMeshProUGUI Text = DamageObj.GetComponent<TextMeshProUGUI>();
         Text.text = damagePoint.ToString();
         Text.DOFade(0f,fadeTime);
-        HitPoint -= damagePoint;
+        AUDMS.DamageStore(ThisUnitData,damagePoint);
+        TakeDamage(damagePoint);
         SCer.PlaySE(0);
+    }
+    public virtual void TakeDamage(int damagePoint){
+        HitPoint -= damagePoint;
     }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 374275334457772733}
   - component: {fileID: 9198511284214935429}
   - component: {fileID: 9097204048879759802}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RangeMesh
   m_TagString: SimulateUnit
   m_Icon: {fileID: 0}

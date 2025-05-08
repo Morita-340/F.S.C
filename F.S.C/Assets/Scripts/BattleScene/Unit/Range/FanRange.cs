@@ -10,7 +10,8 @@ public class FanRange : MonoBehaviour
     [SerializeField,Range(1f,180f)]
     float rangeRadian = 90f;
     Vector3 TargetDelta = new Vector3(0f, 0f,0f);
-    [SerializeField]RangeMeshManager RMM;
+    [SerializeField]GameObject RMM;
+    [SerializeField,ReadOnly]RangeMeshManager GeneRMM;
     GameObject RangeMeshPool;
     public bool InRange(Vector3 TargetPosition){
         TargetDelta = TargetPosition - this.transform.position;
@@ -34,12 +35,15 @@ public class FanRange : MonoBehaviour
     }
     public void InitialSetting(){
         RangeMeshPool = GameObject.Find(GSetting.UniqueObjectName.RangeMeshPool.ToString());
-        RMM.transform.SetParent(RangeMeshPool.transform);
-        RMM.SetRadiusAndRadianAndFanRange(rangeRadius,rangeRadian,this);
+        if(GeneRMM == null){
+            GeneRMM = Instantiate(RMM).GetComponent<RangeMeshManager>();
+        }
+        GeneRMM.transform.SetParent(RangeMeshPool.transform);
+        GeneRMM.SetRadiusAndRadianAndFanRange(rangeRadius,rangeRadian,this);
     }
     public void DestroyRMM(){
-        if(RMM != null){
-            Destroy(RMM.gameObject);
+        if(GeneRMM != null){
+            DestroyImmediate(GeneRMM.gameObject);
         }
     }
     public float GetRangeRadius(){

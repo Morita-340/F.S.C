@@ -12,24 +12,38 @@ public class AttackUnit : UnitBase
     protected GameObject InstReactorLevelUI;
     protected SpriteRenderer ReactorLevelUISSpRenderer;
     protected FanRange FR;
+    protected LineRenderer lineRenderer;
+    [SerializeField,ReadOnly]protected Vector3 targetPosition =new Vector3(10,0,0);
+    protected Vector3[] positions = new Vector3[]{};
+    public void SetTargetPosition(Vector3 inputTargetPosition){
+        targetPosition = inputTargetPosition;
+    }
     /// <summary>
     /// AUAMS→AttackUnitの攻撃処理がすべての子オブジェクトに対して同時に行われているので、AttackUnit側で攻撃タイミングをずらすことで、弾幕を張ることができ、弾を当てやすくなる
     /// </summary>
     protected float attackTimeOffset;
     protected override void Awake(){
         FR = GetComponent<FanRange>();
+        lineRenderer = GetComponent<LineRenderer>();
         base.Awake();
     }
     // Start is called before the first frame update
     protected override void Start()
     {
         SetWeaponPower();
-        attackTimeOffset = UnityEngine.Random.Range(0.1f,0.9f);
+        if(isPrime){attackTimeOffset = 0;}
+        else{attackTimeOffset = UnityEngine.Random.Range(0.1f,0.9f);}
         if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()||tag == GSetting.ObjTagName.DestroyedUnit.ToString()){
             InstReactorLevelUI = Instantiate(ReactorLevelUI,this.gameObject.transform);
             InstReactorLevelUI.transform.position = this.transform.position + new Vector3(0,0,-2);
             ReactorLevelUISSpRenderer = InstReactorLevelUI.GetComponent<SpriteRenderer>();
         }
+        //照準までの軌跡の描画初期設定
+        positions = new Vector3[]{transform.position,targetPosition};
+        if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.green;lineRenderer.endColor = Color.green;}
+        if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.red;}
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
         base.Start();
     }
     public void SetWeaponPower(){
@@ -58,6 +72,11 @@ public class AttackUnit : UnitBase
             ReactorLevelUISSpRenderer.color 
             = new Color(attackEfficiency/*+EXP*//(int)GSetting.UniqueMagicNumber.AttackEfficiencyONReactorLevel/100,1,1,0.5f);
         }
+        if(FR.InRange(targetPosition)){
+            lineRenderer.enabled = true;
+            positions = new Vector3[]{transform.position,targetPosition};
+            lineRenderer.SetPositions(positions);
+        }else{lineRenderer.enabled = false;}
         base.Update();
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
@@ -82,10 +101,12 @@ public class AttackUnit : UnitBase
             }
             NormalWeapon.tag = tagName;
             WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
+            Vector2 thisVelocity = this.transform.root.GetComponent<Rigidbody2D>().velocity;
+            //InstWeapon.SetVelocity(thisVelocity);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
             yield return new WaitForSeconds(attackTimeOffset);
-            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ this.transform.root.GetComponent<Rigidbody2D>().velocity;
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
                 case GSetting.ObjTagName.PlayerUnit:{
                     break;}
@@ -131,12 +152,15 @@ public class AttackUnit : UnitBase
                 }
                 default:break;
             }
-            InstWeapon.GetComponent<Rigidbody2D>().velocity = weaponVelocity;
+            InstWeapon.SetVelocity(weaponVelocity);
         }
     }
     private void WeaponLook(WeaponBase weapon, Vector3 TargetPosition){
         Transform myTransform = weapon.transform;
         Vector2 direction = TargetPosition - myTransform.position;
         myTransform.up = direction;
+    }
+    public virtual void DestroyFRMesh(){
+        FR?.DestroyRMM();
     }
 }

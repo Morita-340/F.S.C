@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,9 +16,9 @@ public class WeaponBase : MonoBehaviour
     /// </summary>
     protected int attackEfficiency = 1;
     /// <summary>
-    /// 速度倍率
+    /// 速度倍率　1以下だとOnTriggerEnter2Dが反応しない
     /// </summary>
-    [SerializeField,Range(0.1f,10f)]protected float velocityEfficiency = 1;
+    [SerializeField,Range(1.1f,10f)]protected float velocityEfficiency = 1;
     [SerializeField,ReadOnly]protected SoundController SCer;
     public int GetAttackPower(){
         return attackPower;
@@ -37,18 +38,30 @@ public class WeaponBase : MonoBehaviour
         thisRb2D.velocity = velocity;
         SCer.PlaySE(1);
     }
+    public IEnumerator SetVelocity(Vector2 firstVelocity,Vector2 secondVelocity){
+        SetVelocity(firstVelocity);
+        yield return new WaitForSeconds(0.5f);
+        SetVelocity(secondVelocity);
+    }
+    public IEnumerator SetVelocity(Vector2 firstVelocity,Vector2 secondVelocity,Vector2 thirdVelocity){
+        SetVelocity(firstVelocity);
+        yield return new WaitForSeconds(1f);
+        SetVelocity(secondVelocity);
+        yield return new WaitForSeconds(1f);
+        SetVelocity(thirdVelocity);
+    }
     protected virtual void Awake(){
         thisRb2D = GetComponent<Rigidbody2D>();
+        SCer = GetComponent<SoundController>();
     }
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        SCer = GetComponent<SoundController>();
-        SCer.PlaySE(0);
+        //SCer.PlaySE(0);
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         
     }

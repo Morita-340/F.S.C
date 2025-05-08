@@ -16,6 +16,7 @@ TagManager:
   - ReactorEffect
   - CoreExplosion
   - DisplayScope
+  - GrenadeExplosion
   layers:
   - Default
   - TransparentFX

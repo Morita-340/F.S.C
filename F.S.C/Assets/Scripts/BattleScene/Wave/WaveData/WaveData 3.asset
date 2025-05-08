@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c9469495798a9b4a9da71e4fc77b05e, type: 3}
   m_Name: WaveData 3
   m_EditorClassIdentifier: 
-  combatPower: 30
+  combatPower: 20
   waveShapePreset: 1
   waveEnemyList:
-  - {fileID: 7717737339808941119, guid: 5ca6f5a363c80344bb436ec9ad7c2477, type: 3}
-  - {fileID: 7717737339808941119, guid: 5ca6f5a363c80344bb436ec9ad7c2477, type: 3}
   - {fileID: 7717737339808941119, guid: 5ca6f5a363c80344bb436ec9ad7c2477, type: 3}
   - {fileID: 7717737339808941119, guid: 5ca6f5a363c80344bb436ec9ad7c2477, type: 3}
   - {fileID: 7717737339808941119, guid: 5ca6f5a363c80344bb436ec9ad7c2477, type: 3}

@@ -4,7 +4,7 @@ using UnityEngine;
 using FSCGeneral;
 using DG.Tweening;
 
-public class ReactorEffectManager : AbstractEffectManager
+public class ReactorEffectManager : AbstractExplosionEffectManager
 {
     [SerializeField,ReadOnly]
     ReactorBase ThisReactor;
@@ -15,6 +15,10 @@ public class ReactorEffectManager : AbstractEffectManager
     }
     public void SetThisReactor(ReactorBase reactorBase){
         ThisReactor = reactorBase;
+    }
+    protected override void Awake()
+    {
+        base.Awake();
     }
     // Start is called before the first frame update
     protected override void Start()

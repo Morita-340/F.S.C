@@ -11,7 +11,6 @@ public class RangeMeshManager : MonoBehaviour
     private MeshFilter meshFilter;
     [SerializeField,ReadOnly]private FanRange thisFR;
     List<FanRange> thisFRNullCheckList = new List<FanRange>();
-    bool thisFRNullCheck = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,14 +25,13 @@ public class RangeMeshManager : MonoBehaviour
 
     // Update is called once per frame
     void Update(){
-        //thisFRNullCheck = thisFRNullCheckList.Any(x => x == null);
-        //if(thisFRNullCheck){gameObject.SetActive(false);}
-        //else{
+        if(thisFR == null){gameObject.SetActive(false);}
+        else{
             gameObject.SetActive(true);
             this.transform.position = thisFR.transform.position;
             this.transform.rotation = thisFR.transform.rotation;
             DrawFan();
-        //}
+        }
     }
     void DrawFan(){
         // オブジェクト前方
@@ -60,9 +58,9 @@ public class RangeMeshManager : MonoBehaviour
         // 終点として自身の位置を追加
         positions.Add(thisFR.transform.position);
         // ラインレンダラーコンポーネントに上記コードによる扇形に必要な数を設定
-        line.positionCount = positions.Count;
+        //line.positionCount = positions.Count;
         // ラインを引く扇形の位置情報を与える
-        line.SetPositions(positions.ToArray());
+        //line.SetPositions(positions.ToArray());
 
         meshPositions.Add(thisFR.transform.position);
         List<int> triangles = new List<int>();

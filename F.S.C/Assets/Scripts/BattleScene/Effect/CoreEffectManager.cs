@@ -4,7 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UIElements;
 
-public class CoreEffectManager : AbstractEffectManager
+public class CoreEffectManager : AbstractExplosionEffectManager
 {
     [SerializeField,ReadOnly]
     CoreBase ThisCore;
@@ -15,6 +15,10 @@ public class CoreEffectManager : AbstractEffectManager
     }
     public void SetThisCore(CoreBase coreBase){
         ThisCore = coreBase;
+    }
+    protected override void Awake()
+    {
+        base.Awake();
     }
     // Start is called before the first frame update
     protected override void Start()

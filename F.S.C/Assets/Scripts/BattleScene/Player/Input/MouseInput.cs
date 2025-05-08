@@ -24,7 +24,7 @@ public class MouseInput : MonoBehaviour
     private List<GSetting.ShapeType> shapeTypeList = new List<GSetting.ShapeType>();
     private List<UnitBase> UnitBaseList = new List<UnitBase>();
     //private List<WeaponUnitBase> DivideUnitList = new List<WeaponUnitBase>();
-    private Vector3 target;
+    [SerializeField,ReadOnly]private Vector3 target;
     private float WheelInput = 0;
     private float chargeAttackTimer = 0;
     private float normalAttackTimer = 0;
@@ -51,7 +51,8 @@ public class MouseInput : MonoBehaviour
     {
         WheelInput += Input.GetAxis("Mouse ScrollWheel");
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y,10));
-        CursorControll(WheelInput);
+        if(!PUDMS.GetIsDead()){CursorControll(WheelInput);}
+        PUAMS?.SetTargetPosition(target);
     }
     /// <summary>
     /// カーソルを動かすことで入力をする処理まとめ
@@ -63,11 +64,10 @@ public class MouseInput : MonoBehaviour
         var Hit2DList = RockOn(ray);
         Targetting(Hit2DList.Item1);
         UnitCapture(Hit2DList.Item2,wheelInput);
-        //PlayerDivided(Hit2DList.Item3);
     }
     private void NormalAttack(){
         if(Input.GetMouseButton(1)){
-            PUAMS.NormalAttack(normalAttackTimer,target);
+            PUAMS?.NormalAttack(normalAttackTimer);
             normalAttackTimer += Time.deltaTime;
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
@@ -126,11 +126,11 @@ public class MouseInput : MonoBehaviour
     private void Targetting(RaycastHit2D EnemyHit2D){
         if(EnemyHit2D && PUDMS.GetUnitCore().InCoreRange(target)){
             chargeAttackTimer += Time.deltaTime;
-            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,true);
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,true);
         }else{
             //カーソルを合わせてもすぐには発射しないようにしてクールタイムを無視した連射を防ぐ
             chargeAttackTimer = 0;
-            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,target,false);
+            ChargeIcon.ChargeCommand(chargeAttackTimer /*+ firstAttackInterval*/,PUAMS,false);
         }
     }
     /// <summary>
@@ -174,12 +174,12 @@ public class MouseInput : MonoBehaviour
         }
         if(Input.GetMouseButtonDown(0)){
             Regenerate(wheelInput);
-            SCer.PlaySE(1);
         }
         else if(Input.GetMouseButtonDown(2)){
             DestroyedUnitManagementScript DupliDUMS = DUMS;
             Unregister();
-            SCer.PlaySE(2);
+            if(DUMS != null){SCer.PlaySE(2);}
+            else{SCer.PlaySE(3);}
             StartCoroutine(DupliDUMS?.ColliderAndSpriteProcess(2));
         }
     }
@@ -207,6 +207,7 @@ public class MouseInput : MonoBehaviour
         //PlayerUnitに複製する
         Debug.Log("MI Plunderable" + playerUnitSimulateScript.Plunderable());
         if(playerUnitSimulateScript.Plunderable()){
+            SCer.PlaySE(1);
             //元データのコライダーと透明度を戻す
             StartCoroutine(DUMS.ColliderAndSpriteProcess(0));
             GameObject SelectedUnit = DUMS.gameObject;
@@ -231,7 +232,7 @@ public class MouseInput : MonoBehaviour
             //選んでいたデブリの親オブジェクトの参照を消去
             Destroy(DestroyedUnit);
             Unregister();
-        }
+        }else{SCer.PlaySE(3);}
     }
     /// <summary>
     /// 実際に再生成する処理

@@ -9,6 +9,7 @@ public class MainCameraController : MonoBehaviour
     [SerializeField]bool Setting = false;
     int maxDistanse = 0;
     float zoomRatio = 60f;
+    bool isPlayerHoming = false;
     private List<AbstractUnitDestroyManagementScript>VisibleUnitList = new List<AbstractUnitDestroyManagementScript>();
     public void AddToVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
         if(!VisibleUnitList.Contains(AUDMS)){
@@ -29,7 +30,7 @@ public class MainCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!Setting)this.transform.position = Player.transform.position + new Vector3(0,0, -5);
+        if(!Setting && isPlayerHoming)this.transform.position = Player.transform.position + new Vector3(0,0, -5);
         foreach(AbstractUnitDestroyManagementScript AUDMS in VisibleUnitList){
             int maxDistanseFromCore = AUDMS.GetMaximumDistanseFromCore();
             if(maxDistanse < maxDistanseFromCore){
@@ -37,6 +38,12 @@ public class MainCameraController : MonoBehaviour
                 Debug.Log("MCC maxAUDMS name: " +maxDistanse + AUDMS.gameObject.name);}
         }
         ZoomRatioControll(maxDistanse);
+    }
+    public void SetIsPlayerHomingTrue(){
+        isPlayerHoming = true;
+    }
+    public void EngineIgniteShake(){
+        StartCoroutine(Shake(0.2f,0.2f));
     }
     public void ExplosionShake( float duration, float magnitude )
     {

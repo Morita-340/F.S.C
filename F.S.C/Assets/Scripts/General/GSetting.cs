@@ -48,6 +48,7 @@ namespace FSCGeneral{
             /// ユニットが画面外に出た際にプレイヤーを中心として点対称な位置に移動する為の画面外検知用の判定タグ
             /// </summary>
             DisplayScope = 12,
+            GrenadeExplosion = 13,
         }
         public enum WaveShapePreset{
             FourCorners = 0,
@@ -68,6 +69,7 @@ namespace FSCGeneral{
             Title = 1,
             StageWeaponBodySelect = 2,
             InterceptEnemyForce = 3,
+            TutorialStage = 4,
         }
         /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
@@ -87,6 +89,10 @@ namespace FSCGeneral{
             /// リアクターの強化レベル1辺りの攻撃倍率増加量
             /// </summary>
             AttackEfficiencyONReactorLevel = 1,
+            /// <summary>
+            /// スポーンシステムにおける一度に生成できる敵数の上限
+            /// </summary>
+            WaveEnemyListLength = 30,
         }
         public enum UniqueObjectName{
             RangeMesh = 0,

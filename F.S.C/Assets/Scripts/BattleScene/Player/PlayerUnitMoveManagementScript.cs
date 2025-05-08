@@ -29,25 +29,34 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// <summary>
     /// プレイヤーが加速するときの速度上限値
     /// </summary>
-    [SerializeField,Range(0f,11.4f)]
-    float drive_miximum_speed_factor = 1.5f;
+    [SerializeField,Range(0f,20f)]
+    float drive_maximum_speed_factor = 1.5f;
     float thisRotationZ;
     [SerializeField]bool Setting = false;
     [SerializeField]protected SoundController Scer;
+    [SerializeField,ReadOnly]protected AugmentorEffectController AEC;
+    [SerializeField,ReadOnly]protected bool isAuto = false;
+    /// <summary>
+    /// これがtrueの間は旋回速度と加速度と最高速が上昇。それぞれの値は鹵獲したスラスターとその向きで決まる。もちろん最大値は存在する
+    /// </summary>
+    [SerializeField,ReadOnly]private bool isBoost = false;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         Scer = GetComponent<SoundController>();
+        AEC = GetComponent<AugmentorEffectController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        Manipulate();
-        //Debug.Log("PUMMS" + thisRotationZ +" "+ maximum_rotation +" "+ minimum_rotation);
+        if(!isAuto){Manipulate();}
+        else{AEC.MoveForward();}
+        if(Input.GetKey(KeyCode.LeftShift)){isBoost = true;}
+        else{isBoost = false;}
     }
     void FixedUpdate(){
-        if(!Setting)Drive();
+        if(!Setting && !isAuto)Drive();
     }
     /// <summary>
     /// このオブジェクトを前後に動かす命令
@@ -58,20 +67,44 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
         Vector2 forward = this.transform.up;
         if(Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W)){
             rb2d.velocity = Vector2.zero;
+            AEC.PositionFix();
         }
         else if(Input.GetKey(KeyCode.S)){
+            Decelerate(-forward);
             if(Input.GetKeyDown(KeyCode.S)){
                 //ブースト音
                 Scer.PlaySE(0);
             }
-            Decelerate(-forward);
+            if(Input.GetKey(KeyCode.A)){
+                AEC.MoveBackRight();
+            }
+            else if(Input.GetKey(KeyCode.D)){
+                AEC.MoveBackLeft();
+            }
+            else{
+                AEC.MoveBack();}
         }else if (Input.GetKey(KeyCode.W)){
+            Accelerate(forward);
             if(Input.GetKeyDown(KeyCode.W)){
                 //ブースト音
                 Scer.PlaySE(0);
             }
-            Accelerate(forward);
+            if(Input.GetKey(KeyCode.A)){
+                AEC.MoveForwardLeft();
+            }
+            else if(Input.GetKey(KeyCode.D)){
+                AEC.MoveForwardRight();
+            }
+            else{
+                AEC.MoveForward();}
         }else{
+            if(Input.GetKey(KeyCode.A)){
+                AEC.LeftTurn();
+            }
+            else if(Input.GetKey(KeyCode.D)){
+                AEC.RightTurn();
+            }
+            else{AEC.Idle();}
             Scer.FadeSE();
         }
     }
@@ -79,9 +112,15 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// 正面方向へ加速する
     /// </summary>
     void Accelerate(Vector2 forward){
-        rb2d.velocity += forward * 0.3f;
-        if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
-            rb2d.velocity = new Vector2(forward.x*drive_miximum_speed_factor-0.3f,forward.y*drive_miximum_speed_factor-0.3f);
+        if(isBoost){
+            //rb2d.velocity += forward * 0.3f * 正方向のスラスター個数による加速倍率;
+        }else{
+            rb2d.velocity += forward * 0.3f;
+        }
+        //閾値の範囲を超えれば
+        if(rb2d.velocity.x > drive_maximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_maximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
+            rb2d.velocity = new Vector2(forward.x*drive_maximum_speed_factor-0.3f,forward.y*drive_maximum_speed_factor-0.3f);
+            //rb2d.velocity -= forward * 0.4f;
         }
 
     }
@@ -89,9 +128,15 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// 正面方向への速度を減速する
     /// </summary>
     void Decelerate(Vector2 behind){
-        rb2d.velocity += behind * 0.3f;
-        if(rb2d.velocity.x > drive_miximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_miximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
+        if(isBoost){
+            //rb2d.velocity += behind * 0.3f * 逆方向のスラスター個数による加速倍率;
+        }else{
+            rb2d.velocity += behind * 0.3f;
+        }
+        //閾値の範囲を超えれば
+        if(rb2d.velocity.x > drive_maximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_maximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor){
             rb2d.velocity = new Vector2(behind.x*drive_minimum_speed_factor+0.3f,behind.y*drive_minimum_speed_factor+0.3f);
+            //rb2d.velocity -= behind * 0.4f;
         }
     }
     /// <summary>
@@ -123,7 +168,10 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     void LeftTurn(){
         float left_miximum_rotation = maximum_rotation -182;
         if(left_miximum_rotation <= thisRotationZ && thisRotationZ <= maximum_rotation){
-            angularVelocity += turn_factor * turn_factor;
+            if(isBoost){
+                //angularVelocity += turn_factor * turn_factor * 左向きに取り付けたスラスター個数による旋回倍率;
+            }else{
+                angularVelocity += turn_factor * turn_factor;}
             PlayerUnit.transform.Rotate(0,0,1*angularVelocity* Time.deltaTime);
         }
         Debug.Log("PUMMS" + left_miximum_rotation +" "+ thisRotationZ +" "+ maximum_rotation +"g" +PlayerUnit.transform.rotation.eulerAngles.z);
@@ -134,9 +182,38 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     void RightTurn(){
         float right_miximum_rotation = minimum_rotation + 182;
         if(minimum_rotation <= thisRotationZ && thisRotationZ <= right_miximum_rotation){
-            angularVelocity += turn_factor * turn_factor;
+            if(isBoost){
+                //angularVelocity += turn_factor * turn_factor * 右向きに取り付けたスラスター個数による旋回倍率;
+            }else{
+            angularVelocity += turn_factor * turn_factor;}
             PlayerUnit.transform.Rotate(0,0,-1*angularVelocity* Time.deltaTime);
         }
        Debug.Log("PUMMS" + minimum_rotation +" "+ thisRotationZ +" "+ right_miximum_rotation +"g" +PlayerUnit.transform.rotation.eulerAngles.z);
+    }
+    /// <summary>
+    /// ステージ入場時の演出用
+    /// </summary>
+    public void AutoPilot(int PilotMode){
+        switch(PilotMode){
+            //前方に加速
+            case 0: {
+                isAuto = true;
+                Scer.PlaySE(0);
+                float igniteVelocity = 0;
+                while(rb2d.velocity.y < drive_maximum_speed_factor+5){
+                    igniteVelocity += 0.1f;
+                    rb2d.velocity = new Vector2(0,igniteVelocity);
+                    AEC.MoveForward();
+                }
+                break;}
+            //逆噴射によるブレーキ
+            case 1: {
+                isAuto = false;
+                Scer.PlaySE(0);
+                Decelerate(-transform.up);
+                AEC.MoveBack();
+                break;}
+            default:{break;}
+        }
     }
 }

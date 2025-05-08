@@ -98,10 +98,10 @@ public class WeaponUnitBase : AttackUnit
     }
     protected override void DestroyUnit()
     {
-        if(WCUB != null){FR.DestroyRMM();}
+        FR?.DestroyRMM();
         base.DestroyUnit();
     }
-    public void DestroyFRMesh(){
+    public override void DestroyFRMesh(){
         if(WCUB != null){FR?.DestroyRMM();}
     }
 }

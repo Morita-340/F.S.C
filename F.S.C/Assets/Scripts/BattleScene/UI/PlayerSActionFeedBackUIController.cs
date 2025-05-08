@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
+using FSCGeneral;
 
 public class PlayerSActionFeedBackUIController : MonoBehaviour
 {
@@ -15,16 +15,26 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     TextMeshProUGUI ExplosionComboText;
     [SerializeField,ReadOnly]
     PlayerUnitDestroyManagementScript PUDMS;
+    [SerializeField]GameObject WeaponControllConectedUIText;
+    [SerializeField]TextMeshProUGUI PlayerHPValue;
+    [SerializeField]GameObject PlayerHPGauge;
 
     bool defPChangeFlag = true;
-    //UIとして表示されるスコア計算用パラメータ
+    /// <summary>
+    /// UIとして表示されるスコア計算用パラメータ
+    /// </summary>
     int defeatPoint = 0;
-    //敵撃墜時に加算されるスコア計算用パラメータ
+    /// <summary>
+    /// 敵撃墜時に加算されるスコア計算用パラメータ
+    /// </summary>
     int goalDefeatPoint = 0;
     float defPChangeTime = 0.1f;
     bool plComPChangeFlag = true;
     int playerCombatPower = 0;
     int maximumPlayerCombatPower = 0;
+    /// <summary>
+    /// プレイヤーの戦闘力値変更アニメーションを実行するにあたって最終的に辿り着く値
+    /// </summary>
     int goalPlayerCombatpower = 0;
     float plComPChangeTime = 0.1f;
     int explosionComboNum = 0;
@@ -36,9 +46,64 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        PlayerCombatPowerUIDisplay();
+        PlayerDefeatPointUIDisplay();
+        ExplosionComboUIDisplay();
+        PlayerHPUIDisplay();
+    }
+    public IEnumerator UIStartUp(){
+        transform.DOScaleY(1,0.2f);
+        yield break;
+    }
+    /// <summary>
+    /// 数値変化したときにUIを伸び縮みさせる
+    /// </summary>
+    /// <param name="text">変形させる対象のUGUI</param>
+    /// <param name="time">変形時間の総時間。1:2:1=伸ばす:伸ばしたまま:縮めるの割合</param>
+    /// <returns></returns>
+    IEnumerator UIStretch(TextMeshProUGUI text,float time){
+        text.transform.DOScale(new Vector3(1, 0.6f,0.8f),time/4);
+        yield return new WaitForSeconds(time/2);
+        text.transform.DOScale(new Vector3(0.8f, 0.8f,0.8f),time/4);
+    }
+    /// <summary>
+    /// 外部で呼び出してUIの撃破ポイントを加算する仕組み
+    /// </summary>
+    /// <param name="unitCombatPower">破壊したユニットの持つ戦闘力＝撃破ポイント</param>
+    public void AddDefeatPoint(int unitCombatPower){
+        goalDefeatPoint += unitCombatPower;
+        defPChangeFlag = true;
+    }
+    /// <summary>
+    /// 外部で呼び出すことでコアやリアクターが爆発した際に爆発コンボのUIを動かすメソッド
+    /// </summary>
+    /// <param name="unitData"></param>
+    public void ExplosionOcurre(UnitData unitData){
+        if(unitData.ReturnThisUnit() is CoreBase coreBase ||unitData.ReturnThisUnit() is ReactorBase reactorBase){
+            //爆発するたびに爆発コンボのUIテキストのアニメーション実行
+            UIStretch(ExplosionComboText,1f);
+            //コンボ猶予期間の延長
+            explosionComboTime =1;
+            //コンボ数の上昇
+            explosionComboNum ++;
+        }
+    }
+    /// <summary>
+    /// プレイヤーの戦闘力が変化（被弾による分離or合体）した際にUIの数値を変更する処理
+    /// </summary>
+    private void ChangePlayerCombatPower(){
+        if(goalPlayerCombatpower != PUDMS.GetCombatPower()){
+            goalPlayerCombatpower = PUDMS.GetCombatPower();
+            plComPChangeFlag = true;
+        }
+        if(maximumPlayerCombatPower < PUDMS.GetCombatPower())maximumPlayerCombatPower = PUDMS.GetCombatPower();
+    }
+    /// <summary>
+    /// プレイヤーの戦闘力の表示管理
+    /// </summary>
+    private void PlayerCombatPowerUIDisplay()
+    {
         ChangePlayerCombatPower();
-        //Debug.Log("PAFBUIC player" +plComPChangeFlag+ playerCombatPower + " "+ PUDMS.GetCombatPower());
-        //プレイヤーの戦闘力の表示管理
         if(plComPChangeFlag &&playerCombatPower != PUDMS.GetCombatPower()){
             if(PUDMS.GetCombatPower() != 0){//ゼロ除算対策
                 //パラメータの変化の度合に応じてある程度UIの変更時間を変えられるようにする
@@ -49,8 +114,12 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
             StartCoroutine(UIStretch(PlayerCombatPowerText,plComPChangeTime));
         }else if(playerCombatPower == PUDMS.GetCombatPower()){plComPChangeFlag = true;}
         PlayerCombatPowerText.text = "PlayerCombatPower\n" +playerCombatPower.ToString();
-
-        //撃墜スコアの表示管理
+    }
+    /// <summary>
+    /// 撃墜スコアの表示管理
+    /// </summary>
+    private void PlayerDefeatPointUIDisplay()
+    {
         if(defPChangeFlag && defeatPoint != goalDefeatPoint){
             if(goalDefeatPoint != 0){
                 defPChangeTime = (defeatPoint / goalDefeatPoint > 1) ? 1 : ((defeatPoint / goalDefeatPoint < 0.4f) ? 0.4f : defeatPoint / goalDefeatPoint);
@@ -58,12 +127,17 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
             defPChangeFlag = false;
             DOTween.To(() => defeatPoint, (x) => defeatPoint = x, goalDefeatPoint , defPChangeTime);
             StartCoroutine(UIStretch(ScoreText,defPChangeTime));
-            Debug.Log("PAFBUIC point" + defeatPoint + " "+ goalDefeatPoint+defPChangeFlag);
+            //Debug.Log("PAFBUIC point" + defeatPoint + " "+ goalDefeatPoint+defPChangeFlag);
         }else if(defeatPoint == goalDefeatPoint){defPChangeFlag = true;
-        Debug.Log("PAFBUIC pointA" + defeatPoint + " "+ goalDefeatPoint+defPChangeFlag);}
+        //Debug.Log("PAFBUIC pointA" + defeatPoint + " "+ goalDefeatPoint+defPChangeFlag);
+        }
         ScoreText.text = "Score\n" + defeatPoint.ToString();
-
-        //爆発コンボの表示管理
+    }
+    /// <summary>
+    /// 爆発コンボの表示管理
+    /// </summary>
+    private void ExplosionComboUIDisplay()
+    {
         if(explosionComboTime > 0){
             explosionComboTime -= Time.deltaTime;
             //猶予時間内なら表示
@@ -91,44 +165,55 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
             explosionComboNum = 0;
         }
     }
-    //IEnumerator GuradualNumChange(float before,float after,bool flag,float time){
-    //    yield return new WaitUntil(() => DOTween.To(() => before, (x) => before = x,after, time));
-    //}
-    IEnumerator UIStretch(TextMeshProUGUI text,float time){
-        text.transform.DOScale(new Vector3(1, 0.6f,0.8f),time/4);
-        yield return new WaitForSeconds(time/2);
-        text.transform.DOScale(new Vector3(0.8f, 0.8f,0.8f),time/4);
-    }
-    public void AddDefeatPoint(int unitCombatPower){
-        goalDefeatPoint += unitCombatPower;
-        defPChangeFlag = true;
-        //Debug.Log("PAFBUIC defeatpoint" + unitCombatPower + " "+ goalDefeatPoint);
-    }
-
-    public void ExplosionOcurre(UnitData unitData){
-        if(unitData.ReturnThisUnit() is CoreBase coreBase ||unitData.ReturnThisUnit() is ReactorBase reactorBase){
-            //爆発するたびに爆発コンボのUIテキストのアニメーション実行
-            UIStretch(ExplosionComboText,1f);
-            //コンボ猶予期間の延長
-            explosionComboTime =1;
-            //コンボ数の上昇
-            explosionComboNum ++;
-        }
-    }
-    private void ChangePlayerCombatPower(){
-        if(goalPlayerCombatpower != PUDMS.GetCombatPower()){
-            goalPlayerCombatpower = PUDMS.GetCombatPower();
-            plComPChangeFlag = true;
-        }
-        if(maximumPlayerCombatPower < PUDMS.GetCombatPower())maximumPlayerCombatPower = PUDMS.GetCombatPower();
-    }
     /// <summary>
-    /// 
+    /// ResuleUIControllerで使用するためのパラメータを渡す
     /// </summary>
     /// <returns>最終撃破ポイント</returns>
     /// <returns>最大戦闘力</returns>
     /// <returns>ノーダメージでクリアしたウェーブ数</returns>
     public (int,int) GetPlayerFinalStatus(){
         return (goalDefeatPoint,maximumPlayerCombatPower);
+    }
+    public IEnumerator Wait(float time,List<GameObject> ParentObjectList){
+        //再生成処理中の処理なので、制御ユニットが生成される前に下記処理が行われないために僅かに待つ
+        yield return new WaitForSeconds(time);
+        foreach(GameObject obj in ParentObjectList){
+            if(obj.GetComponent<DestroyedUnitManagementScript>().WeaponControllConected()){
+                StartCoroutine(WaitUntilSuccessTextFade(0.5f,obj));
+            }
+        }
+    }
+    /// <summary>
+    /// 武器を鹵獲できた場合にテキスト表示をする
+    /// </summary>
+    /// <param name="fadeTime"></param>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    IEnumerator WaitUntilSuccessTextFade(float fadeTime,GameObject obj){
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(obj.transform.position);
+        RectTransform uiRectTransform;
+        uiRectTransform = GetComponent<RectTransform>();
+        uiRectTransform = GameObject.Find(GSetting.UniqueObjectName.UICanvas.ToString()).GetComponent<RectTransform>();
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            uiRectTransform, 
+            screenPosition, 
+            Camera.main, 
+            out Vector2 localPosition
+        );
+        GameObject SuccessText = Instantiate(WeaponControllConectedUIText,uiRectTransform.transform);
+        SuccessText.GetComponent<RectTransform>().anchoredPosition = screenPosition + localPosition;
+        SuccessText.GetComponent<TextMeshProUGUI>().DOFade(0f,fadeTime);
+        yield return new WaitForSeconds(fadeTime);
+        Destroy(SuccessText);
+
+    }
+    /// <summary>
+    /// primeHPに関するUI表示
+    /// </summary>
+    private void PlayerHPUIDisplay(){
+        //PUDMSでHP取得
+        int playerHP = PUDMS.GetPrimeUnitsHP();
+        PlayerHPValue.text = "HP\n" + playerHP.ToString();
+        PlayerHPGauge.transform.localScale = new Vector2(playerHP,PlayerHPGauge.transform.localScale.y);
     }
 }

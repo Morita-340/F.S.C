@@ -15,25 +15,37 @@ public class SoundController : MonoBehaviour
     /// このコンポーネントのオブジェクトが鳴らすSE一覧
     /// </summary>
     [SerializeField]List<AudioClip> SEList = new List<AudioClip>();
-    AudioSource BGMPlayer;
-    AudioSource SEPlayer;
+    [SerializeField,ReadOnly]AudioSource BGMPlayer;
+    [SerializeField,ReadOnly]AudioSource SEPlayer;
     [SerializeField]bool playOnAwake = false;
+    /// <summary>
+    /// ポーズ画面のUIであるかどうか
+    /// ポーズ画面のUIのSEは別管理が必要なので
+    /// </summary>
+    [SerializeField]bool isPoseMenuUI = false;
+    [SerializeField,ReadOnly]float soundVolume = 1;
+    [SerializeField,ReadOnly]GeneralFlagManager GFM;
     void Awake()
     {
-        BGMPlayer = gameObject.AddComponent<AudioSource>();
-        SEPlayer = gameObject.AddComponent<AudioSource>(); 
+        //TryGetComponent<AudioSource>(out BGMPlayer);
+        //TryGetComponent<AudioSource>(out SEPlayer);
+        if(BGMPlayer == null)BGMPlayer = gameObject.AddComponent<AudioSource>();
+        if(SEPlayer == null) SEPlayer = gameObject.AddComponent<AudioSource>(); 
     }
     // Start is called before the first frame update
     void Start()
     {
         if(SEPlayer == BGMPlayer){Debug.LogAssertion("SEPlayer and BGMPlayer are Same !");}
         if(playOnAwake){StartCoroutine(PlayBGM(0));}
+        GFM = FindObjectOfType<GeneralFlagManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        soundVolume = GFM.GetSoundVolume();
+        if(BGMPlayer.isPlaying){BGMPlayer.volume = soundVolume;}
+        if(SEPlayer.isPlaying){SEPlayer.volume = soundVolume;}
     }
     /// <summary>
     /// BGMを再生する
@@ -45,7 +57,7 @@ public class SoundController : MonoBehaviour
         if(ListIndex >= BGMList.Count){Debug.LogAssertion("Invalid BGM Index");yield break;}
         //再生中に重ねて処理が呼び出された時には再生しないようにする処理
         //if(BGMPlayer.isPlaying){yield break;}
-        BGMPlayer.volume = 1;
+        BGMPlayer.volume = soundVolume;
         BGMData SelectBGM = BGMList[ListIndex];
         AudioClip isPlayingBGM = SelectBGM.GetIntroBGM();
         if(isPlayingBGM != null){
@@ -66,6 +78,17 @@ public class SoundController : MonoBehaviour
             Debug.LogAssertion("LoopBGM isNot Register");
         }
     }
+    /// <summary>
+    /// ポーズ画面へ遷移する際に使用する
+    /// </summary>
+    public void PauseBGM(){
+        if(!isPoseMenuUI){BGMPlayer.Pause();}
+    }
+    public void UnPauseBGM(){
+        if(!isPoseMenuUI){
+            BGMPlayer.UnPause();
+        }
+    }
     public void StopBGM(){
         BGMPlayer.Stop();
     }
@@ -84,13 +107,26 @@ public class SoundController : MonoBehaviour
         if(ListIndex >= SEList.Count){Debug.LogAssertion("Invalid SE Index");return;}
         //再生中に重ねて処理が呼び出された時には再生しないようにする処理
         if(SEPlayer.isPlaying){SEPlayer.Stop();}
-        SEPlayer.volume = 1;
+        SEPlayer.volume = soundVolume;
         AudioClip isPlayingSE = SEList[ListIndex];
         if(isPlayingSE != null){
             SEPlayer.PlayOneShot(isPlayingSE);
             Debug.Log(isPlayingSE.name);
         }else{
             Debug.LogAssertion("ThisSE isNot Register");
+        }
+    }
+    /// <summary>
+    /// ポーズ画面へ遷移する際に使用する
+    /// </summary>
+    public void PauseSE(){
+        if(!isPoseMenuUI){
+            SEPlayer.Pause();
+        }
+    }
+    public void UnPauseSE(){
+        if(!isPoseMenuUI){
+            SEPlayer.UnPause();
         }
     }
     /// <summary>

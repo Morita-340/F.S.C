@@ -22,75 +22,70 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
     {
         base.Update();
         stateMachine.Update();
-        foreach(GameObject gameObject in DiscoveredObjectList){
-            if(gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
-                Player = gameObject;
-                break;
-            }
-        }
         if(Player != null){
             if(Player.name != null){
-                stateMachine.ChangeState(new SampleChaseMove(rb2d,Player,transform));
+                stateMachine.ChangeState(new SampleAttackState(Player,transform,rb2d,EUAMS));
                 }
             else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
-        }
+        }else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
     }
 }
+/// <summary>
+/// 適当にさまよう
+/// </summary>
 public class SampleIdle : IdleState
 {
     Rigidbody2D myRb2d;
     Transform myTransform;
-    float rotateTime = 0;
-    int[] rotateAngleList = new int[6]{30,10,5,-30,-10,-5};
-    int selectAngle = 0;
+    int[] rotateAngleList = new int[6]{3,10,5,-3,-10,-5};
+    float idleTime = 4f;
+    float rotateTime = 1f;
+    float selectAngle = 0;
     public SampleIdle(Rigidbody2D rb2d,Transform transform){
         myRb2d = rb2d;
         myTransform = transform;
     }
     public override void Update()
     {
-        rotateTime += Time.deltaTime;
-        if(rotateTime > 5){
+        base .Update();
+        float nowTime = Time.time % (idleTime + rotateTime);
+        if(nowTime < idleTime){
             selectAngle = rotateAngleList[Random.Range(0, rotateAngleList.Count())];
-            rotateTime = 0;
+            myRb2d.AddForce(myTransform.up * 1f);
+        }else if(nowTime < idleTime + rotateTime){
+            RandomRotate(selectAngle);
         }
-        if(rotateTime > 4){
-            //myRb2d.AddTorque(selectAngle);
-            myRb2d.angularVelocity = 0;
-        }else{
+    }
+    private void RandomRotate(float rotateAngle){
         myRb2d.velocity = myTransform.up * 10f;
-        }
-        base.Update();
-
+        myRb2d.AddTorque(rotateAngle);
+        myRb2d.angularVelocity = 0;
     }
 }
-public class SampleChaseMove : MoveState
+/// <summary>
+/// プレイヤーがいるなら正面方向に向いて攻撃をする
+/// 時々正面に対して法線方向に加速する
+/// </summary>
+public class SampleAttackState : AttackState
 {
-    GameObject ChasedPlayer;
+    GameObject Player;
     Transform myTransform;
-    Rigidbody2D myRb2d;
-    public SampleChaseMove(Rigidbody2D rb2d,GameObject player,Transform transform){
-        ChasedPlayer = player;
-        myTransform = transform;
-        myRb2d = rb2d;
+    Rigidbody2D rb2D;
+    EnemyUnitAttackManagementScript EUAMS;
+    /// <summary>
+    /// 加速倍率
+    /// </summary>
+    float sideStepVelocityEfficiency = 5f;
+    /// <summary>
+    /// 法線方向に加速するスパン
+    /// </summary>
+    float sideStepSpan = 10;
+    public SampleAttackState(GameObject inputPlayer,Transform inputTransform,Rigidbody2D inputRb2D,EnemyUnitAttackManagementScript inputEUAMS){
+        Player = inputPlayer;
+        myTransform = inputTransform;
+        rb2D = inputRb2D;
+        EUAMS = inputEUAMS;
     }
-    public override void Enter()
-    {
-        base.Enter();
-    }
-    public override void Update(){
-        base.Update();
-        if(ChasedPlayer == null){return;}
-        myRb2d.velocity = myTransform.up * 10f;
-        float targetAngle = Vector2.SignedAngle(myTransform.position,ChasedPlayer.transform.position);
-        if(targetAngle >= 0){myRb2d.AddTorque(-(targetAngle*2));myRb2d.angularVelocity = 0;}
-        else{
-            myRb2d.AddTorque(targetAngle*2);
-            myRb2d.angularVelocity = 0;}
-    }
-}
-public class HyperAttackState : AttackState
-{
     public override void Enter()
     {
         Debug.Log("HyperAttack: Enter");
@@ -98,6 +93,35 @@ public class HyperAttackState : AttackState
     public override void Update(){
         Debug.Log("HyperAttack: Update");
         base.Update();
+        float nowTime = Time.time % sideStepSpan;
+        if(nowTime == 0){
+            SideStep(rb2D,myTransform,sideStepVelocityEfficiency);
+        }else{
+            EUAMS.NormalAttack(nowTime);
+            LookPlayer(myTransform);
+        }
     }
-    public override void Exit(){}
+    /// <summary>
+    /// 法線方向への加速処理
+    /// </summary>
+    /// <param name="inputRb2D"></param>
+    /// <param name="inputTransform"></param>
+    /// <param name="inputsideStepVelocityEfficiency"></param>
+    private void SideStep(Rigidbody2D inputRb2D,Transform inputTransform,float inputsideStepVelocityEfficiency){
+        int leftOrRight = Random.Range(0,2);
+        if(leftOrRight == 0){
+            inputRb2D.AddForce(myTransform.right * sideStepVelocityEfficiency);
+        }else{
+            inputRb2D.AddForce(-myTransform.right * sideStepVelocityEfficiency);
+        }
+    }
+    /// <summary>
+    /// プレイヤー方向へ向く処理
+    /// </summary>
+    /// <param name="inputPlayer"></param>
+    /// <param name="inputTransform"></param>
+    private void LookPlayer(Transform inputTransform){
+        Vector2 direction = Player.transform.position - inputTransform.position;
+        inputTransform.up = Vector2.Lerp(inputTransform.up,direction,Time.deltaTime);
+    }
 }

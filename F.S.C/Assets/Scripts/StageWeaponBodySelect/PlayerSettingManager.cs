@@ -8,7 +8,7 @@ using TMPro;
 /// </summary>
 public class PlayerSettingManager : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField,ReadOnly]
     private GeneralFlagManager GFM;
     [SerializeField]
     private GameObject PlayerSpawnPoint;
@@ -30,9 +30,9 @@ public class PlayerSettingManager : MonoBehaviour
     private List<WeaponFlag> UnlockedWeaponList = new List<WeaponFlag>();
     private int selectedWeaponIndex;
     private bool firstUpdate = true;
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        GFM = FindObjectOfType<GeneralFlagManager>();
         //シングルトンからアンロックされているもののみ抜き出す
         foreach(BodyFlag body in GFM.GetBodyList()){
             if(body.isUnlocked){UnlockedBodyList.Add(body);}
@@ -41,22 +41,25 @@ public class PlayerSettingManager : MonoBehaviour
             if(weapon.isUnlocked){UnlockedWeaponList.Add(weapon);}
         }
     }
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        if(firstUpdate){
             if(UnlockedBodyList.Count != 0){
                 SelectedBody = UnlockedBodyList[0];
                 GFM.SetSelectedBody(SelectedBody);
                 InstBody = Instantiate(SelectedBody.SettingBody,PlayerSpawnPoint.transform.position,PlayerSpawnPoint.transform.rotation);
                 SMI.SetPlayer(InstBody);
             }
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if(firstUpdate){
+            firstUpdate = false;
             if(UnlockedWeaponList.Count != 0){
                 SelectedWeapon = UnlockedWeaponList[0];
                 GFM.SetSelectedWeapon(SelectedWeapon);
                 InstBody?.GetComponent<PlayerUnitAttackManagementScript>()?.SetChargeWeapon(SelectedWeapon.Weapon.GetComponent<WeaponBase>());
             }
-            firstUpdate = false;
         }
         //UIの表記変更
         SelectedBodyUIText.text = SelectedBody?.Name;
@@ -70,6 +73,7 @@ public class PlayerSettingManager : MonoBehaviour
         if(UnlockedBodyList.Count == 0){selectedBodyIndex = 0;return;}
         if(InstBody!=null){
             SMI.SetPlayer(null);
+            InstBody.GetComponent<AbstractUnitDestroyManagementScript>().DeleteAllRangeMesh();
             Destroy(InstBody);}
         if(upMode){
             selectedBodyIndex ++;

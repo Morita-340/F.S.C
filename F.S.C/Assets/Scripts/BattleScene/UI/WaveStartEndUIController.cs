@@ -33,6 +33,12 @@ public class WaveStartEndUIController : MonoBehaviour
     {
         
     }
+    public void StageEntryUI(string inputStageName){
+        StageNameText.text = inputStageName;
+    }
+    public void StageEntryUIFade(){
+        StartCoroutine(UIFadeGradually(StageNameText));
+    }
     public IEnumerator WaveStartUI(int waveNum,bool finalWaveFlag,string inputStageName){
         string waveNumText;
         if(waveNum == 1){
@@ -46,19 +52,34 @@ public class WaveStartEndUIController : MonoBehaviour
         WaveNumberText.text = waveNumText;
         WaveNumberText.color = new Color(1,1,1,1);
         WaveNumberText.rectTransform.anchoredPosition = new Vector3(-500,0,0);
+        WaveText.text = "Wave";
         WaveText.color = new Color(1,1,1,1);
         WaveText.rectTransform.anchoredPosition = new Vector3(500,0,0);
         //アニメーション
         StartCoroutine(UIFadeGradually(WaveNumberText));
         StartCoroutine(UIFadeGradually(WaveText));
-        if(waveNum == 1){StartCoroutine(UIFadeGradually(StageNameText));}
+        if(waveNum == 1){
+            StartCoroutine(UIFadeGradually(StageNameText));
+            StartCoroutine(SCer.PlayBGM(0));
+        }
         if(finalWaveFlag){
             yield return StartCoroutine(WarningPerfomance());
         }else{
             SCer.PlaySE(0);
-            StartCoroutine(SCer.PlayBGM(0));
         }
         yield return null;
+    }
+    /// <summary>
+    /// UIを止める。動きそのものは呼び出し側のtimeScale=0で止まっている
+    /// こちらでは音の制御のみ担当する
+    /// </summary>
+    public void PauseUI(){
+        SCer.PauseBGM();
+        SCer.PauseSE();
+    }
+    public void UnPauseUI(){
+        SCer.UnPauseBGM();
+        SCer.UnPauseSE();
     }
     public void WaveClearUI(){
         WaveClearText.color = new Color(1,1,1,1);

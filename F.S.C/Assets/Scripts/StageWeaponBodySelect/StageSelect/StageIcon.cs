@@ -18,7 +18,7 @@ public class StageIcon : GeneralUIIconController
     private StageData stageData = new StageData();
     [SerializeField]
     StageSelectManager SSM;
-    [SerializeField]
+    [SerializeField,ReadOnly]
     GeneralFlagManager GFM;
     private float chargeTime = 0;
     private float selectTime = 1;
@@ -27,6 +27,7 @@ public class StageIcon : GeneralUIIconController
     protected override void Start()
     {
         base.Start();
+        GFM = FindObjectOfType<GeneralFlagManager>();
     }
 
     // Update is called once per frame

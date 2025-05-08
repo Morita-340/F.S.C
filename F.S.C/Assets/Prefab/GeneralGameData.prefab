@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &49604690335026414
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8678059397478651793}
+  - component: {fileID: 3394685866084080254}
+  m_Layer: 0
+  m_Name: GeneralGameData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8678059397478651793
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49604690335026414}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3394685866084080254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49604690335026414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b819d7a0b50ef2d48964e52392e9c07c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generalSoundVolume: 1
+  BodyList:
+  - Name: BatWing
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    SettingBody: {fileID: 2190800438189322223, guid: bd5b5f2ad128a04479766947e036fd2f, type: 3}
+    Body: {fileID: 7797786967622733697, guid: c9a2d818cbde1b64c9dcbe6aa7eb0fb0, type: 3}
+  - Name: SideShooters
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    SettingBody: {fileID: 2574980494636912466, guid: 4a162dfac96d79a4abda690f4a7c14e2, type: 3}
+    Body: {fileID: 7510453055307186252, guid: 15640579b33943846883d029132e46c0, type: 3}
+  - Name: AlphaBody-W
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    SettingBody: {fileID: 5104531851624797636, guid: 3241b6cd81a10ab4384b31cdb0efb0c3, type: 3}
+    Body: {fileID: 2828146760691619699, guid: 766030bc6b636f04682306198aeeeb58, type: 3}
+  SelectedBody: {fileID: 0}
+  SelectedWeapon: {fileID: 0}
+  stageName: 
+  WeaponList:
+  - Name: "\u5FB9\u7532\u5F3E"
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    Weapon: {fileID: 873231942375347747, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
+  - Name: "\u30AF\u30E9\u30B9\u30BF\u30FC\u7206\u5F3E"
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    Weapon: {fileID: 8788104933955017320, guid: 49e3a524817b90f45b56235a0408a681, type: 3}
+  - Name: "\u30B0\u30EC\u30CD\u30FC\u30C9\u5F3E"
+    isUnlocked: 1
+    alreadyShowUnlockedPerform: 0
+    Weapon: {fileID: 6674250669024275168, guid: 9568eae273da11249bdae6f5021a0b5c, type: 3}

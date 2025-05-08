@@ -15,21 +15,29 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     float NextNormalAttack = 0f;
     bool inTimeRangeOFChargeAttack = false;
     float nextChargeAttackTime = 0f;
-    protected virtual void Awake(){
-        ChildrenUnitDatalist = AUDMS.GetChildUnitDataList();
-        foreach (UnitData child in AUDMS.GetChildUnitDataList()){
+    [SerializeField,ReadOnly]protected Vector3 TargetPosition;
+    public void SetTargetPosition(Vector3 inputTargetPosion){
+        TargetPosition = inputTargetPosion;
+        foreach (UnitData child in ChildrenUnitDatalist){
+            //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
+            if(child.ReturnThisUnit() is AttackUnit AU){
+                AU.SetTargetPosition(TargetPosition);
+            }
         }
     }
+    protected virtual void Awake(){
+    }
     protected virtual void Start(){
+        ChildrenUnitDatalist = AUDMS.GetChildUnitDataList();
     }
     /// <summary>
     /// 呼び出されたら一定時間おきに各ユニットの通常攻撃を"毎フレームではなく一度だけ"実行する
     /// </summary>
     /// <param name="time">ロックオンし始めてから経過した時間。ロックオンが外れると0に戻る</param>
-    public virtual void NormalAttack(float time,Vector3 TargetPosition){
+    public virtual void NormalAttack(float time){
         if(time < 0){NextNormalAttack = 0;}
         if(time >= NextNormalAttack){
-            //Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
+            Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
             foreach (UnitData child in ChildrenUnitDatalist){
                 //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 if(child.ReturnThisUnit() is AttackUnit AU){
@@ -43,7 +51,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
     /// 呼び出されたら一定時間おきに各ユニットのチャージ攻撃を実行する
     /// </summary>
     /// <param name="time"></param>
-    public virtual void ChargeAttack(float inputTime,float processSpan,float chargeTime,Vector3 TargetPosition){
+    public virtual void ChargeAttack(float inputTime,float processSpan,float chargeTime){
         if(inputTime % processSpan > chargeTime){
             if(!inTimeRangeOFChargeAttack){
                 inTimeRangeOFChargeAttack = true;
@@ -58,7 +66,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
             }
         }else{inTimeRangeOFChargeAttack = false;}
     }
-    public void ChargeAttack(Vector3 TargetPosition){
+    public void ChargeAttack(){
         foreach (UnitData child in ChildrenUnitDatalist){
             if(child.ReturnThisUnit() is AttackUnit AU){
                 AU.ChargeAttack(TargetPosition);

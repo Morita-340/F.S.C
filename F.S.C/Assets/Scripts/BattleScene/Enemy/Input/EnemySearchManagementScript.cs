@@ -7,9 +7,7 @@ using FSCGeneral;
 /// </summary>
 public class EnemySearchManagementScript : MonoBehaviour
 {
-    FanRange SearchRader;
-    [SerializeField]
-    EnemyUnitAttackManagementScript EUAMS;
+    [SerializeField,ReadOnly] FanRange SearchRader;
     [SerializeField]
     EnemyUnitMoveManagementScript EUMMS;
     [SerializeField]
@@ -35,28 +33,39 @@ public class EnemySearchManagementScript : MonoBehaviour
         
     }
     public void OnTriggerStay2D(Collider2D other){
-        if(!isSetting){if(other.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
-            EUAMS.NormalAttack(timer,other.transform.position);
-            timer += Time.deltaTime;
-        }}
-    }
-    public void OnTriggerEnter2D(Collider2D other){
         if(!isSetting){
-        //重複していないか確認 重複があるなら処理を終える
-        foreach(GameObject obj in DiscoveredObjectList){
-            if(obj == other.transform.root.gameObject){return;}
+            if(other.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
+            timer += Time.deltaTime;
+            }
+            //Debug.LogWarning(other.gameObject.name);
+            if(!SearchRader.InRange(other.transform.position)){
+                //Debug.LogWarning("AAAAAA");
+                return;}
+            foreach(GameObject obj in DiscoveredObjectList){
+                //重複していないか確認 重複があるならスルー
+                if(other.transform.root == obj.transform.root){
+                    //Debug.LogWarning("BBBBBB");
+                    return;}
+            }
+            //このオブジェクトそのものを検知した場合もスルー
+            if(other.transform.root == transform.root.gameObject){
+                //Debug.LogWarning("CCCCCCC");
+                return;}
+            if(other.tag == GSetting.ObjTagName.EnemyWeapon1.ToString()){
+                //Debug.LogWarning("DDDDDDD");
+                return;}
+            //リストに格納
+            DiscoveredObjectList.Add(other.transform.root.gameObject);
+            //リストをステートマシンに渡す
+            EUMMS.SetInputObjList(DiscoveredObjectList);
         }
-        //リストに格納
-        DiscoveredObjectList.Add(other.transform.root.gameObject);
-        //リストをステートマシンに渡す
-        EUMMS.SetInputObjList(DiscoveredObjectList);}
     }
     public void OnTriggerExit2D(Collider2D other){
         if(!isSetting){
-        //リストから消去
+        //検知したオブジェクトがリストにあるなら消去
         DiscoveredObjectList.Remove(other.transform.root.gameObject);
         //リストをステートマシンに渡す
-        EUMMS.SetInputObjList(DiscoveredObjectList);}
+        EUMMS?.SetInputObjList(DiscoveredObjectList);}
     }
     public void DestroyRMM(){
         SearchRader.DestroyRMM();

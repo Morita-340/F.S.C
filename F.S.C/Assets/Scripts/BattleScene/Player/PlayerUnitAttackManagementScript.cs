@@ -9,20 +9,21 @@ public class PlayerUnitAttackManagementScript : AbstractUnitAttackManagementScri
     {
         base.Start();
     }
-    public override void NormalAttack(float time,Vector3 TargetPosition){
-        base.NormalAttack(time,TargetPosition);
+    public override void NormalAttack(float time){
+        base.NormalAttack(time);
     }
-    public override void ChargeAttack(float inputTime,float processSpan,float chargeTime,Vector3 TargetPosition){
-        base.ChargeAttack(inputTime,processSpan,chargeTime,TargetPosition);
+    public override void ChargeAttack(float inputTime,float processSpan,float chargeTime){
+        base.ChargeAttack(inputTime,processSpan,chargeTime);
     }
     /// <summary>
     /// 設定画面またはバトル開始時にチャージ武器を設定する
     /// </summary>
     public void SetChargeWeapon(WeaponBase ChargeWeapon){
         foreach(UnitData unitData in ChildrenUnitDatalist){
+            if(unitData == null){continue;}
             if(unitData.isPrime){
-                if(unitData.ReturnThisUnit() is AttackUnit attackUnit){
-                    attackUnit.SetChargeWeapon(ChargeWeapon);
+                if(unitData.ReturnThisUnit() is CoreBase coreBase){
+                    coreBase.SetChargeWeapon(ChargeWeapon);
                 }
             }
         }

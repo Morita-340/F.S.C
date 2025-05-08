@@ -5,8 +5,10 @@ using FSCGeneral;
 
 public class KazagurumaController : EnemyUnitMoveManagementScript
 {
+    [SerializeField,ReadOnly] private SoundController SCer;
     protected override void Start()
     {
+        SCer = GetComponent<SoundController>();
         base.Start();
         stateMachine = new StateMachine();
         stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));
@@ -17,19 +19,13 @@ public class KazagurumaController : EnemyUnitMoveManagementScript
     {
         base.Update();
         stateMachine.Update();
-        foreach(GameObject gameObject in DiscoveredObjectList){
-            if(gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
-                Player = gameObject;
-                break;
-            }
-        }
         //プレイヤーを発見したら
         if(Player != null){
             if(Player?.name != null){
-                stateMachine.ChangeState(new RollingAttackState(rb2d,transform,Player));
+                stateMachine.ChangeState(new RollingAttackState(rb2d,transform,Player,SCer));
                 }
-        }
-        else{stateMachine.ChangeState(new IdleState());}
+            else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
+        }else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
     }
 }
 /// <summary>
@@ -40,6 +36,7 @@ public class RollingAttackState : AttackState
     Rigidbody2D myRb2d;
     Transform myTransform;
     GameObject Player;
+    SoundController SCer;
     float force = 10;
     float torque = 5;
     //以下時間管理用変数
@@ -50,10 +47,11 @@ public class RollingAttackState : AttackState
     float decelateTime = 1.5f;
     float subtractTorqueTime = 1f;
     float idleTime = 5f;
-    public RollingAttackState(Rigidbody2D inputRb2d, Transform inputTransform ,GameObject inputPlayer){
+    public RollingAttackState(Rigidbody2D inputRb2d, Transform inputTransform ,GameObject inputPlayer,SoundController inputSCer){
         myRb2d = inputRb2d;
         myTransform = inputTransform;
         Player = inputPlayer;
+        SCer = inputSCer;
     }
     public override void Enter()
     {
@@ -72,6 +70,7 @@ public class RollingAttackState : AttackState
         else if(nowTime < lookTime + accelateTime + addTorqueTime){
         //回転する
             myRb2d.AddTorque(torque);
+            SCer.PlaySE(0);
         }
         else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime){
         //何もせず慣性に従って突進する
@@ -81,6 +80,7 @@ public class RollingAttackState : AttackState
             myRb2d.AddTorque(-torque);
         }
         else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime){
+            SCer.FadeSE();
         //一定時間経つと回転がじわじわと遅くなり静止する
             myRb2d.AddForce(-myTransform.forward * force);
         }

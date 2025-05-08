@@ -114,7 +114,7 @@ public class SettingSimulateDisplay : MonoBehaviour
         DOTween.ToAlpha(
             () => BackGroundImage.color,
             color => BackGroundImage.color = color,
-            0.5f,
+            0.3f,
             10f
         );
     }
