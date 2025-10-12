@@ -2173,6 +2173,7 @@ MonoBehaviour:
   ChargeIcon: {fileID: 1544753636}
   firstAttackInterval: 0.1
   SCer: {fileID: 0}
+  target: {x: 0, y: 0, z: 0}
 --- !u!114 &721973498
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2842,7 +2843,7 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: b91fc556b37837d49b0cf4f08e72bf67, type: 3}
-  - {fileID: 8300000, guid: 49addca3811e6c54597015e28d60c9c9, type: 3}
+  - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
@@ -2863,14 +2864,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
   stageData:
-    StageName: "\u30D1\u30A4\u30ED\u30C3\u30C8\u990A\u6210\u8A13\u7DF4"
-    StageSummary: "\u541B\u306F\u65B0\u5175\u5668\u306E\u30D1\u30A4\u30ED\u30C3\u30C8\u5019\u88DC\u751F\u306B\n
-      \u9078\u51FA\u3055\u308C\u305F\n\u8A13\u7DF4\u3092\u4E57\u308A\u8D8A\u3048\u3001\n
-      \u30D1\u30A4\u30ED\u30C3\u30C8\u306E\u5B9F\u529B\u3092\u793A\u3057\u3066\u898B\u305B\u308D"
-    StageAdvise: "\u6A5F\u4F53\u5236\u5FA1\u3068\u7167\u6E96\u30B7\u30B9\u30C6\u30E0\u3068\n
-      \u5F37\u5316\u30B7\u30B9\u30C6\u30E0\u3092\u7406\u89E3\u305B\u3088"
+    StageName: ---
+    StageSummary: Now Reserching ...
+    StageAdvise: 
     StageAlreadyCleared: 0
-    scene: 4
+    scene: 2
   SSM: {fileID: 2030818364}
   GFM: {fileID: 0}
 --- !u!114 &937184248

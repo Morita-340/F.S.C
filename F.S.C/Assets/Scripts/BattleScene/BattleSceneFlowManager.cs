@@ -106,9 +106,9 @@ public class BattleSceneFlowManager : MonoBehaviour
         StartCoroutine(PSAFBUIC.UIStartUp());
         //母艦が画面外になるよう（アナログ的に設定）移動できれば処理終了。戦闘開始
         yield return new WaitUntil(() => SST.StageStart());
+        Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(2);
         //母艦は見た目だけなので戦闘中は非表示
         MotherShip.SetActive(false);
-        Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(1);
         WSEUIC.StageEntryUIFade();
     }
     /// <summary>

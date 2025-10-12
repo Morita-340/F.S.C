@@ -90,12 +90,12 @@ public class ChargeCursolIconController : MonoBehaviour
     }
     private void ChargeAttackCommand(int chargeAttackSpan,float attackableTime,float chargeTime,float time,PlayerUnitAttackManagementScript PUAMS)
     {
-        if(Input.GetMouseButtonDown(1)){
+        if(Input.GetMouseButtonDown(0)){
             time = Mathf.Floor(time);
             PUAMS.ChargeAttack();
             //押し始めたタイミングで最速で一発撃てるようにしたいので、timeが如何なる値であろうと即時PUAMS.ChargeAttack内で弾丸を発射するようにする
             }
-        if(Input.GetMouseButton(1)){
+        if(Input.GetMouseButton(0)){
             if(nowChargeTime > 0){
             nowChargeTime -= Time.deltaTime;
             //PUAMS.ChargeAttack(time,chargeAttackSpan,attackableTime,TargetPosition);

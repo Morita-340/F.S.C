@@ -19,7 +19,7 @@ public class SoundVolumeController : GeneralUIIconController
     // Start is called before the first frame update
     protected override void Start()
     {
-        nowAngle = imageLowerRotLimit;
+        nowAngle = 0;
         base.Start();
         GFM = FindObjectOfType<GeneralFlagManager>();
     }

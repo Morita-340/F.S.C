@@ -66,7 +66,7 @@ public class MouseInput : MonoBehaviour
         UnitCapture(Hit2DList.Item2,wheelInput);
     }
     private void NormalAttack(){
-        if(Input.GetMouseButton(1)){
+        if(Input.GetMouseButton(0)){
             PUAMS?.NormalAttack(normalAttackTimer);
             normalAttackTimer += Time.deltaTime;
         }else{
@@ -172,7 +172,7 @@ public class MouseInput : MonoBehaviour
             snapToGrid.OriginPosition = DUMS.transform.position;
             snapToGrid.OriginRotation = DUMS.transform.rotation.eulerAngles;
         }
-        if(Input.GetMouseButtonDown(0)){
+        if(Input.GetMouseButtonDown(1)){
             Regenerate(wheelInput);
         }
         else if(Input.GetMouseButtonDown(2)){

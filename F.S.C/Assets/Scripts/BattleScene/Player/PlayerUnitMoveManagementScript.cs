@@ -10,8 +10,8 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     GameObject PlayerUnit;
     [SerializeField]
     Rigidbody2D rb2d;
-    [SerializeField,Range(0,5)]
-    float turn_factor = 1;
+    [SerializeField,Range(0,3)]
+    float turn_factor = 2;
     [SerializeField,Range(1,180)]
     int maximum_turn_factor = 1;
     private float angularVelocity = 1;
@@ -29,7 +29,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// <summary>
     /// プレイヤーが加速するときの速度上限値
     /// </summary>
-    [SerializeField,Range(0f,20f)]
+    [SerializeField,Range(0f,10f)]
     float drive_maximum_speed_factor = 1.5f;
     float thisRotationZ;
     [SerializeField]bool Setting = false;
@@ -200,8 +200,8 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
                 isAuto = true;
                 Scer.PlaySE(0);
                 float igniteVelocity = 0;
-                while(rb2d.velocity.y < drive_maximum_speed_factor+5){
-                    igniteVelocity += 0.1f;
+                while(rb2d.velocity.y < drive_maximum_speed_factor+10){
+                    igniteVelocity += 0.3f;
                     rb2d.velocity = new Vector2(0,igniteVelocity);
                     AEC.MoveForward();
                 }
@@ -213,6 +213,11 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
                 Decelerate(-transform.up);
                 AEC.MoveBack();
                 break;}
+            //単純なオートモード解除
+            case 2:{
+                isAuto = false;
+                break;
+            }
             default:{break;}
         }
     }
