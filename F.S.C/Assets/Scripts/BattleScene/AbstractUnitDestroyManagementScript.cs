@@ -229,10 +229,6 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     public int GetMaximumDistanseFromCore(){
         return maximumDistanseFromCore;
     }
-    public void ThisIsVisible(bool flag){
-        if(flag)MCC?.AddToVisibleUnitList(this);
-        else{MCC?.DeleteFromVisibleUnitList(this);}
-    }
     public int GetPrimeUnitsHP(){
         return primeUnitsHP;
     }
@@ -286,6 +282,8 @@ public class AbstractUnitDestroyManagementScript : MonoBehaviour
     /// <summary>
     /// ダメージを受けるとユニット全体（被弾したユニットをのぞく）にもダメージを受ける
     /// これにより「とりあえず攻撃を当てれば倒せる」ようになる
+    /// 10/30追記
+    /// 攻撃テンポの向上のために実装したが、機体強化に従って自ずとDPSは上昇する＋スリップダメージによって分離処理に不具合が発生するため廃止
     /// </summary>
     /// <param name="damagedUnit"></param>
     public void DamageStore(UnitData damagedUnit,int damagePoint){

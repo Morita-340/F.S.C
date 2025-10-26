@@ -94,6 +94,7 @@ MonoBehaviour:
   AUDMS: {fileID: 7288967899565774920}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+  TargetPosition: {x: 0, y: 0, z: 0}
 --- !u!50 &486585046619860877
 Rigidbody2D:
   serializedVersion: 4
@@ -135,6 +136,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Setting: 0
   rb2d: {fileID: 486585046619860877}
+  Player: {fileID: 0}
   lookTime: 3
   raidVelocityEfficiency: 20
   lineRenderer: {fileID: 3839743864557546346}
@@ -267,7 +269,12 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  BGMPlayer: {fileID: 0}
+  SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
 --- !u!114 &6246065330408766093
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -40,17 +40,16 @@ public class CoreBase : AttackUnit
         DestroyCore();
     }
     protected void DestroyCore(){
-        if(spriteRenderer.isVisible){AUDMS.ThisIsVisible(false);}
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
             this.gameObject.transform.root.gameObject.SetActive(false);
             }
         else{
         StartCoroutine(DestroyObj());
         }
-        AUDMS.IsDead();
+        ReAUDMS.IsDead();
     }
     IEnumerator DestroyObj(){
-        AUDMS.DeleteAllRangeMesh();
+        APC.DeleteAllRangeMesh();
         FM.DeleteData(ThisUnitData);
         yield return new WaitForSeconds(0.1f);
         DestroyImmediate(this.gameObject.transform.root.gameObject);

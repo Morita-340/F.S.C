@@ -5,7 +5,8 @@ using UnityEngine;
 namespace FSCGeneral{
     public class GSetting : MonoBehaviour
     {
-        public enum ShapeType{
+        public enum ShapeType
+        {
             Null = 0,
             /// <summary>
             /// 正方形　４方向全てのリンクを取れる
@@ -31,7 +32,8 @@ namespace FSCGeneral{
         /// <summary>
         /// Tag&LayerManager内に記述しているTagのインデックスナンバーを取得
         /// </summary>
-        public enum ObjTagName{
+        public enum ObjTagName
+        {
             DestroyedUnit = 0,
             PlayerUnit = 1,
             EnemyUnit = 2,
@@ -50,7 +52,8 @@ namespace FSCGeneral{
             DisplayScope = 12,
             GrenadeExplosion = 13,
         }
-        public enum WaveShapePreset{
+        public enum WaveShapePreset
+        {
             FourCorners = 0,
             Up = 1,
             Down = 2,
@@ -64,7 +67,8 @@ namespace FSCGeneral{
         /// <summary>
         /// ロードするシーンをシリアライズで設定する用（SceneAssetは実行ファイルでは使用不可なので）
         /// </summary>
-        public enum SceneName{
+        public enum SceneName
+        {
             SampleScene = 0,
             Title = 1,
             StageWeaponBodySelect = 2,
@@ -74,7 +78,8 @@ namespace FSCGeneral{
         /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
         /// </summary>
-        public enum UniqueLayerName{
+        public enum UniqueLayerName
+        {
             EnemyUnit = 3,
             DestroyedUnit = 6,
             PlayerUnit = 7,
@@ -84,7 +89,8 @@ namespace FSCGeneral{
         /// <summary>
         /// ノージャンルのマジックナンバーはここで一元管理
         /// </summary>
-        public enum UniqueMagicNumber{
+        public enum UniqueMagicNumber
+        {
             /// <summary>
             /// リアクターの強化レベル1辺りの攻撃倍率増加量
             /// </summary>
@@ -94,15 +100,21 @@ namespace FSCGeneral{
             /// </summary>
             WaveEnemyListLength = 30,
         }
-        public enum UniqueObjectName{
+        public enum UniqueObjectName
+        {
             RangeMesh = 0,
             ReactorEffectPool = 1,
             RangeMeshPool = 2,
             UICanvas = 3,
         }
-        public enum ResultSituation{
+        public enum ResultSituation
+        {
             AllWaveClear = 0,
             PlayerDestroyed = 1,
+        }
+        public static void RefineDebugAssertinLog(Transform debugObj,string message)
+        {
+            Debug.LogAssertion("アルゴリズムがおかしい。"+message+debugObj.name+"\n親："+debugObj.parent.name+"\n根："+debugObj.root.name);
         }
     }
 }

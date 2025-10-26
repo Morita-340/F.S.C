@@ -73,7 +73,7 @@ public class PlayerSettingManager : MonoBehaviour
         if(UnlockedBodyList.Count == 0){selectedBodyIndex = 0;return;}
         if(InstBody!=null){
             SMI.SetPlayer(null);
-            InstBody.GetComponent<AbstractUnitDestroyManagementScript>().DeleteAllRangeMesh();
+            InstBody.GetComponent<RefineAbstractUnitDestroyManagementScript>().DeleteAllRangeMesh();
             Destroy(InstBody);}
         if(upMode){
             selectedBodyIndex ++;

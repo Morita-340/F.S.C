@@ -89,6 +89,7 @@ public class ResultUIController : MonoBehaviour
         SCer.StopSE();
         yield return new WaitForSeconds(2f);
         //タイトルへ戻るボタンを表示
+        TitleButton.GetComponent<WindowTranslateButton>().Executable(true);
         TitleButton.transform.DOScaleX(1,0.5f);
         //表彰演出（congratulation!とか）
         switch (resultSituation){

@@ -35,7 +35,9 @@ public class UnitBase : MonoBehaviour
     protected SpriteRenderer spriteRenderer;
     protected GameObject thisGameObject;
     protected FieldManager FM = FieldManager.GetInstance();
-    protected AbstractUnitDestroyManagementScript AUDMS;
+    [SerializeField,ReadOnly]
+    protected AbstractPartsController APC;
+    protected RefineAbstractUnitDestroyManagementScript ReAUDMS;
     //カメラの拡大倍率の計算に用いるコアからの距離
     protected int distanseFromCore = 0;
     //通常攻撃力。コアや武器ユニットでは装着した武器の攻撃力が再代入される
@@ -99,6 +101,10 @@ public class UnitBase : MonoBehaviour
     public GSetting.ShapeType GetShapeType(){
         return shapeType;
     }
+    public AbstractPartsController GetAPC()
+    {
+        return APC;
+    }
     private Vector3 RayBasePosition;//対応するPreviewObjectの座標を代入してある
     private float PreviewObjZRotate;//
     public void SetRayBasePosition(Vector3 position){
@@ -123,8 +129,9 @@ public class UnitBase : MonoBehaviour
         uiRectTransform  = GameObject.Find("UICanvas").GetComponent<RectTransform>();
     }
     protected virtual void Start(){
-        AUDMS = thisGameObject.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
-        if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
+        APC = thisGameObject.transform.parent.GetComponent<AbstractPartsController>();
+        ReAUDMS = thisGameObject.transform.root.GetComponent<RefineAbstractUnitDestroyManagementScript>();
+        if(isPrime){HitPoint = ReAUDMS.GetPrimeUnitsHP();}
         InstHitPoint = HitPoint;
         if(InstHitPoint <= 0){InstHitPoint = 1;}
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
@@ -244,18 +251,18 @@ public class UnitBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        //素体ユニットならAUDMS側で共有しているHPに変更する
-        if(isPrime){HitPoint = AUDMS.GetPrimeUnitsHP();}
+        //素体ユニットならReAUDMS側で共有しているHPに変更する
+        if(isPrime){HitPoint = ReAUDMS.GetPrimeUnitsHP();}
         float HPRatio = (float)HitPoint/(float)InstHitPoint;
         spriteRenderer.color = new Color(HPRatio,HPRatio,HPRatio,spriteRenderer.color.a);
-        AUDMS?.ThisIsVisible(spriteRenderer.isVisible);
+        //ReAUDMS?.ThisIsVisible(spriteRenderer.isVisible);
         if(HitPoint <= 0){DestroyUnit();}
     }
     public virtual IEnumerator NormalAttack(Vector3 TargetPosition){
         yield return null;
     }
     public virtual void ChargeAttack(Vector3 TargetPosition){}
-    //HPが0になった時の破壊処理（分離の処理はAUDMSが行う）
+    //HPが0になった時の破壊処理（分離の処理はReAUDMSが行う）
     protected virtual void DestroyUnit(){
         //リンク情報が消去されたのにゲームオブジェクトだけ消去されない場合の例外処理
         if(ThisUnitData == null){
@@ -271,7 +278,7 @@ public class UnitBase : MonoBehaviour
             ThisUnitData.DeleteFourWayLink();
             FM.DeleteData(ThisUnitData);
             }
-        if(AUDMS != null)AUDMS.DestroyProcess(ThisUnitData,false);
+        if(APC != null)APC.DestroyProcess(ThisUnitData,false);
     }
     /// <summary>
     /// 離れ小島としてユニットを接続しないようにRayを照射して接しているか判別している。合体時に使用
@@ -336,7 +343,7 @@ public class UnitBase : MonoBehaviour
                         if(HitPoint >0){
                             SCer.PlaySE(0);
                             //素体ユニットであるかどうかで減算対象を変える
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
                             else{
                                 DamageCount(HitWeapon.GetTotalDamage());
                                 }
@@ -347,7 +354,7 @@ public class UnitBase : MonoBehaviour
                         if(HitPoint >0){
                             SCer.PlaySE(0);
                             //素体ユニットであるかどうかで減算対象を変える
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower());}
                             else{
                                 DamageCount(HitWeapon.GetTotalDamage());
                                 }
@@ -356,7 +363,7 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.EnemyUnit:{
                         SCer.PlaySE(0);
                         //素体ユニットであるかどうかで減算対象を変える
-                        if(isPrime){AUDMS.DecreasePrimeUnitsHP(HitPoint);}
+                        if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(HitPoint);}
                         else{
                         DamageCount(HitPoint);}
                         break;}
@@ -371,7 +378,7 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.ReactorExplosion:{
                         ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                         if(HitPoint >0){
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(reactorBase.GetReactorsEfficiencyLevel());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(reactorBase.GetReactorsEfficiencyLevel());}
                             else{
                                 DamageCount(reactorBase.GetReactorsEfficiencyLevel());
                             }
@@ -380,7 +387,7 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.CoreExplosion:{
                         CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
                         if(HitPoint > 0){
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(coreBase.GetUnitStatus());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(coreBase.GetUnitStatus());}
                             else{
                             DamageCount(coreBase.GetUnitStatus());
                             }
@@ -389,7 +396,7 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.GrenadeExplosion:{
                         GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
                         if(HitPoint > 0){
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
                             else{
                                 DamageCount(GEM.GetExplosionDamage());
                             }
@@ -439,7 +446,7 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.GrenadeExplosion:{
                         GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
                         if(HitPoint > 0){
-                            if(isPrime){AUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
+                            if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage());}
                             else{
                                 DamageCount(GEM.GetExplosionDamage());
                             }
@@ -499,7 +506,7 @@ public class UnitBase : MonoBehaviour
         }
     }
     /// <summary>
-    /// 被弾するとダメージ値を表示する
+    /// 被弾するとダメージ値を表示する+ダメージ処理を行う
     /// </summary>
     /// <param name="damagePoint"></param>
     private void DamageCount(int damagePoint){
@@ -516,7 +523,6 @@ public class UnitBase : MonoBehaviour
         TextMeshProUGUI Text = DamageObj.GetComponent<TextMeshProUGUI>();
         Text.text = damagePoint.ToString();
         Text.DOFade(0f,fadeTime);
-        AUDMS.DamageStore(ThisUnitData,damagePoint);
         TakeDamage(damagePoint);
         SCer.PlaySE(0);
     }
@@ -528,7 +534,7 @@ public class UnitBase : MonoBehaviour
     /// </summary>
     public void DebugDamaged(){
         //素体ユニットであるかどうかで減算対象を変える
-        if(isPrime){AUDMS?.DecreasePrimeUnitsHP(1);}
+        if(isPrime){ReAUDMS?.DecreasePrimeUnitsHP(1);}
         else{DamageCount(1);}
     }
 }

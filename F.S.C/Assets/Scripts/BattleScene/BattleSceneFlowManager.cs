@@ -28,19 +28,24 @@ public class BattleSceneFlowManager : MonoBehaviour
     CameraPlayerHomingTrigger CPHT;
     [SerializeField]GameObject PlayerSpawnPoint;
     [SerializeField]GameObject PauseMenu;
-    [SerializeField]GameObject MotherShip;
+    [SerializeField,ReadOnly] WindowTranslateButton BackToSettingButton;
+    [SerializeField,ReadOnly] WindowTranslateButton ReStartButton;
+    [SerializeField] GameObject MotherShip;
     
     GSetting.ResultSituation situation;
     GameObject Player;
     private bool firstUpdate = true;
     private bool isBattleEnd = false;
-    void Awake(){
+    void Awake()
+    {
         SpS = this.GetComponent<SpawnSystem>();
         GFM = FindObjectOfType<GeneralFlagManager>();
-        Player = Instantiate(GFM.GetSelectedPlayer().Item1,PlayerSpawnPoint.transform.position,Quaternion.Euler(Vector3.zero));
+        Player = Instantiate(GFM.GetSelectedPlayer().Item1, PlayerSpawnPoint.transform.position, Quaternion.Euler(Vector3.zero));
         PUDMS = Player.GetComponent<PlayerUnitDestroyManagementScript>();
         SpS.SetPUDMS(PUDMS);
         MI.SetPlayer(Player);
+        BackToSettingButton = PauseMenu.transform.Find("BackToSettingButton").GetChild(0).GetComponent<WindowTranslateButton>();
+        ReStartButton = PauseMenu.transform.Find("ReStartButton").GetChild(0).GetComponent<WindowTranslateButton>();
     }
     // Start is called before the first frame update
     void Start()
@@ -141,13 +146,20 @@ public class BattleSceneFlowManager : MonoBehaviour
     private void Pause(){
         //ポーズメニューの有効化
         PauseMenu.transform.localScale = new Vector3(1,1,1);
+        //ポーズメニューのUIボタンの有効化
+        BackToSettingButton.Executable(true);
+        ReStartButton.Executable(true);
         //FixedUpdateが呼ばれなくなり、運動中の物体が静止する
         Time.timeScale = 0;
         //SEやBGMを一時停止
         WSEUIC.PauseUI();
     }
     public void UnPause(){
+        //ポーズメニューの無効化
         PauseMenu.transform.localScale=new Vector3(0,1,1);
+        //ポーズメニューのUIボタンの無効化
+        BackToSettingButton.Executable(false);
+        ReStartButton.Executable(false);
         Time.timeScale = 1;
         //SEやBGMの一時停止を解除
         WSEUIC.UnPauseUI();

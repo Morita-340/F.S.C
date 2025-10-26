@@ -10,20 +10,20 @@ public class MainCameraController : MonoBehaviour
     int maxDistanse = 0;
     float zoomRatio = 60f;
     bool isPlayerHoming = false;
-    private List<AbstractUnitDestroyManagementScript>VisibleUnitList = new List<AbstractUnitDestroyManagementScript>();
-    public void AddToVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
-        if(!VisibleUnitList.Contains(AUDMS)){
-            VisibleUnitList.Add(AUDMS);
+    private List<RefineAbstractUnitDestroyManagementScript>VisibleUnitList = new List<RefineAbstractUnitDestroyManagementScript>();
+    public void AddToVisibleUnitList(RefineAbstractUnitDestroyManagementScript ReAUDMS){
+        if(!VisibleUnitList.Contains(ReAUDMS)){
+            VisibleUnitList.Add(ReAUDMS);
             Debug.Log("MCC ListAdd");}
     }
-    public void DeleteFromVisibleUnitList(AbstractUnitDestroyManagementScript AUDMS){
-        if(VisibleUnitList.Contains(AUDMS)){VisibleUnitList.Remove(AUDMS);}
+    public void DeleteFromVisibleUnitList(RefineAbstractUnitDestroyManagementScript ReAUDMS){
+        if(VisibleUnitList.Contains(ReAUDMS)){VisibleUnitList.Remove(ReAUDMS);}
     }
     // Start is called before the first frame update
     void Start()
     {
         MainCam = this.GetComponent<Camera>();
-        if(!Setting)Player = FindObjectOfType<PlayerUnitDestroyManagementScript>().gameObject;
+        if(!Setting)Player = FindObjectOfType<RefinePlayerUnitDestroyManagementScript>().gameObject;
 
     }
 
@@ -31,12 +31,6 @@ public class MainCameraController : MonoBehaviour
     void Update()
     {
         if(!Setting && isPlayerHoming)this.transform.position = Player.transform.position + new Vector3(0,0, -5);
-        foreach(AbstractUnitDestroyManagementScript AUDMS in VisibleUnitList){
-            int maxDistanseFromCore = AUDMS.GetMaximumDistanseFromCore();
-            if(maxDistanse < maxDistanseFromCore){
-                maxDistanse = maxDistanseFromCore;
-                Debug.Log("MCC maxAUDMS name: " +maxDistanse + AUDMS.gameObject.name);}
-        }
         ZoomRatioControll(maxDistanse);
     }
     public void SetIsPlayerHomingTrue(){
@@ -80,7 +74,7 @@ public class MainCameraController : MonoBehaviour
         else{goalZoomValue = 90;}
         zoomRatio = Mathf.SmoothDamp(zoomRatio,goalZoomValue,ref currentVelocity,0.1f);
         MainCam.orthographicSize = zoomRatio;
-        Debug.Log("MCC zoomratio" + zoomRatio + " " + goalZoomValue);
+        //Debug.Log("MCC zoomratio" + zoomRatio + " " + goalZoomValue);
     }
     /// <summary>
     /// プレイヤーの座標を取得する際はGameObject.Find("Player")とかを使わずにここから取得する

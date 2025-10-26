@@ -70,10 +70,10 @@ public class ReactorBase : UnitBase
         Vector2[] OffsetList = {new Vector2(0,0),new Vector2(0.5f,0.5f),new Vector2(0.5f,-0.5f),new Vector2(-0.5f,0.5f),new Vector2(-0.5f,-0.5f)};
         int previsionalNum = 0;
         SetReactorEffectScope();
-        AbstractUnitDestroyManagementScript AUDMS = this.transform.root.GetComponent<AbstractUnitDestroyManagementScript>();
-        if(AUDMS != null){
-            for(int i = 0; i < AUDMS.transform.childCount; i++){
-            AttackUnit attackUnit = AUDMS.transform.GetChild(i).gameObject.GetComponent<AttackUnit>();
+        RefineAbstractUnitDestroyManagementScript ReAUDMS = this.transform.root.GetComponent<RefineAbstractUnitDestroyManagementScript>();
+        if(ReAUDMS != null){
+            for(int i = 0; i < ReAUDMS.transform.childCount; i++){
+            AttackUnit attackUnit = ReAUDMS.transform.GetChild(i).gameObject.GetComponent<AttackUnit>();
                 if(attackUnit == null){continue;}
                 foreach(Vector2 OffsetVector in OffsetList){
                     Vector2 distanseFromThisReactor = attackUnit.transform.localPosition - this.transform.localPosition + new Vector3(OffsetVector.x,OffsetVector.y,0);

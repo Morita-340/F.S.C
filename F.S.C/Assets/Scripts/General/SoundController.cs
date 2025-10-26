@@ -43,7 +43,7 @@ public class SoundController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        soundVolume = GFM.GetSoundVolume();
+        //soundVolume = GFM.GetSoundVolume();
         if(BGMPlayer.isPlaying){BGMPlayer.volume = soundVolume;}
         if(SEPlayer.isPlaying){SEPlayer.volume = soundVolume;}
     }

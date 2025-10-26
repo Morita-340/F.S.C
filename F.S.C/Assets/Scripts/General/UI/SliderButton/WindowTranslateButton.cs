@@ -36,6 +36,7 @@ public class WindowTranslateButton : SliderButton
             yield return new WaitForSeconds(2f);
         }
         Time.timeScale = 1;
+        Debug.Log("QQQ_"+gameObject.name);
         SceneManager.LoadScene(TranslateScene.ToString());
     }
 }

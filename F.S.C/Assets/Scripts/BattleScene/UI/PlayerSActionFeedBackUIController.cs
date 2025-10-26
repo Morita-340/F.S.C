@@ -14,7 +14,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI ExplosionComboText;
     [SerializeField,ReadOnly]
-    PlayerUnitDestroyManagementScript PUDMS;
+    RefinePlayerUnitDestroyManagementScript RePUDMS;
     [SerializeField]GameObject WeaponControllConectedUIText;
     [SerializeField]TextMeshProUGUI PlayerHPValue;
     [SerializeField]GameObject PlayerHPGauge;
@@ -41,7 +41,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     float explosionComboTime = 0;
     int noDamageClearedWaveNum = 0;
     private void Start(){
-        PUDMS = FindObjectOfType<PlayerUnitDestroyManagementScript>();
+        RePUDMS = FindObjectOfType<RefinePlayerUnitDestroyManagementScript>();
     }
     // Update is called once per frame
     void Update()
@@ -92,11 +92,11 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     /// プレイヤーの戦闘力が変化（被弾による分離or合体）した際にUIの数値を変更する処理
     /// </summary>
     private void ChangePlayerCombatPower(){
-        if(goalPlayerCombatpower != PUDMS.GetCombatPower()){
-            goalPlayerCombatpower = PUDMS.GetCombatPower();
+        if(goalPlayerCombatpower != RePUDMS.GetCombatPower()){
+            goalPlayerCombatpower = RePUDMS.GetCombatPower();
             plComPChangeFlag = true;
         }
-        if(maximumPlayerCombatPower < PUDMS.GetCombatPower())maximumPlayerCombatPower = PUDMS.GetCombatPower();
+        if(maximumPlayerCombatPower < RePUDMS.GetCombatPower())maximumPlayerCombatPower = RePUDMS.GetCombatPower();
     }
     /// <summary>
     /// プレイヤーの戦闘力の表示管理
@@ -104,15 +104,15 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     private void PlayerCombatPowerUIDisplay()
     {
         ChangePlayerCombatPower();
-        if(plComPChangeFlag &&playerCombatPower != PUDMS.GetCombatPower()){
-            if(PUDMS.GetCombatPower() != 0){//ゼロ除算対策
+        if(plComPChangeFlag &&playerCombatPower != RePUDMS.GetCombatPower()){
+            if(RePUDMS.GetCombatPower() != 0){//ゼロ除算対策
                 //パラメータの変化の度合に応じてある程度UIの変更時間を変えられるようにする
-                plComPChangeTime = (playerCombatPower / PUDMS.GetCombatPower() > 1) ? 1 : ((playerCombatPower / PUDMS.GetCombatPower() < 0.4f) ? 0.4f : playerCombatPower / PUDMS.GetCombatPower());
+                plComPChangeTime = (playerCombatPower / RePUDMS.GetCombatPower() > 1) ? 1 : ((playerCombatPower / RePUDMS.GetCombatPower() < 0.4f) ? 0.4f : playerCombatPower / RePUDMS.GetCombatPower());
             }
             plComPChangeFlag = false;
-            DOTween.To(() => playerCombatPower, (x) => playerCombatPower = x, PUDMS.GetCombatPower() , plComPChangeTime);
+            DOTween.To(() => playerCombatPower, (x) => playerCombatPower = x, RePUDMS.GetCombatPower() , plComPChangeTime);
             StartCoroutine(UIStretch(PlayerCombatPowerText,plComPChangeTime));
-        }else if(playerCombatPower == PUDMS.GetCombatPower()){plComPChangeFlag = true;}
+        }else if(playerCombatPower == RePUDMS.GetCombatPower()){plComPChangeFlag = true;}
         PlayerCombatPowerText.text = "PlayerCombatPower\n" +playerCombatPower.ToString();
     }
     /// <summary>
@@ -211,8 +211,8 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     /// primeHPに関するUI表示
     /// </summary>
     private void PlayerHPUIDisplay(){
-        //PUDMSでHP取得
-        int playerHP = PUDMS.GetPrimeUnitsHP();
+        //RePUDMSでHP取得
+        int playerHP = RePUDMS.GetPrimeUnitsHP();
         PlayerHPValue.text = "HP\n" + playerHP.ToString();
         PlayerHPGauge.transform.localScale = new Vector2(playerHP,PlayerHPGauge.transform.localScale.y);
     }
