@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3666095986030781723}
-  - component: {fileID: 3761113553657298027}
   - component: {fileID: 2846844460398241852}
+  - component: {fileID: 9010243161837796954}
   m_Layer: 0
   m_Name: DestroyUnit
   m_TagString: DestroyedUnit
@@ -33,21 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3761113553657298027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7332052915261354937}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 894f5516fee18fb48933c545dcb7e345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gyrationFactor: 90
-  rb2D: {fileID: 2846844460398241852}
-  InstMoveAndRotateVector: {x: 0, y: 0, z: 0}
 --- !u!50 &2846844460398241852
 Rigidbody2D:
   serializedVersion: 4
@@ -75,3 +60,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &9010243161837796954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7332052915261354937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d820b239afb6184aa04065d43b68794, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReDUMSObj: {fileID: 7332052915261354937}
+  ConnectSituation: 0
+  rb2D: {fileID: 2846844460398241852}
+  InstMoveAndRotateVector: {x: 0, y: 0, z: 0}

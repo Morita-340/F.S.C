@@ -29,6 +29,26 @@ namespace FSCGeneral{
             /// </summary>
             ObtusePentagon = 5,
         }
+        public enum PartsDamageStatus
+        {
+            NotSet = 0,
+            //無傷。多少の被弾によるダメージ蓄積は許容。ひとつもユニットが破壊されていなければ該当
+            NoDamage = 1,
+            //小破。一部ユニットが破壊されているもののパーツの機能＆ジョイントユニットが生きている状態
+            MinorDamage = 2,
+            //大破。機能を持つユニットorジョイントユニットのどちらかが完全に破壊されるか分離しており、アクセスできない状態
+            HeavilyDamage = 3,
+        }
+        public enum PartsConnectSituation
+        {
+            NotSet = 0,
+            //大破パーツのみ＝小破以下のまとまりが0
+            OnlyWreckParts = 1,
+            //大破パーツを挟んで小破以下のパーツがくっついている＝小破以下のまとまりが複数
+            MultipleScrachPartsGroup = 2,
+            //複数の小破以下のパーツが直接くっついている（一つだけでもいい）＝小破以下のまとまりが一つだけ
+            A_ScrachPartsGroup = 3,
+        }
         /// <summary>
         /// Tag&LayerManager内に記述しているTagのインデックスナンバーを取得
         /// </summary>
@@ -112,9 +132,14 @@ namespace FSCGeneral{
             AllWaveClear = 0,
             PlayerDestroyed = 1,
         }
-        public static void RefineDebugAssertinLog(Transform debugObj,string message)
+        /// <summary>
+        /// 汎用的なエラーログ。エラーの原因のオブジェクトと想定されるエラー内容を出力できる
+        /// </summary>
+        /// <param name="debugObj">エラーの原因のオブジェクト。親オブジェクトや根オブジェクトも出力できる</param>
+        /// <param name="message">エラーメッセージ</param>
+        public static void RefineDebugAssertinLog(Transform debugObj, string message)
         {
-            Debug.LogAssertion("アルゴリズムがおかしい。"+message+debugObj.name+"\n親："+debugObj.parent.name+"\n根："+debugObj.root.name);
+            Debug.LogAssertion("アルゴリズムがおかしい。" + message + debugObj.name + "\n親：" + debugObj.parent?.name + "\n根：" + debugObj.root.name);
         }
     }
 }

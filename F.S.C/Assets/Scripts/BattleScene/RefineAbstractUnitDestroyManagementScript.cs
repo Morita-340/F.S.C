@@ -122,9 +122,9 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         //各パーツ制御者に、分離する＝探索がfalseなユニットを親オブジェクトごと丸々渡してもらう
         foreach (AbstractPartsController Parts in PartsList)
         {
-            Debug.Log("FFF"+Parts.AllUnitSearched(true)+Parts.gameObject.name);
+            Debug.Log("FFF"+Parts.AllUnitSearched(true,0)+Parts.gameObject.name);
             //falseになったユニットが存在しない=全てtrueなパーツはあとの処理を飛ばす
-            if (Parts.AllUnitSearched(true)) { continue; }
+            if (Parts.AllUnitSearched(true,0)) { continue; }
             Parts.SetNotResearchUnitList();
             Debug.LogWarning(Parts.name);
             NotResearchPartsList.Add(Parts);
@@ -132,7 +132,6 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         ///パーツを構成するユニットが再生成対象かどうか
         while (NotResearchPartsList.Count > 0)
         {
-            GameObject ParentObject = Instantiate(DestroyParentUnitObject, ThisUnitSCore.transform.position, ThisUnitSCore.transform.rotation).GetComponent<DestroyedUnitManagementScript>().SetColliderAndSpriteONFlag(true);
             List<AbstractPartsController> RegenePartsList = new List<AbstractPartsController>();
             //未探索データの中でもう一度探索をすることで、オブジェクトの接続関係でグループに分ける
             UnitData FirstSearchData = NotResearchPartsList[0].GetNotResearchUnitList()[0];
@@ -142,7 +141,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             foreach (AbstractPartsController Parts in NotResearchPartsList)
             {
                 //分離対象のうち、今回の探索でtrueになったユニットが存在しないパーツはあとの処理を飛ばす
-                if (Parts.AllUnitSearched(false,Parts.GetNotResearchUnitList())) { continue; }
+                if (Parts.AllUnitSearched(false,1)) { continue; }
                 Parts.SetRegeneUnitList();
                 RegenePartsList.Add(Parts);
                 if (regeneFirstTime == true)
@@ -151,31 +150,35 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                     GameObject unitObj = FirstSearchData.ReturnThisUnit().gameObject;
                     UnitDefferenceVector = new Vector3(unitObj.transform.localPosition.x, unitObj.transform.localPosition.y, 0);
                     //ベクトルだから引き算の計算を逆にしてはいけない
-                    regenePosition = new Vector3(unitObj.transform.position.x - ThisUnitSCore.transform.position.x, unitObj.transform.position.y - ThisUnitSCore.transform.position.y, 5);
+                    regenePosition = new Vector3(unitObj.transform.position.x, unitObj.transform.position.y, 5);
                     regeneFirstTime = false;
                 }
             }
+            GameObject ParentObject = Instantiate(DestroyParentUnitObject, regenePosition, ThisUnitSCore.transform.rotation).GetComponent<RefineDestroyedUnitManagementScript>().SetColliderAndSpriteONFlag(true);
+            //ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
+            //生成パーツの一つ目の座標を取得して、位置調整に使う
+            Vector3 basePosition = RegenePartsList[0].transform.localPosition;
             //元のパーツの親オブジェクトごと再生成
             foreach (AbstractPartsController Parts in RegenePartsList)
             {
                 //パーツ制御オブジェクトを生成
-                GameObject PartsObj = DuplicateParentOnly(Parts.gameObject);
-                PartsObj.transform.parent = ParentObject.transform;
+                GameObject PartsObj = DuplicateParentOnly(Parts.gameObject,basePosition,ParentObject.transform);
                 //ユニットオブジェクトをパーツ制御オブジェクトの下に生成
                 List<UnitData> RegeneUnitList = Parts.GetRegeneUnitList();
-                Debug.LogAssertion(RegeneUnitList.Count);
+                PartsObj.transform.localPosition -= UnitDefferenceVector;
                 foreach (UnitData unitData in RegeneUnitList)
                 {
-                    GameObject RegeneObj = Instantiate(unitData.ReturnThisUnit().gameObject, PartsObj.transform).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);;
-                    RegeneObj.transform.parent = PartsObj.transform;
+                    GameObject RegeneObj = Instantiate(unitData.ReturnThisUnit().gameObject,PartsObj.transform).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);;
+                    //RegeneObj.transform.parent = PartsObj.transform;
                     //複製元の消去（オブジェクトとデータ）
                     unitData.ReturnThisUnit().GetAPC().DeleteChildUnitData(unitData);
                     FieldManager FM = FieldManager.GetInstance();
                     FM.UnitList.Remove(unitData);
                 }
-                PartsObj.transform.localPosition -= UnitDefferenceVector;
+                //DuplicateParentOnly()実行時には子オブジェクトは空だったので、改めて初期設定
+                PartsObj.GetComponent<AbstractPartsController>().RegeneProcess();
                 //子オブジェクトを全て再生成した場合はこのクラスからのパーツの参照を丸ごと消去
-                if (Parts.AllUnitSearched(true, Parts.GetRegeneUnitList()))
+                if (Parts.AllUnitSearched(true, 2))
                 {
                     //パーツ側でもオブジェクトとデータの消去を行う
                     PartsList.Remove(Parts);
@@ -184,13 +187,14 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             //パーツのうち、今回の探索ですべてのUnitがtrueになったものを除外する
             foreach (AbstractPartsController Parts in NotResearchPartsList)
             {
-                if (Parts.AllUnitSearched(true)&&!(Parts is BodyPartsController))
+                if (Parts.AllUnitSearched(true, 0) && !(Parts is BodyPartsController))
                 {
                     Destroy(Parts.gameObject);
                 }
             }
-            NotResearchPartsList.RemoveAll(AbstractPartsController => AbstractPartsController.AllUnitSearched(true) == true);
-            ParentObject.transform.position = ThisUnitSCore.transform.position + regenePosition;//鹵獲時に元のコアまでの距離だけ離れてしまう不具合の修正
+            NotResearchPartsList.RemoveAll(AbstractPartsController => AbstractPartsController.AllUnitSearched(true,0) == true);
+            StartCoroutine(ParentObject.GetComponent<RefineDestroyedUnitManagementScript>().InitialSetting());
+            ParentObject.GetComponent<RefineDestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
             if (ParentObject.transform.childCount <= 0) { DestroyImmediate(ParentObject); }
             else { ParentObjectList.Add(ParentObject); }
         }
@@ -253,13 +257,16 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         }
         return combatPower;
     }
-    private GameObject DuplicateParentOnly(GameObject originalParent)
+    private GameObject DuplicateParentOnly(GameObject originalParent,Vector3 basePosition,Transform parent)
     {
         // 新しい空オブジェクトを生成
         GameObject newParent = new GameObject(originalParent.name);
+        newParent.transform.parent = parent;
 
+        //分離一個目のパーツからの相対位置を取得
+        //Transformに反映
+        newParent.transform.localPosition = originalParent.transform.localPosition - basePosition;
         // 元のTransform情報をコピー
-        newParent.transform.position = originalParent.transform.position;
         newParent.transform.rotation = originalParent.transform.rotation;
         newParent.transform.localScale = originalParent.transform.localScale;
 

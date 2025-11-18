@@ -21,7 +21,7 @@ public class UnitBase : MonoBehaviour
     [SerializeField,ReadOnly]
     protected MainCameraController MainCamera;
     [SerializeField,Range(-180f,180f)]
-    float offsetRotation = 0;
+    protected float offsetRotation = 0;
     /// <summary>
     /// 素体のユニットであるかを判別する。インスペクターで予め設定する。プレイ中は一切変えない
     /// </summary>
@@ -69,10 +69,11 @@ public class UnitBase : MonoBehaviour
     /// <param name="tagName"></param>
     /// <param name="layerNum"></param>
     /// <returns></returns>
-    public virtual GameObject UnitSetting(string tagName,int layerNum){
+    public virtual GameObject UnitSetting(string tagName, int layerNum)
+    {
         tag = tagName;
         this.gameObject.layer = layerNum;
-        return this.gameObject;
+        return this.gameObject;        
     }
     /// <summary>
     /// 攻撃倍率の変更
@@ -119,14 +120,15 @@ public class UnitBase : MonoBehaviour
         SCer = GetComponent<SoundController>();
         thisGameObject = this.gameObject;
         thisUnit = this;
-        ThisUnitData= new UnitData(thisUnit,(int)shapeType,isPrime);
+        ThisUnitData = new UnitData(thisUnit, (int)shapeType, isPrime);
         FM.UnitList.Add(ThisUnitData);
         attackEfficiency = 1;
-        if(this.tag == GSetting.ObjTagName.PlayerUnit.ToString()
+        if (this.tag == GSetting.ObjTagName.PlayerUnit.ToString()
         || this.tag == GSetting.ObjTagName.EnemyUnit.ToString()
-        ||this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
-        {distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition);}
-        uiRectTransform  = GameObject.Find("UICanvas").GetComponent<RectTransform>();
+        || this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
+        { distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition); }
+        uiRectTransform = GameObject.Find("UICanvas").GetComponent<RectTransform>();
+        if(this is JointUnit && tag == GSetting.ObjTagName.DestroyedUnit.ToString())GSetting.RefineDebugAssertinLog(transform,"aaaaa"+transform.localPosition.ToString()+"\n");
     }
     protected virtual void Start(){
         APC = thisGameObject.transform.parent.GetComponent<AbstractPartsController>();
@@ -137,28 +139,38 @@ public class UnitBase : MonoBehaviour
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
         MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
         GetAdjacentObjLink(tag);//RegistData()に格納するとなぜか動かなくなるので注意
-        RegistData(upperUnit,downerUnit,rightUnit,leftUnit);
     }
     protected virtual void GetAdjacentObjLink(string SelectedObjTag)
     {
-        if(shapeType == GSetting.ShapeType.Square){
+        if (shapeType == GSetting.ShapeType.Square)
+        {
             upperUnit = GetUpLink(SelectedObjTag);
             downerUnit = GetDownLink(SelectedObjTag);
             rightUnit = GetRightLink(SelectedObjTag);
             leftUnit = GetLeftLink(SelectedObjTag);
-        }else if(shapeType == GSetting.ShapeType.RegularTriangle){
+        }
+        else if (shapeType == GSetting.ShapeType.RegularTriangle)
+        {
             downerUnit = GetDownLink(SelectedObjTag);
-        }else if(shapeType == GSetting.ShapeType.IsoscelesRightTriangle){
+        }
+        else if (shapeType == GSetting.ShapeType.IsoscelesRightTriangle)
+        {
             downerUnit = GetDownLink(SelectedObjTag);
             rightUnit = GetRightLink(SelectedObjTag);
-        }else if(shapeType == GSetting.ShapeType.Rectangle){
+        }
+        else if (shapeType == GSetting.ShapeType.Rectangle)
+        {
             rightUnit = GetRightLink(SelectedObjTag);
             leftUnit = GetLeftLink(SelectedObjTag);
-        }else if(shapeType == GSetting.ShapeType.ObtusePentagon){
+        }
+        else if (shapeType == GSetting.ShapeType.ObtusePentagon)
+        {
             downerUnit = GetDownLink(SelectedObjTag);
             rightUnit = GetRightLink(SelectedObjTag);
             leftUnit = GetLeftLink(SelectedObjTag);
-        }else {Debug.LogAssertion("ShapeType is null!");}
+        }
+        else { Debug.LogAssertion("ShapeType is null!"); }
+        RegistData(upperUnit, downerUnit, rightUnit, leftUnit);
     }
     private void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
@@ -178,7 +190,7 @@ public class UnitBase : MonoBehaviour
     private UnitBase GetDownLink(string SelectedObjTag){
         UnitBase downerUnit;
         GameObject DownerObj = GetDownerGameObject(SelectedObjTag);
-        if(DownerObj == null){return null;}
+        if (DownerObj == null) { return null; }
         downerUnit = DownerObj.GetComponent<UnitBase>();
         if(downerUnit == null)Debug.LogAssertion("DownerUnit is null;");
         return downerUnit;
@@ -209,7 +221,7 @@ public class UnitBase : MonoBehaviour
     private GameObject GetDownerGameObject(string SelectedObjTag){
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
             GameObject LeftObj = hit2D.collider.gameObject;
-            if(LeftObj.tag == SelectedObjTag){return LeftObj;}
+            if (LeftObj.tag == SelectedObjTag) { return LeftObj; }
         }
         return null;
     }
@@ -243,7 +255,7 @@ public class UnitBase : MonoBehaviour
                 RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.DestroyedUnit://鹵獲して接続する際に離れ小島になっていないかIsNotIsolatedUnit()で判別するときに使用される。値が違うだけで計算内容は上と一緒
-                RayPosition = (Quaternion.Euler(0,0,PreviewObjZRotate +offsetRotation) * RayOffsetDirection) + RayBasePosition;
+                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
                 break;
         }
         return Physics2D.RaycastAll(RayPosition,new Vector3(0,0,1));
@@ -252,7 +264,7 @@ public class UnitBase : MonoBehaviour
     protected virtual void Update()
     {
         //素体ユニットならReAUDMS側で共有しているHPに変更する
-        if(isPrime){HitPoint = ReAUDMS.GetPrimeUnitsHP();}
+        if (isPrime) { HitPoint = ReAUDMS.GetPrimeUnitsHP(); }
         float HPRatio = (float)HitPoint/(float)InstHitPoint;
         spriteRenderer.color = new Color(HPRatio,HPRatio,HPRatio,spriteRenderer.color.a);
         //ReAUDMS?.ThisIsVisible(spriteRenderer.isVisible);
