@@ -13,11 +13,11 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
     public List<Vector3> GetAllEmptyPassiveJointSPositionList()
     {
         List<Vector3> jointUnitSPositionList = new List<Vector3>();
-        Debug.LogAssertion(PartsList.Count);
+        //Debug.LogAssertion(PartsList.Count);
         foreach (AbstractPartsController APC in PartsList)
         {
-            List<JointUnit> passivejointList = APC.GetPassiveJointLinkList();
-            Debug.LogAssertion(passivejointList.Count);
+            List<PassiveJointUnit> passivejointList = APC.GetPassiveJointLinkList();
+            //Debug.LogAssertion(passivejointList.Count);
             foreach (JointUnit jointUnit in passivejointList)
             {
                 if (jointUnit.isJointLinkEmpty())
@@ -27,7 +27,26 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
                 }
             }
         }
-        Debug.LogAssertion("jointUnitSPositionList.Count" + jointUnitSPositionList.Count);
+        //Debug.LogAssertion("jointUnitSPositionList.Count" + jointUnitSPositionList.Count);
         return jointUnitSPositionList;
+    }
+    public List<float> GetSelectedJointSOffsetRotation()
+    {
+        List<float> JointSOffsetRotationList = new List<float>();
+        //Debug.LogAssertion(PartsList.Count);
+        foreach (AbstractPartsController APC in PartsList)
+        {
+            List<PassiveJointUnit> passivejointList = APC.GetPassiveJointLinkList();
+            //Debug.LogAssertion(passivejointList.Count);
+            foreach (JointUnit jointUnit in passivejointList)
+            {
+                if (jointUnit.isJointLinkEmpty())
+                {
+                    float OffsetRotation = jointUnit.GetOffsetRotation();
+                    JointSOffsetRotationList.Add(OffsetRotation);
+                }
+            }
+        }
+        return JointSOffsetRotationList;
     }
 }

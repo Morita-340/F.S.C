@@ -18,6 +18,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     [SerializeField]
     GameObject DestroyParentUnitObject;
     [SerializeField] protected bool Setting = false;
+    [SerializeField, ReadOnly]
     MainCameraController MCC;
     protected GSetting.ObjTagName childObjTagName;
     [SerializeField, Range(1, 100)]
@@ -44,8 +45,8 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        SetUnitData();
         MCC = GameObject.Find("Main Camera")?.GetComponent<MainCameraController>();
+        SetUnitData();
     }
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
@@ -62,6 +63,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             if (childUnitObject.tag == childObjTagName.ToString())
             {
                 PartsList.Add(childParts);
+                childParts.RegeneProcess();
             }
         }
         caluculateFlag = true;
@@ -94,7 +96,6 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         while (StackForBreathFirstSearch.Count > 0)
         {
             UnitData PopData = StackForBreathFirstSearch.Pop();
-            Debug.Log(PopData.ReturnThisUnit().gameObject.name);
             DataAddToDoubleList(PopData.ReturnFourWayLink());
         }
     }
@@ -208,7 +209,6 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     }
     public GSetting.ObjTagName GetChildObjTagName()
     {
-        Debug.Log("GGG" + childObjTagName+gameObject.name);
         return childObjTagName;
     }
     /// <summary>

@@ -73,6 +73,7 @@ public class UnitBase : MonoBehaviour
     {
         tag = tagName;
         this.gameObject.layer = layerNum;
+        GSetting.RefineDebugAssertinLog(transform,tag);
         return this.gameObject;        
     }
     /// <summary>
@@ -128,7 +129,6 @@ public class UnitBase : MonoBehaviour
         || this.tag == GSetting.ObjTagName.DestroyedUnit.ToString())//合体時は生成のタイミングではタグの変更を行えないのでこれを使う
         { distanseFromCore = CaluculateHowFarFromCore(this.transform.localPosition); }
         uiRectTransform = GameObject.Find("UICanvas").GetComponent<RectTransform>();
-        if(this is JointUnit && tag == GSetting.ObjTagName.DestroyedUnit.ToString())GSetting.RefineDebugAssertinLog(transform,"aaaaa"+transform.localPosition.ToString()+"\n");
     }
     protected virtual void Start(){
         APC = thisGameObject.transform.parent.GetComponent<AbstractPartsController>();
@@ -219,6 +219,7 @@ public class UnitBase : MonoBehaviour
         return null;
     }
     private GameObject GetDownerGameObject(string SelectedObjTag){
+        if (this is JointUnit) { Debug.LogAssertion(transform.root.gameObject.name+this.gameObject.transform.root.rotation.eulerAngles.z + " " + transform.parent.gameObject.name+ this.gameObject.transform.parent.localRotation.z + " " + gameObject.name + this.gameObject.transform.localRotation.eulerAngles.z + " " + offsetRotation+ "\n" + (this.gameObject.transform.root.rotation.eulerAngles.z + this.gameObject.transform.parent.localRotation.eulerAngles.z + this.gameObject.transform.localRotation.eulerAngles.z + offsetRotation)); }
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
             GameObject LeftObj = hit2D.collider.gameObject;
             if (LeftObj.tag == SelectedObjTag) { return LeftObj; }
@@ -246,19 +247,22 @@ public class UnitBase : MonoBehaviour
     /// <returns>座標を計算して照射したRayが当たったかどうかRaycastHit2Dで判定し、当たったなら情報を返している</returns>
     private RaycastHit2D[] RayCalculateAndCast(Vector3 RayOffsetDirection){
         Vector3 RayPosition = new Vector3(0,0,0);
-        switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){//このオブジェクトのタグをenumでswitch文の分岐判別している
-        //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
+        Quaternion LinkRotation = Quaternion.Euler(0, 0, this.gameObject.transform.root.rotation.eulerAngles.z + this.gameObject.transform.parent.localRotation.eulerAngles.z + this.gameObject.transform.localRotation.eulerAngles.z + offsetRotation);
+        switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+        {//このオブジェクトのタグをenumでswitch文の分岐判別している
+         //原点中心でオイラー角*ベクトルによる極座標を（直交座標系に変換して）Rayの本来の始点へ足し合わせて移動させている。この順番じゃないとちゃんと計算できないので注意
             case GSetting.ObjTagName.PlayerUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = LinkRotation * RayOffsetDirection + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.EnemyUnit://このオブジェクトの周辺のユニットを調べるためにRayを飛ばすので、このオブジェクトの座標と回転を考慮してオブジェクトから見た上下左右方向にRayを飛ばす
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = LinkRotation * RayOffsetDirection + this.gameObject.transform.position;
                 break;
             case GSetting.ObjTagName.DestroyedUnit://鹵獲して接続する際に離れ小島になっていないかIsNotIsolatedUnit()で判別するときに使用される。値が違うだけで計算内容は上と一緒
-                RayPosition = (Quaternion.Euler(0,0,this.gameObject.transform.root.eulerAngles.z+this.gameObject.transform.localRotation.eulerAngles.z +offsetRotation) * RayOffsetDirection) + this.gameObject.transform.position;
+                RayPosition = LinkRotation * RayOffsetDirection + this.gameObject.transform.position;
                 break;
         }
-        return Physics2D.RaycastAll(RayPosition,new Vector3(0,0,1));
+        //if(this is JointUnit){Debug.LogAssertion(transform.root.gameObject.name+" " + transform.parent.gameObject.name+" " + gameObject.name+ "\n" + LinkRotation.eulerAngles);}
+        return Physics2D.RaycastAll(RayPosition, new Vector3(0, 0, 1));
     }
     // Update is called once per frame
     protected virtual void Update()

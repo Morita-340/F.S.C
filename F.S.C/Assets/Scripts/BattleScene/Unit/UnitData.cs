@@ -37,10 +37,10 @@ public class UnitData
         return ReturnFourWayLink;
     }
     public void ReRegistFourWayLink(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){
-        if(upperUnit != null)UpperUnit = upperUnit.GetThisUnitData();
-        if(downerUnit != null)DownerUnit = downerUnit.GetThisUnitData();
-        if(rightUnit != null)RightUnit = rightUnit.GetThisUnitData();
-        if(leftUnit != null)LeftUnit = leftUnit.GetThisUnitData();
+        UpperUnit   = upperUnit?.   GetThisUnitData();
+        DownerUnit  = downerUnit?.  GetThisUnitData();
+        RightUnit   = rightUnit?.   GetThisUnitData();
+        LeftUnit    = leftUnit?.    GetThisUnitData();
     }
     /// <summary>
     /// 自身と紐づけられたUnitのHitPointが0になった場合に呼び出され周囲から自分へのLinkを削除する処理

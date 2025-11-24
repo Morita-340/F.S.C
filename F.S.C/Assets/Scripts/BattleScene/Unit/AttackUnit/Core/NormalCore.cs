@@ -8,7 +8,6 @@ public class NormalCore : CoreBase
 {
     protected override void Start()
     {
-        Debug.Log("AAAAA"+gameObject.name);
         base.Start();
     }
     protected override void GetAdjacentObjLink(string SelectedObjTag)

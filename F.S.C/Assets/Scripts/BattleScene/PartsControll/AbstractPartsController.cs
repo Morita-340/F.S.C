@@ -34,8 +34,8 @@ public class AbstractPartsController : MonoBehaviour
     protected GSetting.PartsDamageStatus DamageStatus = GSetting.PartsDamageStatus.NotSet;
     [SerializeField, ReadOnly]
     protected RefineAbstractUnitDestroyManagementScript ReAUDMS;
-    protected DestroyedUnitManagementScript DUMS;
-    protected GSetting.ObjTagName childObjTagName;
+    [SerializeField,ReadOnly]protected RefineDestroyedUnitManagementScript ReDUMS;
+    [SerializeField,ReadOnly]protected GSetting.ObjTagName childObjTagName;
     protected bool caluculateFlag = false;
     /// <summary>
     /// Previewとして表示させる際に使う。Previewの見た目をなるべく本物に寄せたいので、見た目（どの向きなのか確認）と配置（Playerと被っていないか）だけを流用する
@@ -50,21 +50,20 @@ public class AbstractPartsController : MonoBehaviour
     /// <summary>
     /// 受動ジョイントユニット側の
     /// </summary>
-    protected List<JointUnit> PassiveJointLink = new List<JointUnit>();
-    protected List<JointUnit> ActiveJointLink = new List<JointUnit>();
+    protected List<PassiveJointUnit> PassiveJointLink = new List<PassiveJointUnit>();
+    /// <summary>
+    /// ActiveJointは如何なるパーツに対しても一つのみ（合体対象の合体向きの候補が増えてしまって合体までの操作数が増えてしまうのは、操作テンポを悪くしかねないため）
+    /// </summary>
+    protected ActiveJointUnit ActiveJointLink;
+    private void NotifyThisIsPreviewPart()
+    {
+        if(previewFlag){ Debug.LogAssertion("previewなのにこのメソッドを呼び出すな"); }
+    }
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        ReAUDMS = gameObject.transform.parent.GetComponent<RefineAbstractUnitDestroyManagementScript>();
-        DUMS = gameObject.transform.parent.GetComponent<DestroyedUnitManagementScript>();
-        if (ReAUDMS != null)
-        {
-            childObjTagName = ReAUDMS.GetChildObjTagName();
-        }
-        if (DUMS != null)
-        {
-            childObjTagName = GSetting.ObjTagName.DestroyedUnit;
-        }
+        if (previewFlag) return;
+        SetPartSetting();
         SetUnitData();
         AnalysisDamageStatus();
     }
@@ -77,13 +76,48 @@ public class AbstractPartsController : MonoBehaviour
         SetUnitData();
         AnalysisDamageStatus();
     }
+    public void CaptureProcess()
+    {
+        SetPartSetting();
+        for (int i = 0; i < gameObject.transform.childCount; i++)
+        {
+            gameObject.transform.GetChild(i).gameObject.GetComponent<UnitBase>().UnitSetting(tag, gameObject.layer);
+        }
+        SetUnitData();
+    }
+    private void SetPartSetting()
+    {
+        ReAUDMS = gameObject.transform.parent.GetComponent<RefineAbstractUnitDestroyManagementScript>();
+        ReDUMS = gameObject.transform.parent.GetComponent<RefineDestroyedUnitManagementScript>();
+        if (ReAUDMS != null)
+        {
+            childObjTagName = ReAUDMS.GetChildObjTagName();
+            tag = childObjTagName.ToString();
+            if (ReAUDMS is RefineEnemyUnitDestroyManagementScript)
+            {
+                gameObject.layer = (int)GSetting.UniqueLayerName.EnemyUnit;
+            }
+            if (ReAUDMS is RefinePlayerUnitDestroyManagementScript)
+            {
+                Debug.LogAssertion(childObjTagName + transform.parent.name);
+                gameObject.layer = (int)GSetting.UniqueLayerName.PlayerUnit;
+            }
+        }
+        if (ReDUMS != null)
+        {
+            childObjTagName = GSetting.ObjTagName.DestroyedUnit;
+            Debug.LogAssertion(childObjTagName);
+            tag = childObjTagName.ToString();
+            gameObject.layer = (int)GSetting.UniqueLayerName.DestroyedUnit;
+        }
+    }
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
     /// </summary>
     protected virtual void SetUnitData()
     {
         ChildUnitDataList.Clear();
-        //Debug.Log("HHH"+gameObject.transform.childCount);
+        GSetting.RefineDebugAssertinLog(transform,gameObject.transform.childCount.ToString());
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject childUnitObject = gameObject.transform.GetChild(i).gameObject;
@@ -92,6 +126,7 @@ public class AbstractPartsController : MonoBehaviour
             if (childUnitObject.tag == childObjTagName.ToString())
             {
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
+                ChildUnit.ReRegistData();
             }
         }
         caluculateFlag = true;
@@ -103,6 +138,8 @@ public class AbstractPartsController : MonoBehaviour
     /// <returns></returns>
     public GameObject SetPreview()
     {
+        //Previewなので諸々の処理を止める
+        previewFlag = true;
         //各UnitをPreview設定とする
         foreach (UnitData child in ChildUnitDataList)
         {
@@ -116,13 +153,12 @@ public class AbstractPartsController : MonoBehaviour
                 //SpriteRendererを取得して被っているなら薄赤に
                 child.ReturnThisUnit().GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 0.3f);
             }
+            //tagを変更（合体演出用）
+            child.ReturnThisUnit().gameObject.tag = GSetting.ObjTagName.SimulateUnit.ToString();
+            //Colliderをistriggerに（衝突判定は無効にしたいが、Rayに当たってほしい）
+            child.ReturnThisUnit().gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
         }
-        //Previewなので諸々の処理を止める
-        previewFlag = true;
-        //攻撃しない（ReDUMSからは攻撃命令を出さない）
-        //被弾しない（タグがDestroyedUnitならUnit側ですり抜けるよう処理する）
-        //コライダーそのものをOFFにする
-        ChildrenSColliderEnabled(false);
+        tag = GSetting.ObjTagName.SimulateUnit.ToString();
         return gameObject;
     }
     /// <summary>
@@ -145,23 +181,30 @@ public class AbstractPartsController : MonoBehaviour
     /// </summary>
     /// <param name="flag"></param>
     public void ChildrenSpriteTranslucent(bool flag){
-        if(ChildUnitDataList.Count != 0){
-        foreach(UnitData unitData in ChildUnitDataList){
-            GameObject childObj = unitData.ReturnThisUnit().gameObject;
-            SpriteRenderer spriteRenderer = childObj?.gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.color = Color.green;
-            if(flag){
-                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 50/255f);
-                if(childObj.GetComponent<WeaponUnitBase>()){
-                    SpriteRenderer WeaponEfficiencyUISR = childObj.GetComponent<SpriteRenderer>();
-                    WeaponEfficiencyUISR.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 50/255f);
+        NotifyThisIsPreviewPart();
+        if (ChildUnitDataList.Count != 0)
+        {
+            foreach (UnitData unitData in ChildUnitDataList)
+            {
+                GameObject childObj = unitData.ReturnThisUnit().gameObject;
+                SpriteRenderer spriteRenderer = childObj?.gameObject.GetComponent<SpriteRenderer>();
+                spriteRenderer.color = Color.green;
+                if (flag)
+                {//半透明
+                    spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 50 / 255f);
+                    if (childObj.GetComponent<WeaponUnitBase>())
+                    {
+                        SpriteRenderer WeaponEfficiencyUISR = childObj.GetComponent<SpriteRenderer>();
+                        WeaponEfficiencyUISR.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 50 / 255f);
                     }
                 }
-            else{
-                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
-                if(childObj.GetComponent<WeaponUnitBase>()){
-                    SpriteRenderer WeaponEfficiencyUISR = childObj.GetComponent<SpriteRenderer>();
-                    WeaponEfficiencyUISR.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
+                else
+                {//透けない
+                    spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
+                    if (childObj.GetComponent<WeaponUnitBase>())
+                    {
+                        SpriteRenderer WeaponEfficiencyUISR = childObj.GetComponent<SpriteRenderer>();
+                        WeaponEfficiencyUISR.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1f);
                     }
                 }
             }
@@ -210,11 +253,11 @@ public class AbstractPartsController : MonoBehaviour
                     //Debug.LogAssertion("FFF"+childUnit);
                     if (childUnit is PassiveJointUnit)
                     {
-                        PassiveJointLink.Add(childUnit as JointUnit);
+                        PassiveJointLink.Add(childUnit as PassiveJointUnit);
                     }
                     if (childUnit is ActiveJointUnit)
                     {
-                        ActiveJointLink.Add(childUnit as JointUnit);
+                        ActiveJointLink = childUnit as ActiveJointUnit;
                     }
                 }
             }
@@ -231,11 +274,11 @@ public class AbstractPartsController : MonoBehaviour
                     numOfJointUnit++;
                     if (childUnit is PassiveJointUnit)
                     {
-                        PassiveJointLink.Add(childUnit as JointUnit);
+                        PassiveJointLink.Add(childUnit as PassiveJointUnit);
                     }
                     if (childUnit is ActiveJointUnit)
                     {
-                        ActiveJointLink.Add(childUnit as JointUnit);
+                        ActiveJointLink = childUnit as ActiveJointUnit;
                     }
                 }
             }
@@ -274,10 +317,12 @@ public class AbstractPartsController : MonoBehaviour
     }
     public void SetSearchFlag(bool flag)
     {
+        NotifyThisIsPreviewPart();
         searchFlag = flag;
     }
     public bool GetSearchFlag()
     {
+        NotifyThisIsPreviewPart();
         return searchFlag;
     }
     /// <summary>
@@ -300,15 +345,30 @@ public class AbstractPartsController : MonoBehaviour
     }
     public GSetting.PartsDamageStatus GetPartsDamageStatus()
     {
+        NotifyThisIsPreviewPart();
         return DamageStatus;
     }
-    public List<JointUnit> GetPassiveJointLinkList()
+    public List<PassiveJointUnit> GetPassiveJointLinkList()
     {
+        NotifyThisIsPreviewPart();
         return PassiveJointLink;
     }
-    public List<JointUnit> GetActiveJointLinkList()
+    public ActiveJointUnit GetActiveJointLink()
     {
         return ActiveJointLink;
+    }
+    public void SetA_JointLineGuide()
+    {
+        
+    }
+    public void ReloadJointUnitLink()
+    {
+        NotifyThisIsPreviewPart();
+        foreach (JointUnit p_jointUnit in PassiveJointLink)
+        {
+            p_jointUnit.ReloadLink();
+        }
+        ActiveJointLink.ReloadLink();
     }
     /*以下分離処理**************************************/
     /// <summary>
@@ -318,6 +378,7 @@ public class AbstractPartsController : MonoBehaviour
     /// <param name="inputIsDead"></param>
     public virtual void DestroyProcess(UnitData DeleteData, bool inputIsDead)
     {
+        NotifyThisIsPreviewPart();
         //Debug.Log("GGG" +childObjTagName.ToString());
         ChildUnitDataList.Remove(DeleteData);
         ReAUDMS.DestroyProcess(DeleteData, inputIsDead);
@@ -328,6 +389,7 @@ public class AbstractPartsController : MonoBehaviour
     /// <param name="unitData"></param>
     public void DeleteChildUnitData(UnitData unitData)
     {
+        NotifyThisIsPreviewPart();
         GameObject deleteObj = unitData.ReturnThisUnit().gameObject;
         for (int i = 0; i < transform.childCount; i++)
         {
@@ -343,10 +405,12 @@ public class AbstractPartsController : MonoBehaviour
     }
     public List<UnitData> GetNotResearchUnitList()
     {
+        NotifyThisIsPreviewPart();
         return NotResearchUnitList;
     }
     public List<UnitData> GetRegeneUnitList()
     {
+        NotifyThisIsPreviewPart();
         return RegeneUnitList;
     }
     /// <summary>
@@ -359,6 +423,7 @@ public class AbstractPartsController : MonoBehaviour
     /// <returns></returns>
     public bool AllUnitSearched(bool flag, int listNo)
     {
+        NotifyThisIsPreviewPart();
         List<UnitData> DataList = new List<UnitData>();
         switch (listNo)
         {
@@ -375,6 +440,7 @@ public class AbstractPartsController : MonoBehaviour
     }
     public void SetRegeneUnitList()
     {
+        NotifyThisIsPreviewPart();
         RegeneUnitList.Clear();
         foreach (UnitData unitData in NotResearchUnitList)
         {
@@ -389,6 +455,7 @@ public class AbstractPartsController : MonoBehaviour
     }
     public void SetNotResearchUnitList()
     {
+        NotifyThisIsPreviewPart();
         NotResearchUnitList.Clear();
         foreach (UnitData unitData in ChildUnitDataList)
         {
@@ -400,6 +467,7 @@ public class AbstractPartsController : MonoBehaviour
     }
     public virtual int CaluculateCombatPower()
     {
+        NotifyThisIsPreviewPart();
         int combatPower = 0;
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
@@ -427,6 +495,7 @@ public class AbstractPartsController : MonoBehaviour
     }
     public virtual void DeleteAllRangeMesh()
     {
+        NotifyThisIsPreviewPart();
         foreach (UnitData childUnitData in ChildUnitDataList)
         {
             if (childUnitData == null)
@@ -453,6 +522,7 @@ public class AbstractPartsController : MonoBehaviour
     [SerializeField, ReadOnly] protected Vector3 TargetPosition;
     public void SetTargetPosition(Vector3 inputTargetPosion)
     {
+        NotifyThisIsPreviewPart();
         TargetPosition = inputTargetPosion;
         foreach (UnitData child in ChildUnitDataList)
         {
@@ -464,7 +534,8 @@ public class AbstractPartsController : MonoBehaviour
         }
     }
     public virtual void NormalAttack(Vector3 inputTargetPosion){
-        if(childObjTagName == GSetting.ObjTagName.DestroyedUnit){ GSetting.RefineDebugAssertinLog(transform,"DestroyedUnitは攻撃しない"); return;}
+        NotifyThisIsPreviewPart();
+        if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない"); return; }
         foreach (UnitData child in ChildUnitDataList)
         {
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);

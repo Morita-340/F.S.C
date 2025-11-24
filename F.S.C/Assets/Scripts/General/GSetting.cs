@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace FSCGeneral{
+    public struct CaptureObjInfo
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+        public AbstractPartsController CaptureParts;
+    }
     public class GSetting : MonoBehaviour
     {
         public enum ShapeType

@@ -7,6 +7,10 @@ using UnityEngine;
 /// </summary>
 public class JointUnit : UnitBase
 {
+    public float GetOffsetRotation()
+    {
+        return offsetRotation;
+    }
     protected override void GetAdjacentObjLink(string SelectedObjTag)
     {
         base.GetAdjacentObjLink(SelectedObjTag);
@@ -17,6 +21,13 @@ public class JointUnit : UnitBase
         {
             GSetting.RefineDebugAssertinLog(ThisUnitData.ReturnFourWayLink()[1].ReturnThisUnit().transform, "ジョイント箇所なのに同じパーツと合体している");
         }
+    }
+    /// <summary>
+    /// 大破ユニットを消去した後にリンクを取り直して更新する
+    /// </summary>
+    public void ReloadLink()
+    {
+        GetAdjacentObjLink(tag);
     }
     public bool isJointLinkEmpty()
     {
@@ -36,13 +47,12 @@ public class JointUnit : UnitBase
     /// <returns></returns>
     public Vector3 GetEmptyLinkPosition()
     {
-        return transform.position + Quaternion.Euler(0, 0, offsetRotation) * Vector3.down;
+        return transform.position + (Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 0, offsetRotation)) * Vector3.down);
     }
     public AbstractPartsController GetJointedAnotherPart()
     {
         AbstractPartsController jointAnotherParts = ThisUnitData.ReturnFourWayLink()[1]?.ReturnThisUnit().GetAPC();
         List<UnitData> a = ThisUnitData.ReturnFourWayLink();
-        GSetting.RefineDebugAssertinLog(transform,a[0]?.ReturnThisUnit().gameObject+" "+(a[1] != null?a[1].ReturnThisUnit().gameObject:"リンク無し")+" "+a[2]?.ReturnThisUnit().gameObject+" "+a[3]?.ReturnThisUnit().gameObject+"\n");
         return jointAnotherParts;
     }
 }

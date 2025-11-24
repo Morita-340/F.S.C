@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FSCGeneral;
+using Unity.VisualScripting;
 
 public class RefineMouseInput : MonoBehaviour
 {
@@ -28,6 +29,10 @@ public class RefineMouseInput : MonoBehaviour
     private float chargeAttackTimer = 0;
     private float normalAttackTimer = 0;
     private bool isRegistered = false;
+    [SerializeField] GameObject ReDUMSObj;
+    private RefineDestroyedUnitManagementScript ReDUMS;
+    private float WheelInputWhenSelected = 0;
+    private bool isSelected = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,19 +59,25 @@ public class RefineMouseInput : MonoBehaviour
     {
         //マウスホイールの入力を取得
         WheelInput += Input.GetAxis("Mouse ScrollWheel");
+        //合体位置選択後は合体位置をロック
+        if (!isSelected)
+        {
+            WheelInputWhenSelected = WheelInput;
+        }
+        RePC.SetPreviewInfo(RePUDMS,WheelInputWhenSelected,ReDUMS);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         if (!RePUDMS.GetIsDead())//プレイヤーが死んでいないならば
         {
             //攻撃目標座標を更新し続ける
             RePUAMS?.SetTargetPosition(target);
             //カーソルを動かす諸々の処理を繰り返す
-            CursorControll(WheelInput);
+            CursorControll();
         }
     }
     /// <summary>
     /// カーソルを動かすことで入力をする処理まとめ
     /// </summary>
-    private void CursorControll(float wheelInput)
+    private void CursorControll()
     {
         //ChargeIcon.ChangeCircleRange(chargeAttackTimer + firstAttackInterval,RePUAMS,target);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -77,7 +88,7 @@ public class RefineMouseInput : MonoBehaviour
         //右クリックで鹵獲処理開始
         if (Input.GetMouseButtonDown(1))
         {
-            PartsCapture(Hit2DList.Item2, wheelInput);
+            PartsCapture(Hit2DList.Item2);
         }
     }
     private void NormalAttack()
@@ -173,7 +184,7 @@ public class RefineMouseInput : MonoBehaviour
     /// かざすと選択可能→右クリックで一つだけキャプチャ→マウスホイールで場所を選んで右クリックで場所決定
     /// 以上の右クリックによる決定は、キャプチャ操作と場所決定だけホイールクリックでキャンセル可能
     /// </summary>
-    private void PartsCapture(RaycastHit2D DestroyedHit2D, float wheelInput)
+    private void PartsCapture(RaycastHit2D DestroyedHit2D)
     {
         //鹵獲対象が無いなら処理終わり（バグ対策）
         if (!DestroyedHit2D)
@@ -181,13 +192,13 @@ public class RefineMouseInput : MonoBehaviour
             return;
         }
         //鹵獲するパーツだけを取り出して、不要なパーツ周りの処理も済ませる
-        DecideTargetParts(DestroyedHit2D,wheelInput);
+        StartCoroutine(DecideTargetParts(DestroyedHit2D));
     }
     /// <summary>
     /// どのユニットを鹵獲するか決める
     /// 決めたら、プレビュー表示メソッドに決めたユニットが何なのか渡す
     /// </summary>
-    private void DecideTargetParts(RaycastHit2D DestroyedHit2D, float wheelInput)
+    private IEnumerator DecideTargetParts(RaycastHit2D DestroyedHit2D)
     {
         //パーツを解析して接続状況を取得
         GameObject hitObj = DestroyedHit2D.collider.gameObject;
@@ -202,7 +213,7 @@ public class RefineMouseInput : MonoBehaviour
                 {
                     GainEXP(ReDUMS);
                     //合体処理が不要なのでここで処理終わり
-                    return;
+                    yield break;
                 }
             //小破以下のまとまりが複数
             case GSetting.PartsConnectSituation.MultipleScrachPartsGroup:
@@ -210,10 +221,18 @@ public class RefineMouseInput : MonoBehaviour
                     GainEXP(ReDUMS);
                     //残ったまとまりのうち、クリック時にカーソルがかざしていたまとまりを鹵獲対象とする
                     CapturePartsGroup = ReDUMS.GetSelectPartsGroup(APC);
-                    if(CapturePartsGroup == null){return;}
+                    GSetting.RefineDebugAssertinLog(APC.transform,"aaa\n");
+                    Debug.LogAssertion(CapturePartsGroup.Count);
+
+                    foreach (AbstractPartsController apc in CapturePartsGroup) {
+                        Debug.LogAssertion(apc.gameObject.name);
+                    }
+
+                    if (CapturePartsGroup == null) { yield break; }
                     //かざした方を分裂させる
                     //これにより、ReDUMS配下にあるパーツの塊は一つになった
-                    ReDUMS.PartsExtract(CapturePartsGroup);
+                    //さらに再生成処理を行うため、CapturePartsGroupを更新
+                    yield return StartCoroutine(ReDUMS.PartsExtract(CapturePartsGroup, ReDUMSObj, x => CapturePartsGroup = x, y => ReDUMS = y));
                     break;
                 }
             //小破以下のまとまりが一つだけ
@@ -222,7 +241,7 @@ public class RefineMouseInput : MonoBehaviour
                     GainEXP(ReDUMS);
                     //残ったパーツのまとまりが鹵獲対象
                     CapturePartsGroup = ReDUMS.GetSelectPartsGroup(APC);
-                    if(CapturePartsGroup == null){return;}
+                    if(CapturePartsGroup == null){yield break;}
                     break;
                 }
             //それ以外
@@ -230,29 +249,25 @@ public class RefineMouseInput : MonoBehaviour
                 {
                     GSetting.RefineDebugAssertinLog(DestroyedHit2D.transform, "接続状況が設定されていない！" + ReDUMS.GetPartsConnectSituation().ToString());
                     //接続状況が設定されていないためこれ以上処理を進められない。鹵獲はしない
-                    return;
+                    yield break;
                 }
         }
         //合体対象を一時的に避難（有効のままスプライトと当たり判定をOFFにして画面から離す）
+        Debug.LogAssertion("AAA"+CapturePartsGroup[0].transform.root.position);
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(1));
         //どこにパーツを置くか決める
-        //StartCoroutine(DecideWhereToPutParts(CapturePartsGroup,ReDUMS,wheelInput));
+        StartCoroutine(DecideWhereToPutParts(CapturePartsGroup,ReDUMS));
     }
     /// <summary>
     /// ユニットを置く位置を決める
     /// </summary>
-    private IEnumerator DecideWhereToPutParts(List<AbstractPartsController>CapturePartsGroup,RefineDestroyedUnitManagementScript ReDUMS, float wheelInput)
+    private IEnumerator DecideWhereToPutParts(List<AbstractPartsController>CapturePartsGroup,RefineDestroyedUnitManagementScript ReDUMS)
     {
-        //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
-        List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
-        //プレビューを表示するために選択中の座標や回転角を渡しておく
-        //マウスホイールで選べるようにする
-        Vector3 selectedPos = passiveJointList[(int)wheelInput % passiveJointList.Count];
-        //合体させるactiveJointUnitがあるパーツの座標を取得
-        AbstractPartsController CenterAPC = ReDUMS.GetEmptyJoint();
-        RePC.SetPreviewInfo(CapturePartsGroup,CenterAPC,selectedPos,RePUDMS.transform.rotation.eulerAngles);
+        //グローバル変数の方に代入
+        this.ReDUMS = ReDUMS; 
         //右クリックまたはホイールクリックをするまで先に進まない
         yield return new WaitUntil(() => Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2));
+        Debug.LogAssertion("AAA");
         //右クリックなら処理を進める
         if (Input.GetMouseButtonDown(1))
         {
@@ -260,32 +275,69 @@ public class RefineMouseInput : MonoBehaviour
             if (RePC.CapturePartsCoveredPlayer())//被る
             {
                 //エラー音を鳴らす
+                Debug.LogAssertion("BBB");
                 //もう一度
-                StartCoroutine(DecideWhereToPutParts(CapturePartsGroup, ReDUMS, wheelInput));
+                StartCoroutine(DecideWhereToPutParts(CapturePartsGroup, ReDUMS));
                 yield break;
             }
             else//被らない
             {
+                isSelected = true;
+                /*
+                //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
+                List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
+                //プレビューを表示するために選択中の座標や回転角を渡しておく
+                //マウスホイールで選べるようにする
+                int selectedNum = Mathf.Abs((int)WheelInput % passiveJointList.Count);
+                Vector3 selectedPos = passiveJointList[selectedNum];
+                Vector3 P_JointPos = selectedPos;
+                StartCoroutine(ReDUMS.ColliderAndSpriteProcess(0));
+                ///鹵獲パーツを機体近くに持ってきて合体演出をする
+                //配置位置決め（P_JointUnitとCoreのベクトル＋P_JointUnitのOffsetRotation方向のベクトル）
+                ReDUMS.transform.position = P_JointPos + Quaternion.Euler(new Vector3(0,0,RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]) + RePUDMS.transform.rotation.eulerAngles) *Vector3.down * 7;
+                ReDUMS.transform.rotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, ReDUMS.GetEmptyJoint().GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]));
+                yield return new WaitForSeconds(0.5f);
+                //インパルスガンダムのシルエット合体時に出ているようなガイド線をLineRendererで表現
+                ///LineRendererを追加
+                //ReDUMS.SetLineAtoPJoint();
+                    ///float DistanceFromPreview = 100;を定義
+                //鹵獲パーツを動かしてあたかもそのまま合体しているように見せる
+                Vector3 ReDUMSpos = new Vector3((P_JointPos - ReDUMS.transform.position).x,(P_JointPos - ReDUMS.transform.position).y,0);
+                Debug.LogAssertion(ReDUMSpos);
+                ///whileの条件をDistanceFromPreviewの値に書き換え
+                while ((ReDUMS.transform.position - selectedPos).sqrMagnitude > 4)
+                {
+                    ReDUMS.GetComponent<Rigidbody2D>().velocity = new Vector3(
+                        ReDUMSpos.x,
+                        ReDUMSpos.y,
+                        0);
+                    ///RayCastでA_JointからP_Jointへ照射、tagがSimulateUnitのオブジェクトに当たったら、交差点への距離をDistanceFromPreviewに代入
+                    ///LineRendererをA_JointからP_Jointへ照射
+                    yield return new WaitForSeconds(0.01f);
+                }
+                ReDUMS.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+                */
+                List<CaptureObjInfo> CaptureObjInfoList = RePC.GetCaptureObjInfos();
+                StartCoroutine(ReDUMS.ColliderAndSpriteProcess(0));
                 //座標決定、合体処理
                 //合体させるactivejointUnitがあるパーツの座標を取得
-                foreach (AbstractPartsController part in ReDUMS.GetChildPartsList())
+                foreach (CaptureObjInfo part in CaptureObjInfoList)
                 {
-                    //塊を構成する各パーツの相対座標を取得
-                    Vector3 position = part.transform.position - selectedPos;
-                    //activeJointのパーツの座標を上記指定座標に設定、残りのパーツに相対座標を加算して配置
-                    part.transform.position = position + selectedPos;
-                    part.transform.rotation = RePUDMS.transform.rotation;
-                    part.transform.parent = RePUDMS.gameObject.transform;
-                    //多分タグ周りの処理が必要
-                    part.tag = GSetting.ObjTagName.PlayerUnit.ToString();
+                    Debug.LogAssertion("WWW" + part.CaptureParts.gameObject.name + part.position + part.rotation.eulerAngles + RePUDMS.transform);
+                    Instantiate(part.CaptureParts.gameObject, part.position, part.rotation, RePUDMS.transform).GetComponent<AbstractPartsController>().CaptureProcess();
                 }
-
+                RePUDMS.SetUnitData();
+                RePC.DeletePreviewInfo();
+                Destroy(ReDUMS.gameObject);
+                isSelected = false;
+                Debug.LogAssertion("CCC");
             }
 
         }//ホイールクリックならパーツをリリースして選びなおせるようにする
         else if (Input.GetMouseButtonDown(2))
         {
             //パーツをリリース
+            Debug.LogAssertion("DDD");
             PartsRelease(ReDUMS);
         }
     }
@@ -294,10 +346,29 @@ public class RefineMouseInput : MonoBehaviour
     /// </summary>
     private void GainEXP(RefineDestroyedUnitManagementScript ReDUMS)
     {
+        List<AbstractPartsController> HeavilyDamagedPartsList = new List<AbstractPartsController>();
         //大破パーツを全て取得
-        //強化ポイントを計上して大破パーツを消す
+        foreach (AbstractPartsController childPart in ReDUMS.GetChildPartsList())
+        {
+            if (childPart.GetPartsDamageStatus() == GSetting.PartsDamageStatus.HeavilyDamage)
+            {
+                Debug.LogAssertion(childPart);
+                HeavilyDamagedPartsList.Add(childPart);
+            }
+        }
+        //強化ポイントを計上
+        foreach (AbstractPartsController HeavilyDamagedPart in HeavilyDamagedPartsList){}
+        //大破パーツを消す
+        ReDUMS.DeleteHeavilyDamagedParts();
+        HeavilyDamagedPartsList.Clear();
         //子にパーツが無くなった場合はReDUMSを消す
+        if (ReDUMS.GetChildPartsList().Count == 0)
+        {
+            Destroy(ReDUMS.gameObject);
+            return;
+        }
         //ジョイントパーツのリンクを取り直し
+        ReDUMS.ReloadJointLink();
         //機体の経験値に加算
     }
     /// <summary>
@@ -307,6 +378,8 @@ public class RefineMouseInput : MonoBehaviour
     private void PartsRelease(RefineDestroyedUnitManagementScript ReDUMS)
     {
         ReDUMS.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
+        RePC.DeletePreviewInfo();
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(2));
+        this.ReDUMS = null;
     }
 }

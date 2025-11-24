@@ -43,15 +43,11 @@ public class UnitLinkDebugger : MonoBehaviour
                     //UnitData SameData = (UnitData)FM.UnitList.Where(unitdata => unitdata.ReturnThisUnit() == HitObj);
                     if(HitObj == null){Debug.Log("LLH"); return; }
                     UnitData SameData = FM.SearchUnit(HitObj);
-                    Debug.Log("LLJ"+SameData.ReturnThisUnit() + HitObj);
-                    Debug.Log("LLG"+(GSetting.ShapeType)SameData.ShapeTypeNum);
                     if(SameData.ReturnThisUnit()==null){Debug.LogWarning("UnitData's ThisData is null");}
                     if(pastObject != currentObject){DestroyIcon();}
                     List<UnitData> FourWayLink = SameData.ReturnFourWayLink();
-                        Debug.Log("LLK"+FourWayLink.Count);
                     for(int i=0; i < FourWayLink.Count; i++){
                         if(FourWayLink[i] != null){
-                            Debug.Log("LLM"+FourWayLink[i].ReturnThisUnit());
                             switch(i){
                                 case 0: UpperIcon.SetActive(true); UpperIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
                                 case 1: DownerIcon.SetActive(true); DownerIcon.transform.position = FourWayLink[i].ReturnThisUnit().gameObject.transform.position;break;
