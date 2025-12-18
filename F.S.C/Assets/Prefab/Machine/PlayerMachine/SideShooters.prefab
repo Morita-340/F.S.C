@@ -163,16 +163,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerUnit: {fileID: 7510453055307186252}
   rb2d: {fileID: 66932086760369489}
-  turn_factor: 5
+  turn_factor: 3
   maximum_turn_factor: 180
-  arcadeAcceMoveMode: 1
   drive_speed: 0
   drive_minimum_speed_factor: 11.4
-  drive_maximum_speed_factor: 11.4
+  drive_maximum_speed_factor: 10
   Setting: 0
   Scer: {fileID: 1472687324389368709}
   AEC: {fileID: 0}
   isAuto: 0
+  isBoost: 0
 --- !u!114 &9187799033630585806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,6 +207,7 @@ MonoBehaviour:
   AUDMS: {fileID: 9187799033630585806}
   normalAttackInterval: 1
   chargeAttackInterval: 1
+  TargetPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &1083452396346681078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -225,6 +226,9 @@ MonoBehaviour:
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
 --- !u!114 &1472687324389368709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -243,6 +247,9 @@ MonoBehaviour:
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
 --- !u!114 &4277097315588503121
 MonoBehaviour:
   m_ObjectHideFlags: 0

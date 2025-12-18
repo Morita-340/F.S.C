@@ -7,8 +7,6 @@ using UnityEngine;
 public class WeaponUnitBase : AttackUnit
 {
     [SerializeField]protected GameObject DividableIcon;
-    [SerializeField]protected WeaponControllUnitBase WCUB;
-    [SerializeField]Vector3 ControllUnitPosition;
     private GameObject icon;
     public override GameObject UnitSetting(string tagName, int layerNum)
     {
@@ -16,29 +14,22 @@ public class WeaponUnitBase : AttackUnit
     }
     public override int GetUnitStatus()
     {
-        if(isPrime || WCUB != null){return base.GetUnitStatus();}
+        if(isPrime){return base.GetUnitStatus();}
         else{return InstHitPoint;}
     }
     public override int GetUnitAttackPower()
     {
-        if(isPrime || WCUB != null){return base.GetUnitAttackPower();}
+        if(isPrime){return base.GetUnitAttackPower();}
         else{return 0;}
     }
     protected override void Awake()
     {
         base.Awake();
-        if(WCUB != null){FR.InitialSetting();}
-        else{FR.DestroyRMM();}
+        FR.InitialSetting();
     }
     // Start is called before the first frame update
     protected override void Start()
     {
-        //
-        if(WCUB != null){
-            if(WCUB.tag == tag)ControllUnitPosition = Quaternion.Euler(-transform.rotation.eulerAngles)*(WCUB.transform.position - transform.position);
-            ControllUnitPosition.z = 15;
-        }
-        WCUB = GetThisControllUnit(ControllUnitPosition);
         //分離の度にiconが再生成されてしまうため、その前に以前生成したiconを消去しておく
         //毎回Instantiateするのは処理が重くなりそうだが、WeaponUnit全てに対して予めヒエラルキー上でiconを設定しSetActiveを管理するのは面倒くさすぎるのでこちらを採用した
         if(this.transform.childCount > 0){
@@ -62,39 +53,26 @@ public class WeaponUnitBase : AttackUnit
                 icon.SetActive(true);
             }else{icon.SetActive(false);}
         }
-        if(WCUB == null){ReactorLevelUISSpRenderer.enabled = false;}
         else{ReactorLevelUISSpRenderer.enabled=true;}
-
-        Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;
-        if(ControllUnitPosition != Vector3.zero)Debug.DrawLine(RayPosition, transform.position);
-    }
-    protected WeaponControllUnitBase GetThisControllUnit(Vector3 ControllUnitPosition){
-        Vector3 RayPosition = Quaternion.Euler(transform.rotation.eulerAngles)* ControllUnitPosition + transform.position;
-        foreach(RaycastHit2D raycastHit2D in Physics2D.RaycastAll(RayPosition,Vector3.back)){
-            if(raycastHit2D.collider.tag == this.tag){
-                if(raycastHit2D.collider.gameObject.GetComponent<WeaponControllUnitBase>()){
-                    return raycastHit2D.collider.GetComponent<WeaponControllUnitBase>();
-                }
-            }
-        }
-        return null;
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
-        if(isPrime||WCUB != null)yield return base.NormalAttack(TargetPosition);
+        if(isPrime)yield return base.NormalAttack(TargetPosition);
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {
-        if(isPrime||WCUB != null)base.ChargeAttack(TargetPosition);
+        if(isPrime)base.ChargeAttack(TargetPosition);
     }
-    public bool IsWCUBenabled(){
-        if(WCUB != null){
-            if(WCUB.tag == tag)ControllUnitPosition = Quaternion.Euler(-transform.rotation.eulerAngles)*(WCUB.transform.position - transform.position);//WCUB.transform.localPosition - transform.localPosition;
-            ControllUnitPosition.z = 15;
-        }
-        WCUB = GetThisControllUnit(ControllUnitPosition);
-        if(WCUB != null)return WCUB.tag == this.tag;
-        else return false;
+    public bool IsWCUBenabled()
+    {
+        //if(WCUB != null){
+        //    if(WCUB.tag == tag)ControllUnitPosition = Quaternion.Euler(-transform.rotation.eulerAngles)*(WCUB.transform.position - transform.position);//WCUB.transform.localPosition - transform.localPosition;
+        //    ControllUnitPosition.z = 15;
+        //}
+        //WCUB = GetThisControllUnit(ControllUnitPosition);
+        //if(WCUB != null)return WCUB.tag == this.tag;
+        //else return false;
+        return true;
     }
     protected override void DestroyUnit()
     {
@@ -102,6 +80,6 @@ public class WeaponUnitBase : AttackUnit
         base.DestroyUnit();
     }
     public override void DestroyFRMesh(){
-        if(WCUB != null){FR?.DestroyRMM();}
+        FR?.DestroyRMM();
     }
 }

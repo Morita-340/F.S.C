@@ -11,6 +11,10 @@ public class WeaponBase : MonoBehaviour
     /// 武器の攻撃力
     /// </summary>
     [SerializeField,Range(0,100)]protected int attackPower = 0;
+    [SerializeField, ReadOnly]
+    protected bool isHoming = false;
+    [SerializeField, ReadOnly]
+    GameObject targetObj;
     /// <summary>
     /// 攻撃倍率
     /// </summary>
@@ -54,6 +58,11 @@ public class WeaponBase : MonoBehaviour
         thisRb2D = GetComponent<Rigidbody2D>();
         SCer = GetComponent<SoundController>();
     }
+    public void SetHoming(GameObject inputTargetObj)
+    {
+        isHoming = true;
+        targetObj = inputTargetObj;
+    }
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -63,6 +72,19 @@ public class WeaponBase : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        
+        if (targetObj != null && isHoming)
+        {
+            //敵の移動と回転に合わせて位置を更新
+            //敵機体との相対ベクトルを取得
+            Vector3 ENmachine2MeVec = transform.position - targetObj.transform.root.position;
+            Vector3 myPos = targetObj.transform.root.position + targetObj.transform.root.rotation * ENmachine2MeVec;
+            //ターゲットまでの距離を詰める
+            Vector3 Target2MeVec = myPos - targetObj.transform.position;
+            transform.position = targetObj.transform.position + Target2MeVec * 0.8f;
+            //向きを変える
+            Transform myTransform = transform;
+            Vector2 direction = targetObj.transform.position - myTransform.position;
+            myTransform.up = direction;
+        }
     }
 }

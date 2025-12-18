@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SpawnSystem : MonoBehaviour
 {
-    PlayerUnitDestroyManagementScript PUDMS;
+    RefinePlayerUnitDestroyManagementScript RePUDMS;
     [SerializeField]
     WaveDataBase normalWDB;
     [SerializeField]
@@ -15,7 +15,7 @@ public class SpawnSystem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerCombatPower = PUDMS.GetCombatPower();
+        playerCombatPower = RePUDMS.GetCombatPower();
     }
 
     // Update is called once per frame
@@ -24,15 +24,15 @@ public class SpawnSystem : MonoBehaviour
         
     }
     /// <summary>
-    /// PUDMSのセット。スポーンシステムではStartにて戦闘力を取得するので、Awakeでこれを呼び出しておくこと
+    /// RePUDMSのセット。スポーンシステムではStartにて戦闘力を取得するので、Awakeでこれを呼び出しておくこと
     /// </summary>
-    /// <param name="newPUDMS"></param>
-    public void SetPUDMS(PlayerUnitDestroyManagementScript newPUDMS){
-        if (newPUDMS != null){this.PUDMS = newPUDMS;}
+    /// <param name="newRePUDMS"></param>
+    public void SetRePUDMS(RefinePlayerUnitDestroyManagementScript newRePUDMS){
+        if (newRePUDMS != null){this.RePUDMS = newRePUDMS;}
     }
     public GameObject[] Spawn(bool bossFlag){
         WaveData UseWave;
-        playerCombatPower = PUDMS.GetCombatPower();
+        playerCombatPower = RePUDMS.GetCombatPower();
         //ウェーブライブラリからウェーブを取得する。難易度調整のパラメータをどこから取るのかは要検討
         if(bossFlag){
             UseWave = bossWDB.GetAppropriateWaveData(playerCombatPower,1000,0);

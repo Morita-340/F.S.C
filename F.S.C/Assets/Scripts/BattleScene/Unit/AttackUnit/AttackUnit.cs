@@ -15,8 +15,14 @@ public class AttackUnit : UnitBase
     protected LineRenderer lineRenderer;
     [SerializeField,ReadOnly]protected Vector3 targetPosition =new Vector3(10,0,0);
     protected Vector3[] positions = new Vector3[]{};
-    public void SetTargetPosition(Vector3 inputTargetPosition){
+    [SerializeField]
+    protected bool isHoming = false;
+    protected RaycastHit2D enemyHit2D;
+    public bool SetTargetPosition(Vector3 inputTargetPosition, RaycastHit2D inputEnemyHit2D)
+    {
         targetPosition = inputTargetPosition;
+        enemyHit2D = inputEnemyHit2D;
+        return FR.InRockONRange(targetPosition)&&enemyHit2D&&isHoming == true;
     }
     /// <summary>
     /// AUAMS→AttackUnitの攻撃処理がすべての子オブジェクトに対して同時に行われているので、AttackUnit側で攻撃タイミングをずらすことで、弾幕を張ることができ、弾を当てやすくなる
@@ -58,11 +64,20 @@ public class AttackUnit : UnitBase
         SetWeaponPower();
         return base.GetUnitStatus()/*HPのこと*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
     }
+    public int GetHP()
+    {
+        return base.GetUnitStatus();
+    }
+    public int GetAttackPower()
+    {
+        return (normalAttackPower + chargeAttackPower) * (attackEfficiency + EXP);
+    }
     /// <summary>
     /// ウェーブの戦闘力を数値化するにあたってリアクターの効果が及ぶ範囲の強化具合を計算するために使用
     /// </summary>
     /// <returns></returns>
-    public virtual int GetUnitAttackPower(){
+    public virtual int GetUnitAttackPower()
+    {
         return normalAttackPower + chargeAttackPower;
     }
     // Update is called once per frame
@@ -77,6 +92,16 @@ public class AttackUnit : UnitBase
             positions = new Vector3[]{transform.position,targetPosition};
             lineRenderer.SetPositions(positions);
         }else{lineRenderer.enabled = false;}
+        if (FR.InRockONRange(targetPosition)&&enemyHit2D&&isHoming)
+        {
+            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.red;}
+            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.blue;}
+        }
+        else
+        {
+            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.green;lineRenderer.endColor = Color.green;}
+            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.white;}
+        }
         base.Update();
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
@@ -105,6 +130,10 @@ public class AttackUnit : UnitBase
             //InstWeapon.SetVelocity(thisVelocity);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
+            if (FR.InRockONRange(targetPosition) && isHoming)
+            {
+                InstWeapon.SetHoming(enemyHit2D.collider?.gameObject);
+            }
             yield return new WaitForSeconds(attackTimeOffset);
             Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){

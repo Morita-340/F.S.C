@@ -16,9 +16,11 @@ public class StageIcon : GeneralUIIconController
 {
     [SerializeField]
     private StageData stageData = new StageData();
-    [SerializeField]
-    StageSelectManager SSM;
     [SerializeField,ReadOnly]
+    StageSelectManager SSM;
+    [SerializeField, ReadOnly]
+    StagePlayerSelectMenuManager SPSMM;
+    [SerializeField, ReadOnly]
     GeneralFlagManager GFM;
     private float chargeTime = 0;
     private float selectTime = 1;
@@ -27,6 +29,8 @@ public class StageIcon : GeneralUIIconController
     protected override void Start()
     {
         base.Start();
+        SSM = FindObjectOfType<StageSelectManager>();
+        SPSMM = FindObjectOfType<StagePlayerSelectMenuManager>();
         GFM = FindObjectOfType<GeneralFlagManager>();
     }
 
@@ -34,16 +38,13 @@ public class StageIcon : GeneralUIIconController
     protected override void Update()
     {
         base.Update();
-        if(CursolSelected){chargeTime += Time.deltaTime;}
-        else{chargeTime = 0;
-            executeOnce = true;}
-        if(chargeTime > selectTime){
+
+        if (Input.GetMouseButtonDown(0) && CursolSelected)
+        {
             SSM.SetSelectedStage(this.stageData);
+            SPSMM.ChangeToPlayerSelectMenu();
             GFM.SetStageName(this.stageData.StageName);
-            if(executeOnce){
-                executeOnce = false;
-                SCer.PlaySE(1);
-            }
+            SCer.PlaySE(1);
         }
     }
     public override void OnPointerEnter(PointerEventData eventData){

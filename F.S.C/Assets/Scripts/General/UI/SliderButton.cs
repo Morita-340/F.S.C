@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SliderButton : GeneralUIIconController
+public class SliderButton : PushableIcon
 {
     /// <summary>
     /// ユーザーがボタン操作で「実行」に相当する操作を行った場合にtrue。これを使って実行後の処理をこちらで実施する
@@ -38,7 +38,7 @@ public class SliderButton : GeneralUIIconController
         }
         base.Update();
     }
-    protected void ButtonCharge()
+    protected virtual void ButtonCharge()
     {
         //仕様変更
         //カーソルを合わせるとチャージ
@@ -57,12 +57,17 @@ public class SliderButton : GeneralUIIconController
             nowChargeTime -= Time.unscaledDeltaTime * sliderTimeFactor;
             if (nowChargeTime < 0) nowChargeTime = 0;
         }
-        //左クリックして実行
-        if (Input.GetMouseButtonDown(0) && CursolSelected)
-        {
-            //ボタンの効力発揮
-            executeFlag = true;
-        }
+    }
+    protected override void IconPushedAccepted()
+    {
+        base.IconPushedAccepted();
+        //ボタンの効力発揮
+        executeFlag = true;
+    }
+    protected override void IconPushedNotAccepted()
+    {
+        base.IconPushedNotAccepted();
+        SCer.PlaySE(2);
     }
     protected void ChargeTimeSlider()
     {

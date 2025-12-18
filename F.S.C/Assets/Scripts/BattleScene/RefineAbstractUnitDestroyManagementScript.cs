@@ -25,6 +25,8 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     protected int primeUnitsHP = 10;
     [SerializeField, ReadOnly]
     protected int combatPower = 0;
+    [SerializeField, ReadOnly]
+    protected int attackPower = 0;
     protected bool isDead = false;
     /// <summary>
     /// 起動後最初のUpdateが呼ばれたタイミングでのみ処理を行えるようにフラグを用意した。combatpowerにリアクターの効果が初めて乗るのがメインスレッドのStart関数ではなくUpdate関数なので、UI表記をちゃんとするためにこれが必要
@@ -249,11 +251,26 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         return combatPower;
     }
     public virtual int CaluculateCombatPower(){
-        int combatPower = 0;
+        combatPower = 0;
+        attackPower = 0;
+        //オブジェクト構造が変わったため変更
+        PartsList.Clear();
+        //パーツリストを取得（各パーツがそれぞれの子オブジェクトであるユニットを取得しているのでこれでいい）
+        for (int i = 0; i < ThisGameObject.transform.childCount; i++)
+        {
+            GameObject childUnitObject = ThisGameObject.transform.GetChild(i).gameObject;
+            AbstractPartsController childParts = childUnitObject.GetComponent<AbstractPartsController>();
+            if (childUnitObject.tag == childObjTagName.ToString())
+            {
+                PartsList.Add(childParts);
+            }
+        }
         //各パーツで計測した戦闘力をそのまま加算
         foreach (AbstractPartsController Parts in PartsList)
         {
             combatPower += Parts.CaluculateCombatPower();
+            attackPower += Parts.GetAttackPower();
+            //Debug.Log(combatPower);
         }
         return combatPower;
     }

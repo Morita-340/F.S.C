@@ -9,7 +9,8 @@ public class RefinePlayerUnitAttackManagementScript : RefineAbstractUnitAttackMa
     {
         base.Start();
     }
-    public override void NormalAttack(float time){
-        base.NormalAttack(time);
+    public override bool SetTargetPosition(Vector3 inputTargetPosion,RaycastHit2D enemyHit2D)
+    {
+        return base.SetTargetPosition(inputTargetPosion,enemyHit2D);
     }
 }

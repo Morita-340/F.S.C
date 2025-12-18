@@ -21,7 +21,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
         foreach (UnitData child in ChildrenUnitDatalist){
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
             if(child.ReturnThisUnit() is AttackUnit AU){
-                AU.SetTargetPosition(TargetPosition);
+                //AU.SetTargetPosition(TargetPosition);
             }
         }
     }
@@ -41,7 +41,7 @@ public class AbstractUnitAttackManagementScript : MonoBehaviour
             foreach (UnitData child in ChildrenUnitDatalist){
                 //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
                 if(child.ReturnThisUnit() is AttackUnit AU){
-                    StartCoroutine(AU.NormalAttack(TargetPosition));
+                    //StartCoroutine(AU.NormalAttack(TargetPosition));
                 }
             }
             NextNormalAttack += normalAttackInterval;

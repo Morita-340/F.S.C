@@ -8,7 +8,4 @@ public class RefineEnemyUnitAttackManagementScript : RefineAbstractUnitAttackMan
     {
         base.Start();
     }
-    public override void NormalAttack(float time){
-        base.NormalAttack(time);
-    }
 }

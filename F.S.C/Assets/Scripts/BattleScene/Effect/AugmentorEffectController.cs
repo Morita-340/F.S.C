@@ -23,18 +23,65 @@ public class AugmentorEffectController : MonoBehaviour
     private void EffectIncrease(GameObject Augmentor,float maxAugmentorScale){
         if(maxAugmentorScale <= 0){Debug.LogAssertion("Invalid inputValue");return;}
         float yLocalScale = Augmentor.transform.localScale.y;
-        if(yLocalScale < maxAugmentorScale){
+        float xLocalScale = 1f;
+        if (yLocalScale < maxAugmentorScale)
+        {
             yLocalScale += 0.1f;
-            Augmentor.transform.localScale = new Vector3(Augmentor.transform.localScale.x,
+            Augmentor.transform.localScale = new Vector3(xLocalScale,
                                                         yLocalScale,
                                                         Augmentor.transform.localScale.z);
-        }else{
-            if(yLocalScale > 0.2f){
-                Augmentor.transform.localScale = new Vector3(Augmentor.transform.localScale.x,
+        }
+        else
+        {
+            if (yLocalScale > 0.2f)
+            {
+                Augmentor.transform.localScale = new Vector3(xLocalScale,
                                                             maxAugmentorScale - 0.2f,
                                                             Augmentor.transform.localScale.z);
-            }else{
-                Augmentor.transform.localScale = new Vector3(Augmentor.transform.localScale.x,
+            }
+            else
+            {
+                Augmentor.transform.localScale = new Vector3(xLocalScale,
+                                                            0,
+                                                            Augmentor.transform.localScale.z);
+            }
+        }
+    }
+    /// <summary>
+    /// 細長くアフターバーナーを伸ばしたいときに使う
+    /// </summary>
+    /// <param name="Augmentor"></param>
+    /// <param name="maxAugmentorScale"></param>
+    private void EffectTinyIncrease(GameObject Augmentor, float maxAugmentorScale,float minWidthScale)
+    {
+        if(maxAugmentorScale <= 0 || minWidthScale <=0){Debug.LogAssertion("Invalid inputValue");return;}
+        float yLocalScale = Augmentor.transform.localScale.y;
+        float xLocalScale = Augmentor.transform.localScale.x;
+        if (xLocalScale > minWidthScale)
+        {
+            xLocalScale -= 0.05f;
+            Augmentor.transform.localScale = new Vector3(xLocalScale,
+                                                        yLocalScale,
+                                                        Augmentor.transform.localScale.z);
+        }
+        if (yLocalScale < maxAugmentorScale)
+        {
+            yLocalScale += 0.1f;
+            Augmentor.transform.localScale = new Vector3(xLocalScale,
+                                                        yLocalScale,
+                                                        Augmentor.transform.localScale.z);
+        }
+        else
+        {
+            if (yLocalScale > 0.2f)
+            {
+                Augmentor.transform.localScale = new Vector3(xLocalScale,
+                                                            maxAugmentorScale - 0.2f,
+                                                            Augmentor.transform.localScale.z);
+            }
+            else
+            {
+                Augmentor.transform.localScale = new Vector3(xLocalScale,
                                                             0,
                                                             Augmentor.transform.localScale.z);
             }
@@ -45,7 +92,8 @@ public class AugmentorEffectController : MonoBehaviour
     /// </summary>
     /// <param name="Augmentor"></param>
     /// <param name="augmentorScale"></param>
-    private void EffectIncreaseRapidly(GameObject Augmentor,float augmentorScale){
+    private void EffectIncreaseRapidly(GameObject Augmentor, float augmentorScale)
+    {
         Augmentor.transform.localScale = new Vector3(Augmentor.transform.localScale.x,
                                                     augmentorScale,
                                                     Augmentor.transform.localScale.z);
@@ -72,35 +120,95 @@ public class AugmentorEffectController : MonoBehaviour
         Augmentor.transform.DOScaleY(0,0.2f);
         yield return new WaitUntil(() => Augmentor.transform.localScale.y == 0);
     }
-    public void MoveForward(){
-        if(FrontAugmentors.Count != 0){
-            foreach(GameObject Augmentor in FrontAugmentors){
+    public void IgniteBoost()
+    {
+        Debug.LogWarning("DDDDDD");
+        if (FrontAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontAugmentors)
+            {
                 StartCoroutine(EfefctReduction(Augmentor));
             }
         }
-        if(FrontLeftAugmentors.Count != 0){
-            foreach(GameObject Augmentor in FrontLeftAugmentors){
+        if (FrontLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontLeftAugmentors)
+            {
                 StartCoroutine(EfefctReduction(Augmentor));
             }
         }
-        if(FrontRightAugmentors.Count != 0){
-            foreach(GameObject Augmentor in FrontRightAugmentors){
+        if (FrontRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontRightAugmentors)
+            {
                 StartCoroutine(EfefctReduction(Augmentor));
             }
         }
-        if(BackAugmentors.Count != 0){
-            foreach(GameObject Augmentor in BackAugmentors){
-                EffectIncrease(Augmentor,1f);
+        if (BackAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackAugmentors)
+            {
+                EffectTinyIncrease(Augmentor, 1f,0.3f);
             }
         }
-        if(BackLeftAugmentors.Count != 0){
-            foreach(GameObject Augmentor in BackLeftAugmentors){
-                EffectIncrease(Augmentor,1f);
+        if (BackLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackLeftAugmentors)
+            {
+                EffectTinyIncrease(Augmentor, 1f,0.3f);
             }
         }
-        if(BackRightAugmentors.Count != 0){
-            foreach(GameObject Augmentor in BackRightAugmentors){
-                EffectIncrease(Augmentor,1f);
+        if (BackRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackRightAugmentors)
+            {
+                EffectTinyIncrease(Augmentor, 1f,0.3f);
+            }
+        }
+    }
+    public void MoveForward()
+    {
+        Debug.LogWarning("AAAAAAA");
+        if (FrontAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (FrontLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontLeftAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (FrontRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontRightAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (BackAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+        if (BackLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackLeftAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+        if (BackRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackRightAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
             }
         }
     }

@@ -28,6 +28,8 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// 小破及び無傷のパーツのグループをまとめたリスト
     /// </summary>
     List<List<AbstractPartsController>> PartsGroupList = new List<List<AbstractPartsController>>();
+    private int partsAttackPower = 0;
+    private int partsHP = 0;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -80,8 +82,21 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
                 ChildPartsList.Add(transform.GetChild(i).GetComponent<AbstractPartsController>());
             }
         }
+        foreach (AbstractPartsController part in ChildPartsList)
+        {
+            partsAttackPower += part.GetAttackPower();
+            partsHP += part.GetHP();
+        }
         AnalysisConnectSituation();
 
+    }
+    public int GetAttackPower()
+    {
+        return partsAttackPower;
+    }
+    public int GetHP()
+    {
+        return partsHP;
     }
     private void FuncInitialSetting()
     {

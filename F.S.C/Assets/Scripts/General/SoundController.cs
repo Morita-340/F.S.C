@@ -23,7 +23,8 @@ public class SoundController : MonoBehaviour
     /// ポーズ画面のUIのSEは別管理が必要なので
     /// </summary>
     [SerializeField]bool isPoseMenuUI = false;
-    [SerializeField,ReadOnly]float soundVolume = 1;
+    [SerializeField,ReadOnly]bool SELoopFlag = false;
+    [SerializeField, ReadOnly] float soundVolume = 1;
     [SerializeField,ReadOnly]GeneralFlagManager GFM;
     void Awake()
     {
@@ -45,7 +46,14 @@ public class SoundController : MonoBehaviour
     {
         //soundVolume = GFM.GetSoundVolume();
         if(BGMPlayer.isPlaying){BGMPlayer.volume = soundVolume;}
-        if(SEPlayer.isPlaying){SEPlayer.volume = soundVolume;}
+        if (SEPlayer.isPlaying)
+        {
+            SEPlayer.volume = soundVolume;
+            if (SELoopFlag && (SEPlayer.timeSamples > SEPlayer.clip.length - 1))
+            {
+                SEPlayer.time = 1;
+            }
+        }
     }
     /// <summary>
     /// BGMを再生する
@@ -104,6 +112,21 @@ public class SoundController : MonoBehaviour
     /// </summary>
     /// <param name="ListIndex"></param>
     public void PlaySE(int ListIndex){
+        SELoopFlag = false;
+        PlaySEProcess(ListIndex);
+    }
+    /// <summary>
+    /// SEを再生する
+    /// </summary>
+    /// <param name="ListIndex"></param>
+    /// <param name="continuosFlag">有効ならSEの終了1秒前と開始1秒後をつなげてループさせる</param>
+    public void PlaySE(int ListIndex, bool loopFlag)
+    {
+        SELoopFlag = loopFlag;
+        PlaySEProcess(ListIndex);
+    }
+    private void PlaySEProcess(int ListIndex)
+    {
         if(ListIndex >= SEList.Count){Debug.LogAssertion("Invalid SE Index");return;}
         //再生中に重ねて処理が呼び出された時には再生しないようにする処理
         if(SEPlayer.isPlaying){SEPlayer.Stop();}
@@ -111,6 +134,7 @@ public class SoundController : MonoBehaviour
         AudioClip isPlayingSE = SEList[ListIndex];
         if(isPlayingSE != null){
             SEPlayer.PlayOneShot(isPlayingSE);
+            SEPlayer.clip = isPlayingSE;
             Debug.Log(isPlayingSE.name);
         }else{
             Debug.LogAssertion("ThisSE isNot Register");
@@ -119,8 +143,10 @@ public class SoundController : MonoBehaviour
     /// <summary>
     /// ポーズ画面へ遷移する際に使用する
     /// </summary>
-    public void PauseSE(){
-        if(!isPoseMenuUI){
+    public void PauseSE()
+    {
+        if (!isPoseMenuUI)
+        {
             SEPlayer.Pause();
         }
     }
@@ -142,7 +168,13 @@ public class SoundController : MonoBehaviour
         SEPlayer.volume = Mathf.Lerp(SEPlayer.volume,0,0.5f);
         yield return new WaitWhile(() => SEPlayer.volume == 0);
     }
-    public bool IsPlayingSE(){
+    public void ChangeSEPitch(float input) {
+        float inputValue = input;
+        if (input < 0){ inputValue = 1; }
+            SEPlayer.pitch = inputValue;
+    }
+    public bool IsPlayingSE()
+    {
         return SEPlayer.isPlaying;
     }
 }

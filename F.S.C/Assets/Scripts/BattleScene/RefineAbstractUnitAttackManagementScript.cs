@@ -20,12 +20,16 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     bool inTimeRangeOFChargeAttack = false;
     float nextChargeAttackTime = 0f;
     [SerializeField,ReadOnly]protected Vector3 TargetPosition;
-    public void SetTargetPosition(Vector3 inputTargetPosion){
+    public virtual bool SetTargetPosition(Vector3 inputTargetPosion,RaycastHit2D enemyHit2D)
+    {
+        bool rockONFlag = false;
         TargetPosition = inputTargetPosion;
         foreach (AbstractPartsController Parts in PartsList)
         {
-            Parts.SetTargetPosition(TargetPosition);
+            bool flag = Parts.SetTargetPosition(TargetPosition,enemyHit2D);
+            if (flag) { rockONFlag = true; }
         }
+        return rockONFlag;
     }
     protected virtual void Awake(){
     }
@@ -36,10 +40,12 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     /// 呼び出されたら一定時間おきに各ユニットの通常攻撃を"毎フレームではなく一度だけ"実行する
     /// </summary>
     /// <param name="time">ロックオンし始めてから経過した時間。ロックオンが外れると0に戻る</param>
-    public virtual void NormalAttack(float time){
-        if(time < 0){NextNormalAttack = 0;}
-        if(time >= NextNormalAttack){
-            Debug.Log("AUAMS normal time" + time +" "+ NextNormalAttack);
+    public virtual void NormalAttack(float time)
+    {
+        if (time < 0) { NextNormalAttack = 0; }
+        if (time >= NextNormalAttack)
+        {
+            Debug.Log("AUAMS normal time" + time + " " + NextNormalAttack);
             foreach (AbstractPartsController Parts in PartsList)
             {
                 Parts.NormalAttack(TargetPosition);

@@ -102,6 +102,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisRb2D: {fileID: 8177833823725131474}
   attackPower: 3
+  isHoming: 0
+  targetObj: {fileID: 0}
   velocityEfficiency: 5
   SCer: {fileID: 0}
   graceTime: 5

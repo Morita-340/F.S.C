@@ -21,7 +21,7 @@ public sealed class GeneralFlagManager : MonoBehaviour
     [SerializeField,ReadOnly]private GameObject SelectedWeapon;
     [SerializeField,ReadOnly]private string stageName;
     [SerializeField]
-    private List<WeaponFlag> WeaponList = new List<WeaponFlag>(){};
+    //private List<WeaponFlag> WeaponList = new List<WeaponFlag>(){};
     public float GetSoundVolume(){
         return generalSoundVolume;
     }
@@ -41,18 +41,18 @@ public sealed class GeneralFlagManager : MonoBehaviour
     public List<BodyFlag> GetBodyList(){
         return BodyList;
     }
-    public List<WeaponFlag> GetWeaponList(){
-        return WeaponList;
-    }
+    //public List<WeaponFlag> GetWeaponList(){
+    //    return WeaponList;
+    //}
     void Start(){
         DontDestroyOnLoad(gameObject);
     }
     public void SetSelectedBody(BodyFlag body){
         SelectedBody = body.Body;
     }
-    public void SetSelectedWeapon(WeaponFlag weapon){
-        SelectedWeapon = weapon.Weapon;
-    }
+    //public void SetSelectedWeapon(WeaponFlag weapon){
+    //    SelectedWeapon = weapon.Weapon;
+    //}
     /// <summary>
     /// 設定画面で選んだ兵装と武器を引き渡し生成に用いる
     /// </summary>
@@ -82,8 +82,9 @@ public class BodyFlag
     /// アンロック演出をしたかどうか
     /// </summary>
     public bool alreadyShowUnlockedPerform = false;
-    public GameObject SettingBody;
     public GameObject Body;
+    public Sprite BodySprite;
+    public string disctiption;
 }
 [Serializable]
 public class WeaponFlag

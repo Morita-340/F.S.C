@@ -1,0 +1,166 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2592146093401355715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7291523493876341758}
+  - component: {fileID: 2432205066673774793}
+  - component: {fileID: 5449649238186118266}
+  - component: {fileID: 8540355283399029072}
+  - component: {fileID: 7609692268061651865}
+  - component: {fileID: 7215966066374445253}
+  - component: {fileID: 5684843399499634240}
+  m_Layer: 0
+  m_Name: RefinePlayerParent
+  m_TagString: PlayerUnit
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7291523493876341758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2432205066673774793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a24c428d118f08e429b4e13af833dcef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ThisGameObject: {fileID: 2592146093401355715}
+  ThisUnitSCore: {fileID: 0}
+  DestroyParentUnitObject: {fileID: 7332052915261354937, guid: 24b41300dc6f3cd498e81441cf872e71, type: 3}
+  Setting: 0
+  MCC: {fileID: 0}
+  primeUnitsHP: 10
+  combatPower: 0
+  SCer: {fileID: 7609692268061651865}
+--- !u!114 &5449649238186118266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39ade1c5dd2383b4491a5fe3d951d95e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ReAUDMS: {fileID: 2432205066673774793}
+  normalAttackInterval: 1
+  chargeAttackInterval: 1
+  PartsList: []
+  TargetPosition: {x: 0, y: 0, z: 0}
+--- !u!50 &8540355283399029072
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &7609692268061651865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b038d237702a2f4ba4b1b4e679fdb85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList: []
+  SEList:
+  - {fileID: 8300000, guid: b7d99bb9478efdd4ca8c1c5eaff45113, type: 3}
+  BGMPlayer: {fileID: 0}
+  SEPlayer: {fileID: 0}
+  playOnAwake: 0
+  isPoseMenuUI: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
+--- !u!114 &7215966066374445253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe37ce8656d0b241b5272f069f787af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerUnit: {fileID: 2592146093401355715}
+  rb2d: {fileID: 8540355283399029072}
+  turn_factor: 2
+  maximum_turn_factor: 1
+  drive_speed: 1
+  drive_minimum_speed_factor: 1.5
+  drive_maximum_speed_factor: 1.5
+  Setting: 0
+  Scer: {fileID: 7609692268061651865}
+  AEC: {fileID: 0}
+  isAuto: 0
+  isBoost: 0
+--- !u!114 &5684843399499634240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2592146093401355715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24e2b83c7c1940b4ea09273a7759dfc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FrontAugmentors: []
+  FrontLeftAugmentors: []
+  FrontRightAugmentors: []
+  BackAugmentors: []
+  BackLeftAugmentors: []
+  BackRightAugmentors: []

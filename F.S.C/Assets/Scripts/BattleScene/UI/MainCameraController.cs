@@ -68,7 +68,7 @@ public class MainCameraController : MonoBehaviour
         float goalZoomValue = 1f;
         float currentVelocity = 0;
         //距離に応じてズーム倍率を設定し、滑らかに変更する。下記マジックナンバーは
-        if(distanse < 15){goalZoomValue = 60f;}
+        if(distanse < 15){goalZoomValue = 40f;}
         else if(distanse < 40){goalZoomValue = 80;}
         else if(distanse < 70){goalZoomValue = 100;}
         else{goalZoomValue = 90;}

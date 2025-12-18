@@ -55,6 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
+  executableFlag: 0
   chargeThreshold: 1
   ChargeSlider: {fileID: 1953883056388166619}
   ExecuteSlider: {fileID: 8878503651732128043}
@@ -74,8 +75,15 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: 966160ba9e718ba4d9cb2ea4ad8e305f, type: 3}
-  - {fileID: 8300000, guid: 520e13b3ea286174186a1e9545783111, type: 3}
+  - {fileID: 8300000, guid: 101c5ad061f286a4f84f680fdc877d1a, type: 3}
+  - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
+  BGMPlayer: {fileID: 0}
+  SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  SELoopFlag: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
 --- !u!1 &1377570064318546179
 GameObject:
   m_ObjectHideFlags: 0

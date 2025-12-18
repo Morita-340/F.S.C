@@ -10,7 +10,7 @@ public class BattleSceneFlowManager : MonoBehaviour
     int nowWave = 1;
     bool playerIsDead = false;
     SpawnSystem SpS;
-    PlayerUnitDestroyManagementScript PUDMS;
+    RefinePlayerUnitDestroyManagementScript RePUDMS;
     [SerializeField]
     WaveStartEndUIController WSEUIC;
     [SerializeField]
@@ -20,7 +20,7 @@ public class BattleSceneFlowManager : MonoBehaviour
     [SerializeField,ReadOnly]
     GeneralFlagManager GFM;
     [SerializeField]
-    MouseInput MI;
+    RefineMouseInput ReMI;
     [SerializeField]
     MainCameraController MCC;
     [SerializeField]StageStartTrigger SST;
@@ -34,16 +34,17 @@ public class BattleSceneFlowManager : MonoBehaviour
     
     GSetting.ResultSituation situation;
     GameObject Player;
-    private bool firstUpdate = true;
+    //private bool firstUpdate = true;
     private bool isBattleEnd = false;
     void Awake()
     {
         SpS = this.GetComponent<SpawnSystem>();
         GFM = FindObjectOfType<GeneralFlagManager>();
         Player = Instantiate(GFM.GetSelectedPlayer().Item1, PlayerSpawnPoint.transform.position, Quaternion.Euler(Vector3.zero));
-        PUDMS = Player.GetComponent<PlayerUnitDestroyManagementScript>();
-        SpS.SetPUDMS(PUDMS);
-        MI.SetPlayer(Player);
+        RePUDMS = Player.GetComponent<RefinePlayerUnitDestroyManagementScript>();
+        SpS.SetRePUDMS(RePUDMS);
+        ReMI.SetPlayer(Player);
+        ReMI.SetPSAFBUIC(PSAFBUIC);
         BackToSettingButton = PauseMenu.transform.Find("BackToSettingButton").GetChild(0).GetComponent<WindowTranslateButton>();
         ReStartButton = PauseMenu.transform.Find("ReStartButton").GetChild(0).GetComponent<WindowTranslateButton>();
     }
@@ -56,11 +57,11 @@ public class BattleSceneFlowManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(firstUpdate){
-            firstUpdate = false;
-            Player.GetComponent<PlayerUnitAttackManagementScript>().SetChargeWeapon(GFM.GetSelectedPlayer().Item2.GetComponent<WeaponBase>());
-        }
-        playerIsDead = PUDMS.GetIsDead();
+        //if(firstUpdate){
+        //    firstUpdate = false;
+        //    Player.GetComponent<PlayerUnitAttackManagementScript>().SetChargeWeapon(GFM.GetSelectedPlayer().Item2.GetComponent<WeaponBase>());
+        //}
+        playerIsDead = RePUDMS.GetIsDead();
         //スペースボタンでポーズ画面
         if(!isBattleEnd && Input.GetKeyDown(KeyCode.Space)){
             Pause();
@@ -82,7 +83,7 @@ public class BattleSceneFlowManager : MonoBehaviour
             //敵スポーン
             WaveEnemyList = SpS.Spawn(finalwaveFlag);
             //WaveEnemyListの全機体が撃墜されるまで次のループに移らない
-            //PUDMSの撃墜判定が有効ならループを直ぐに抜ける
+            //RePUDMSの撃墜判定が有効ならループを直ぐに抜ける
             yield return new WaitUntil(() => AllEnemyDead(WaveEnemyList) || playerIsDead);
             if(playerIsDead){
                 situation = GSetting.ResultSituation.PlayerDestroyed;
@@ -102,8 +103,8 @@ public class BattleSceneFlowManager : MonoBehaviour
     }
     IEnumerator StartPerformance(){
         WSEUIC.StageEntryUI(GFM.GetStageName());
-        yield return new WaitForSeconds(0.2f);
-        MCC.EngineIgniteShake();
+        //yield return new WaitForSeconds(0.2f);
+        //MCC.EngineIgniteShake();
         Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(0);
         //画面中央に来たら追従開始
         yield return new WaitUntil(() => CPHT.CameraPlayerHoming());
@@ -133,7 +134,7 @@ public class BattleSceneFlowManager : MonoBehaviour
     private bool AllEnemyDead(GameObject[] WaveEnemyList){
         for(int i = 0; i < WaveEnemyList.Length; i++){
             if(WaveEnemyList[i] == null){continue;}
-            if(WaveEnemyList[i]?.GetComponent<EnemyUnitDestroyManagementScript>().GetIsDead() == false){
+            if(WaveEnemyList[i]?.GetComponent<RefineEnemyUnitDestroyManagementScript>().GetIsDead() == false){
                 return false;
             }
         }
@@ -169,7 +170,7 @@ public class BattleSceneFlowManager : MonoBehaviour
         StartCoroutine(RUC.ResultUI(situation));
     }
     private void NoDamageClearWaveNumCountUp(){
-        if(PUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}
-        PUDMS.noDamageFlagReset();
+        if(RePUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}
+        RePUDMS.noDamageFlagReset();
     }
 }

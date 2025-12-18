@@ -15,8 +15,6 @@ public class StageSelectManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI StageAdvise;
     [SerializeField]
-    GameObject SelectedIcon;
-    [SerializeField]
     TakeOffButton takeOffButton;
     //シーン上でプレイヤーが選択した
     private StageData DisplayStageData;
@@ -24,7 +22,7 @@ public class StageSelectManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        SelectedIcon.SetActive(false);
+
     }
 
     // Update is called once per frame
@@ -33,8 +31,6 @@ public class StageSelectManager : MonoBehaviour
         StageName.text = DisplayStageData?.StageName;
         StageSummary.text = DisplayStageData?.StageSummary;
         StageAdvise.text = DisplayStageData?.StageAdvise;
-        if(SelectedStageData != null && DisplayStageData == SelectedStageData){SelectedIcon.SetActive(true);}
-        else{SelectedIcon.SetActive(false);}
     }
     /// <summary>
     /// カーソルが重なったステージの情報を格納する
@@ -50,8 +46,10 @@ public class StageSelectManager : MonoBehaviour
     /// </summary>
     /// <param name="SD"></param>
     public void SetSelectedStage(StageData SD){
-        if (SD != null){
+        if (SD != null)
+        {
             SelectedStageData = SD;
-            takeOffButton.SetTranslateScene(SelectedStageData.scene);}
+            takeOffButton.SetTranslateScene(SelectedStageData.scene);
+        }
     }
 }

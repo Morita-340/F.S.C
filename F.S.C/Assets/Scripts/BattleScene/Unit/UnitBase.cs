@@ -219,7 +219,7 @@ public class UnitBase : MonoBehaviour
         return null;
     }
     private GameObject GetDownerGameObject(string SelectedObjTag){
-        if (this is JointUnit) { Debug.LogAssertion(transform.root.gameObject.name+this.gameObject.transform.root.rotation.eulerAngles.z + " " + transform.parent.gameObject.name+ this.gameObject.transform.parent.localRotation.z + " " + gameObject.name + this.gameObject.transform.localRotation.eulerAngles.z + " " + offsetRotation+ "\n" + (this.gameObject.transform.root.rotation.eulerAngles.z + this.gameObject.transform.parent.localRotation.eulerAngles.z + this.gameObject.transform.localRotation.eulerAngles.z + offsetRotation)); }
+        //if (this is JointUnit) { Debug.LogAssertion(transform.root.gameObject.name+this.gameObject.transform.root.rotation.eulerAngles.z + " " + transform.parent.gameObject.name+ this.gameObject.transform.parent.localRotation.z + " " + gameObject.name + this.gameObject.transform.localRotation.eulerAngles.z + " " + offsetRotation+ "\n" + (this.gameObject.transform.root.rotation.eulerAngles.z + this.gameObject.transform.parent.localRotation.eulerAngles.z + this.gameObject.transform.localRotation.eulerAngles.z + offsetRotation)); }
         foreach(RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down)){
             GameObject LeftObj = hit2D.collider.gameObject;
             if (LeftObj.tag == SelectedObjTag) { return LeftObj; }
@@ -261,7 +261,7 @@ public class UnitBase : MonoBehaviour
                 RayPosition = LinkRotation * RayOffsetDirection + this.gameObject.transform.position;
                 break;
         }
-        //if(this is JointUnit){Debug.LogAssertion(transform.root.gameObject.name+" " + transform.parent.gameObject.name+" " + gameObject.name+ "\n" + LinkRotation.eulerAngles);}
+        if(this is JointUnit){Debug.LogAssertion(transform.root.gameObject.name+" " + transform.parent.gameObject.name+" " + gameObject.name+ "\n" + LinkRotation.eulerAngles);}
         return Physics2D.RaycastAll(RayPosition, new Vector3(0, 0, 1));
     }
     // Update is called once per frame
@@ -343,7 +343,8 @@ public class UnitBase : MonoBehaviour
         return distanseFromCore;
     }
     public void ReRegistData(){
-        GetAdjacentObjLink(thisGameObject.tag);
+        //GSetting.RefineDebugAssertinLog(transform,thisGameObject.tag+"\n");
+        GetAdjacentObjLink(tag);
         //UnitData unitData = FM.SearchUnit(this);
         ThisUnitData.ReRegistFourWayLink(upperUnit,downerUnit,rightUnit,leftUnit);
     }

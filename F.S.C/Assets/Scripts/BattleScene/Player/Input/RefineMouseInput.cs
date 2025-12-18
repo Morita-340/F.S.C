@@ -7,32 +7,26 @@ using Unity.VisualScripting;
 
 public class RefineMouseInput : MonoBehaviour
 {
-    [SerializeField] GameObject UnitSimulater;
-    [SerializeField] GameObject PreviewUnit;
     [SerializeField, ReadOnly] GameObject PlayerUnit;
     [SerializeField, Range(0f, 2f)] float firstAttackInterval = 0.5f;
     [SerializeField, ReadOnly] protected SoundController SCer;
-    [SerializeField]private RefinePreviewControll RePC;
+    [SerializeField] private RefinePreviewControll RePC;
     private RefinePlayerUnitAttackManagementScript RePUAMS;
-    [SerializeField,ReadOnly]private RefinePlayerUnitDestroyManagementScript RePUDMS;
-    private PlayerUnitSimulateScript playerUnitSimulateScript;
-    private DestroyedUnitManagementScript DUMS;
-    private SnapToGrid snapToGrid;
-    private List<GameObject> previewObjectList = new List<GameObject>();
-    private List<Vector3> positionList = new List<Vector3>();
-    private List<Quaternion> rotationList = new List<Quaternion>();
-    private List<GSetting.ShapeType> shapeTypeList = new List<GSetting.ShapeType>();
-    private List<UnitBase> UnitBaseList = new List<UnitBase>();
+    [SerializeField, ReadOnly] private RefinePlayerUnitDestroyManagementScript RePUDMS;
     //private List<WeaponUnitBase> DivideUnitList = new List<WeaponUnitBase>();
     [SerializeField, ReadOnly] private Vector3 target;
     private float WheelInput = 0;
-    private float chargeAttackTimer = 0;
     private float normalAttackTimer = 0;
-    private bool isRegistered = false;
     [SerializeField] GameObject ReDUMSObj;
     private RefineDestroyedUnitManagementScript ReDUMS;
     private float WheelInputWhenSelected = 0;
     private bool isSelected = false;
+    private bool isRockON = false;
+    [SerializeField]
+    Texture2D NormalCursorImage;
+    [SerializeField]
+    Texture2D RockONCursorImage;
+    PlayerSActionFeedBackUIController PSAFBUIC;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,14 +56,25 @@ public class RefineMouseInput : MonoBehaviour
         //合体位置選択後は合体位置をロック
         if (!isSelected)
         {
-            WheelInputWhenSelected = WheelInput;
+            WheelInputWhenSelected = WheelInput * 3;
         }
-        RePC.SetPreviewInfo(RePUDMS,WheelInputWhenSelected,ReDUMS);
+        if (isRockON)
+        {
+            Debug.LogAssertion("AAAA");
+            //ロックオン時の「ピピッ」って感じの音を鳴らす
+            SCer.PlaySE(0);
+            Cursor.SetCursor(RockONCursorImage, new Vector2(40, 40), CursorMode.Auto);
+        }
+        else
+        {
+            //カーソル変更処理
+            Cursor.SetCursor(NormalCursorImage, new Vector2(40, 40), CursorMode.Auto);
+
+        }
+        RePC.SetPreviewInfo(RePUDMS, WheelInputWhenSelected, ReDUMS);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         if (!RePUDMS.GetIsDead())//プレイヤーが死んでいないならば
         {
-            //攻撃目標座標を更新し続ける
-            RePUAMS?.SetTargetPosition(target);
             //カーソルを動かす諸々の処理を繰り返す
             CursorControll();
         }
@@ -81,8 +86,10 @@ public class RefineMouseInput : MonoBehaviour
     {
         //ChargeIcon.ChangeCircleRange(chargeAttackTimer + firstAttackInterval,RePUAMS,target);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        NormalAttack();
         var Hit2DList = RockOn(ray);
+        //攻撃目標座標を更新し続ける
+        isRockON = RePUAMS.SetTargetPosition(target, Hit2DList.Item1);
+        NormalAttack();
         //パーツの情報を閲覧可能
         PartsInfoDisplay(Hit2DList.Item1, Hit2DList.Item2, Hit2DList.Item1);
         //右クリックで鹵獲処理開始
@@ -95,7 +102,7 @@ public class RefineMouseInput : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            RePUAMS?.NormalAttack(normalAttackTimer);
+            RePUAMS.NormalAttack(normalAttackTimer);
             normalAttackTimer += Time.deltaTime;
         }
         else
@@ -221,10 +228,11 @@ public class RefineMouseInput : MonoBehaviour
                     GainEXP(ReDUMS);
                     //残ったまとまりのうち、クリック時にカーソルがかざしていたまとまりを鹵獲対象とする
                     CapturePartsGroup = ReDUMS.GetSelectPartsGroup(APC);
-                    GSetting.RefineDebugAssertinLog(APC.transform,"aaa\n");
+                    GSetting.RefineDebugAssertinLog(APC.transform, "aaa\n");
                     Debug.LogAssertion(CapturePartsGroup.Count);
 
-                    foreach (AbstractPartsController apc in CapturePartsGroup) {
+                    foreach (AbstractPartsController apc in CapturePartsGroup)
+                    {
                         Debug.LogAssertion(apc.gameObject.name);
                     }
 
@@ -241,7 +249,7 @@ public class RefineMouseInput : MonoBehaviour
                     GainEXP(ReDUMS);
                     //残ったパーツのまとまりが鹵獲対象
                     CapturePartsGroup = ReDUMS.GetSelectPartsGroup(APC);
-                    if(CapturePartsGroup == null){yield break;}
+                    if (CapturePartsGroup == null) { yield break; }
                     break;
                 }
             //それ以外
@@ -253,18 +261,19 @@ public class RefineMouseInput : MonoBehaviour
                 }
         }
         //合体対象を一時的に避難（有効のままスプライトと当たり判定をOFFにして画面から離す）
-        Debug.LogAssertion("AAA"+CapturePartsGroup[0].transform.root.position);
+        Debug.LogAssertion("AAA" + CapturePartsGroup[0].transform.root.position);
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(1));
         //どこにパーツを置くか決める
-        StartCoroutine(DecideWhereToPutParts(CapturePartsGroup,ReDUMS));
+        StartCoroutine(DecideWhereToPutParts(CapturePartsGroup, ReDUMS));
     }
     /// <summary>
     /// ユニットを置く位置を決める
     /// </summary>
-    private IEnumerator DecideWhereToPutParts(List<AbstractPartsController>CapturePartsGroup,RefineDestroyedUnitManagementScript ReDUMS)
+    private IEnumerator DecideWhereToPutParts(List<AbstractPartsController> CapturePartsGroup, RefineDestroyedUnitManagementScript inputReDUMS)
     {
         //グローバル変数の方に代入
-        this.ReDUMS = ReDUMS; 
+        ReDUMS = inputReDUMS;
+        PSAFBUIC.WreckInfoOpen(ReDUMS);
         //右クリックまたはホイールクリックをするまで先に進まない
         yield return new WaitUntil(() => Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2));
         Debug.LogAssertion("AAA");
@@ -318,6 +327,7 @@ public class RefineMouseInput : MonoBehaviour
                 ReDUMS.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
                 */
                 List<CaptureObjInfo> CaptureObjInfoList = RePC.GetCaptureObjInfos();
+                PSAFBUIC.WreckInfoClose();
                 StartCoroutine(ReDUMS.ColliderAndSpriteProcess(0));
                 //座標決定、合体処理
                 //合体させるactivejointUnitがあるパーツの座標を取得
@@ -326,6 +336,8 @@ public class RefineMouseInput : MonoBehaviour
                     Debug.LogAssertion("WWW" + part.CaptureParts.gameObject.name + part.position + part.rotation.eulerAngles + RePUDMS.transform);
                     Instantiate(part.CaptureParts.gameObject, part.position, part.rotation, RePUDMS.transform).GetComponent<AbstractPartsController>().CaptureProcess();
                 }
+                //合体時に回復
+                RePUDMS.RepairMachine(ReDUMS.GetHP());
                 RePUDMS.SetUnitData();
                 RePC.DeletePreviewInfo();
                 Destroy(ReDUMS.gameObject);
@@ -357,7 +369,7 @@ public class RefineMouseInput : MonoBehaviour
             }
         }
         //強化ポイントを計上
-        foreach (AbstractPartsController HeavilyDamagedPart in HeavilyDamagedPartsList){}
+        foreach (AbstractPartsController HeavilyDamagedPart in HeavilyDamagedPartsList) { }
         //大破パーツを消す
         ReDUMS.DeleteHeavilyDamagedParts();
         HeavilyDamagedPartsList.Clear();
@@ -377,9 +389,22 @@ public class RefineMouseInput : MonoBehaviour
     /// <param name="ReDUMS"></param>
     private void PartsRelease(RefineDestroyedUnitManagementScript ReDUMS)
     {
+        PSAFBUIC.WreckInfoClose();
         ReDUMS.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         RePC.DeletePreviewInfo();
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(2));
         this.ReDUMS = null;
+    }
+    public void SetPlayer(GameObject Unit)
+    {
+        if (Unit == null) { this.enabled = false; return; }
+        if (Unit.GetComponent<RefinePlayerUnitDestroyManagementScript>())
+        {
+            PlayerUnit = Unit;
+            InitialSetting();
+        }
+    }
+    public void SetPSAFBUIC(PlayerSActionFeedBackUIController inputPSAFBUIC) {
+        PSAFBUIC = inputPSAFBUIC;
     }
 }

@@ -10,7 +10,7 @@ using FSCGeneral;
 /// </summary>
 public class AbstractPartsController : MonoBehaviour
 {
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     protected int numOfInitialJointUnit = 1;
     [SerializeField, ReadOnly]
     protected int numOfInitialFunctionUnit = 1;
@@ -20,7 +20,7 @@ public class AbstractPartsController : MonoBehaviour
     protected int numOfJointUnit = 1;
     [SerializeField, ReadOnly]
     protected int numOfFunctionUnit = 1;
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     protected int numOfChildUnit = 1;
     /// <summary>
     /// 初期生成時のジョイントユニットと機能ユニットのみを記録したいので（再生成時には記録したくない）、フラグを設定。
@@ -34,8 +34,8 @@ public class AbstractPartsController : MonoBehaviour
     protected GSetting.PartsDamageStatus DamageStatus = GSetting.PartsDamageStatus.NotSet;
     [SerializeField, ReadOnly]
     protected RefineAbstractUnitDestroyManagementScript ReAUDMS;
-    [SerializeField,ReadOnly]protected RefineDestroyedUnitManagementScript ReDUMS;
-    [SerializeField,ReadOnly]protected GSetting.ObjTagName childObjTagName;
+    [SerializeField, ReadOnly] protected RefineDestroyedUnitManagementScript ReDUMS;
+    [SerializeField, ReadOnly] protected GSetting.ObjTagName childObjTagName;
     protected bool caluculateFlag = false;
     /// <summary>
     /// Previewとして表示させる際に使う。Previewの見た目をなるべく本物に寄せたいので、見た目（どの向きなのか確認）と配置（Playerと被っていないか）だけを流用する
@@ -55,9 +55,11 @@ public class AbstractPartsController : MonoBehaviour
     /// ActiveJointは如何なるパーツに対しても一つのみ（合体対象の合体向きの候補が増えてしまって合体までの操作数が増えてしまうのは、操作テンポを悪くしかねないため）
     /// </summary>
     protected ActiveJointUnit ActiveJointLink;
+    protected int PartsAttackPower = 0;
+    protected int PartsHP = 0;
     private void NotifyThisIsPreviewPart()
     {
-        if(previewFlag){ Debug.LogAssertion("previewなのにこのメソッドを呼び出すな"); }
+        if (previewFlag) { Debug.LogAssertion("previewなのにこのメソッドを呼び出すな"); }
     }
     // Start is called before the first frame update
     protected virtual void Start()
@@ -99,7 +101,7 @@ public class AbstractPartsController : MonoBehaviour
             }
             if (ReAUDMS is RefinePlayerUnitDestroyManagementScript)
             {
-                Debug.LogAssertion(childObjTagName + transform.parent.name);
+                //Debug.LogAssertion(childObjTagName + transform.parent.name);
                 gameObject.layer = (int)GSetting.UniqueLayerName.PlayerUnit;
             }
         }
@@ -117,7 +119,7 @@ public class AbstractPartsController : MonoBehaviour
     protected virtual void SetUnitData()
     {
         ChildUnitDataList.Clear();
-        GSetting.RefineDebugAssertinLog(transform,gameObject.transform.childCount.ToString());
+        GSetting.RefineDebugAssertinLog(transform, gameObject.transform.childCount.ToString());
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject childUnitObject = gameObject.transform.GetChild(i).gameObject;
@@ -165,7 +167,8 @@ public class AbstractPartsController : MonoBehaviour
     /// 子オブジェクトの全ユニットのコライダーを有効にするか無効にするかを指定するメソッド
     /// </summary>
     /// <param name="flag"></param>
-    public void ChildrenSColliderEnabled(bool flag){
+    public void ChildrenSColliderEnabled(bool flag)
+    {
         if (ChildUnitDataList.Count != 0)
         {
             foreach (UnitData unitData in ChildUnitDataList)
@@ -180,7 +183,8 @@ public class AbstractPartsController : MonoBehaviour
     /// 子オブジェクトの全ユニットのスプライトを半透明にするか否かを指定するメソッド
     /// </summary>
     /// <param name="flag"></param>
-    public void ChildrenSpriteTranslucent(bool flag){
+    public void ChildrenSpriteTranslucent(bool flag)
+    {
         NotifyThisIsPreviewPart();
         if (ChildUnitDataList.Count != 0)
         {
@@ -284,7 +288,8 @@ public class AbstractPartsController : MonoBehaviour
             }
         }
     }
-    private void CountNOCU() {
+    private void CountNOCU()
+    {
         if (initialFlag)
         {
             numOfInitialChildUnit = 0;
@@ -292,7 +297,7 @@ public class AbstractPartsController : MonoBehaviour
             {
                 if (transform.GetChild(i).GetComponent<UnitBase>())
                 {
-                    numOfInitialChildUnit ++;
+                    numOfInitialChildUnit++;
                 }
             }
             numOfChildUnit = numOfInitialChildUnit;
@@ -359,7 +364,7 @@ public class AbstractPartsController : MonoBehaviour
     }
     public void SetA_JointLineGuide()
     {
-        
+
     }
     public void ReloadJointUnitLink()
     {
@@ -401,7 +406,7 @@ public class AbstractPartsController : MonoBehaviour
                 return;
             }
         }
-        GSetting.RefineDebugAssertinLog(transform,"データがこのオブジェクトの中に無い");
+        GSetting.RefineDebugAssertinLog(transform, "データがこのオブジェクトの中に無い");
     }
     public List<UnitData> GetNotResearchUnitList()
     {
@@ -427,10 +432,10 @@ public class AbstractPartsController : MonoBehaviour
         List<UnitData> DataList = new List<UnitData>();
         switch (listNo)
         {
-            case 0:DataList = ChildUnitDataList; break;
-            case 1:DataList = NotResearchUnitList; break;
-            case 2:DataList = RegeneUnitList; break;
-            default:Debug.LogAssertion("無効な数値が入力されている："+listNo);break;
+            case 0: DataList = ChildUnitDataList; break;
+            case 1: DataList = NotResearchUnitList; break;
+            case 2: DataList = RegeneUnitList; break;
+            default: Debug.LogAssertion("無効な数値が入力されている：" + listNo); break;
         }
         foreach (UnitData unitData in DataList)
         {
@@ -467,8 +472,10 @@ public class AbstractPartsController : MonoBehaviour
     }
     public virtual int CaluculateCombatPower()
     {
+        SetPartSetting();
         NotifyThisIsPreviewPart();
         int combatPower = 0;
+        PartsAttackPower = 0;
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject childUnitObject = gameObject.transform.GetChild(i).gameObject;
@@ -477,17 +484,22 @@ public class AbstractPartsController : MonoBehaviour
             ReactorBase reactorBase = childUnitObject.GetComponent<ReactorBase>();
             if (childUnitObject.tag == childObjTagName.ToString())
             {
+                //Debug.LogAssertion(combatPower);
                 if (AU != null)
                 {
                     combatPower += AU.GetUnitStatus();
+                    PartsAttackPower += AU.GetUnitAttackPower();
+                    PartsHP += AU.GetHP();
                 }
                 else if (WCUB != null)
                 {
                     combatPower += WCUB.GetUnitStatus();
+                    PartsHP += WCUB.GetUnitStatus();
                 }
                 else if (reactorBase != null)
                 {
                     combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();
+                    PartsHP += reactorBase.GetUnitStatus();
                 }
             }
         }
@@ -520,22 +532,26 @@ public class AbstractPartsController : MonoBehaviour
     }
     /*以下攻撃処理**************************************/
     [SerializeField, ReadOnly] protected Vector3 TargetPosition;
-    public void SetTargetPosition(Vector3 inputTargetPosion)
+    public bool SetTargetPosition(Vector3 inputTargetPosion, RaycastHit2D enemyHit2D)
     {
         NotifyThisIsPreviewPart();
+        bool rockONFlag = false;
         TargetPosition = inputTargetPosion;
         foreach (UnitData child in ChildUnitDataList)
         {
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
             if (child.ReturnThisUnit() is AttackUnit AU)
             {
-                AU.SetTargetPosition(TargetPosition);
+                bool flag = AU.SetTargetPosition(TargetPosition, enemyHit2D);
+                if (flag) { rockONFlag = true; }
             }
         }
+        return rockONFlag;
     }
-    public virtual void NormalAttack(Vector3 inputTargetPosion){
+    public virtual void NormalAttack(Vector3 inputTargetPosion)
+    {
         NotifyThisIsPreviewPart();
-        if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない"); return; }
+        if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない"); }
         foreach (UnitData child in ChildUnitDataList)
         {
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
@@ -544,5 +560,13 @@ public class AbstractPartsController : MonoBehaviour
                 StartCoroutine(AU.NormalAttack(TargetPosition));
             }
         }
+    }
+    public int GetAttackPower()
+    {
+        return PartsAttackPower;
+    }
+    public int GetHP()
+    {
+        return PartsHP;
     }
 }
