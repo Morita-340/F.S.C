@@ -617,11 +617,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: attackPower
-      value: 11
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: combatPower
-      value: 11
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: primeUnitsHP
@@ -631,13 +631,21 @@ PrefabInstance:
       propertyPath: ThisUnitSCore
       value: 
       objectReference: {fileID: 6127953709392849938}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: PartsList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: PartsList.Array.data[0]
+      value: 
+      objectReference: {fileID: 4787988470376318520}
     - target: {fileID: 2592146093401355715, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: m_Name
       value: SideShooters Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5449649238186118266, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: normalAttackInterval
-      value: 0.3
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5684843399499634240, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: BackAugmentors.Array.size
@@ -1553,6 +1561,10 @@ PrefabInstance:
       propertyPath: childObjTagName
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+      propertyPath: PartsAttackPower
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3523753489675476202, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1671,6 +1683,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4760588476622756975, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
   m_PrefabInstance: {fileID: 6367346570876133324}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4787988470376318520 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+  m_PrefabInstance: {fileID: 6367346570876133324}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc2e2ef82dde2a4f83df0f4511409cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &6127953709392849938 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 961385024382989278, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}

@@ -100,6 +100,7 @@ namespace FSCGeneral{
             StageWeaponBodySelect = 2,
             InterceptEnemyForce = 3,
             TutorialStage = 4,
+            StagePlayerSelectMenu = 5,
         }
         /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得
@@ -137,6 +138,7 @@ namespace FSCGeneral{
         {
             AllWaveClear = 0,
             PlayerDestroyed = 1,
+            MissionFailed = 2,
         }
         /// <summary>
         /// 汎用的なエラーログ。エラーの原因のオブジェクトと想定されるエラー内容を出力できる

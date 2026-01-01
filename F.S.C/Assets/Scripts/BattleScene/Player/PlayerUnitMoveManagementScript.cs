@@ -5,12 +5,10 @@ using UnityEngine;
 /// <summary>
 /// PlayerUnitの一番根のオブジェクトにアタッチされ、子オブジェクトの移動周りの挙動＝シーン上の物理的挙動をまとめて制御
 /// </summary>
-public class PlayerUnitMoveManagementScript : MonoBehaviour
+public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
 {
     [SerializeField]
     GameObject PlayerUnit;
-    [SerializeField]
-    Rigidbody2D rb2d;
     [SerializeField, Range(0, 3)]
     float turn_factor = 2;
     [SerializeField, Range(1, 180)]
@@ -30,12 +28,11 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
     /// <summary>
     /// プレイヤーが加速するときの速度上限値
     /// </summary>
-    [SerializeField, Range(0f, 10f)]
+    [SerializeField, Range(0f, 20f)]
     float drive_maximum_speed_factor = 1.5f;
     float thisRotationZ;
     [SerializeField] bool Setting = false;
     [SerializeField] protected SoundController Scer;
-    [SerializeField, ReadOnly] protected AugmentorEffectController AEC;
     [SerializeField, ReadOnly] protected bool isAuto = false;
     [SerializeField,ReadOnly]protected bool isIgnited = false;
     [SerializeField,ReadOnly]protected bool notDrive = false;
@@ -228,7 +225,7 @@ public class PlayerUnitMoveManagementScript : MonoBehaviour
             }
             PlayerUnit.transform.Rotate(0, 0, 1 * angularVelocity * Time.deltaTime);
         }
-        Debug.Log("PUMMS" + left_miximum_rotation + " " + thisRotationZ + " " + maximum_rotation + "g" + PlayerUnit.transform.rotation.eulerAngles.z);
+        //Debug.Log("PUMMS" + left_miximum_rotation + " " + thisRotationZ + " " + maximum_rotation + "g" + PlayerUnit.transform.rotation.eulerAngles.z);
     }
     /// <summary>
     /// 正面左方向に旋回する

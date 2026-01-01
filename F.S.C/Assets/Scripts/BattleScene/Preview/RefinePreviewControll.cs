@@ -23,6 +23,7 @@ public class RefinePreviewControll : MonoBehaviour
     private Vector3 PreviewRotation;
     private float wheelInput;
     List<GameObject> PreviewPartsObjList = new List<GameObject>();
+    List<AbstractPartsController> PartsGroup;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,20 +46,32 @@ public class RefinePreviewControll : MonoBehaviour
             PreviewPartsObjList.Clear();
             return;
         }
-        List<AbstractPartsController> PartsGroup = new List<AbstractPartsController>(ReDUMS.GetChildPartsList());
+        PartsGroup = new List<AbstractPartsController>(ReDUMS.GetChildPartsList());
         AbstractPartsController CenterParts = ReDUMS.GetEmptyJoint();
         //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
         List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
         //プレビューを表示するために選択中の座標や回転角を渡しておく
         //マウスホイールで選べるようにする
+        if(passiveJointList.Count == 0){return;}
         int selectedNum = Mathf.Abs((int)wheelInput % passiveJointList.Count);
         Vector3 selectedPos = passiveJointList[selectedNum];
-        Quaternion newRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]) - ReDUMS.transform.rotation.eulerAngles);
-        Quaternion PrevRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]));
+        Quaternion newRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles
+                                                + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation()+ RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation())
+                                                - ReDUMS.transform.rotation.eulerAngles);
+        //Passiveのワールド角+-180が求めたい角度
+        //をパーツのローカル角度（親：RePUDMS）に直す必要がある
+        Quaternion PrevRotation =Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles
+                                                + RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetAPC().transform.localRotation.eulerAngles
+                                                + new Vector3(0, 0, RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation() + 180
+                                                - CenterParts.GetActiveJointLink().GetOffsetRotation()));
+        //Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]));
+        Debug.Log("FFFFF"+PrevRotation.eulerAngles+""+RePUDMS.transform.rotation.eulerAngles+""+ RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetAPC().transform.localRotation.eulerAngles+" "+RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation()+" "+ 180);
+        //PrevRotation = RePUDMS.transform.rotation * Quaternion.Euler(0,0,CenterParts.GetActiveJointLink().GetOffsetRotation()) * Quaternion.Euler(0,0,RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]);
         //Debug.LogAssertion(newRotation.eulerAngles.z);
         //生成対象が今の表示と違うなら
-        if (nowPreviewPartsGroup != PreviewPartsGroup)
+        if (nowPreviewPartsGroup != PartsGroup)
         {
+            nowPreviewPartsGroup = PartsGroup;
             //Previewをクリア
             for (int i = 0; i < PreviewPartsObjList.Count; i++)
             {
@@ -71,19 +84,17 @@ public class RefinePreviewControll : MonoBehaviour
                 //AjointUnitがあるパーツからの相対位置
                 Vector3 RefPos = newRotation * (part.transform.position - CenterParts.transform.position);
                 PreviewPartsObjList.Add(Instantiate(part.gameObject, selectedPos + RefPos, PrevRotation, transform).GetComponent<AbstractPartsController>().SetPreview());
-                nowPreviewPartsGroup.Add(part);
-
             }
         }
         //回転と移動を行う
-        for (int i = 0; i > PreviewPartsObjList.Count; i++)
-        {
-            Vector3 RefPos = newRotation * (PartsGroup[i].transform.position - CenterParts.transform.position);
-            PreviewPartsObjList[i].transform.position = selectedPos + RefPos;
-            PreviewPartsObjList[i].transform.rotation = PrevRotation;
-            //PreviewPartsObjList[i].GetComponent<AbstractPartsController>().ChildrenSColliderEnabled(false);
-            //PreviewPartsObjList[i].GetComponent<AbstractPartsController>().ChildrenSpriteTranslucent(true);
-        }
+        //for (int i = 0; i > PreviewPartsObjList.Count; i++)
+        //{
+        //    Vector3 RefPos = newRotation * (PartsGroup[i].transform.position - CenterParts.transform.position);
+        //    PreviewPartsObjList[i].transform.position = selectedPos + RefPos;
+        //    PreviewPartsObjList[i].transform.rotation = PrevRotation;
+        //    //PreviewPartsObjList[i].GetComponent<AbstractPartsController>().ChildrenSColliderEnabled(false);
+        //    //PreviewPartsObjList[i].GetComponent<AbstractPartsController>().ChildrenSpriteTranslucent(true);
+        //}
     }
     /// <summary>
     /// プレビュー表示をするための情報を登録する
@@ -129,9 +140,15 @@ public class RefinePreviewControll : MonoBehaviour
         //マウスホイールで選べるようにする
         int selectedNum = Mathf.Abs((int)wheelInput % passiveJointList.Count);
         Vector3 selectedPos = passiveJointList[selectedNum];
-        Quaternion newRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]) - ReDUMS.transform.rotation.eulerAngles);
-        Quaternion PrevRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation() + RePUDMS.GetSelectedJointSOffsetRotation()[selectedNum]));
-
+        Quaternion newRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles
+                                                + new Vector3(0, 0, CenterParts.GetActiveJointLink().GetOffsetRotation()+ RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation())
+                                                - ReDUMS.transform.rotation.eulerAngles);
+        //Passiveのワールド角+-180が求めたい角度
+        //をパーツのローカル角度（親：RePUDMS）に直す必要がある
+        Quaternion PrevRotation =Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles
+                                                + RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetAPC().transform.localRotation.eulerAngles
+                                                + new Vector3(0, 0, RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation() + 180
+                                                - CenterParts.GetActiveJointLink().GetOffsetRotation()));
         List<CaptureObjInfo> captureObjInfoList = new List<CaptureObjInfo>();
         Debug.LogAssertion("RRR" +PartsGroup.Count +" "+ PreviewPartsObjList.Count);
         for (int i = 0; i < PartsGroup.Count; i++)

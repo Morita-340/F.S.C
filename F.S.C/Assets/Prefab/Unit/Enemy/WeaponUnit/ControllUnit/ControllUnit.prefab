@@ -147,10 +147,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shapeType: 1
   HitPoint: 10
+  InstHitPoint: 0
   MainCamera: {fileID: 0}
   offsetRotation: 0
   isPrime: 0
   DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
+  APC: {fileID: 0}
   attackEfficiency: 1
   SCer: {fileID: 0}
 --- !u!114 &1101226759315317605
@@ -181,4 +183,10 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: d5e34ea7b9c2f084ba8697419eb9b844, type: 3}
+  BGMPlayer: {fileID: 0}
+  SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  SELoopFlag: 0
+  soundVolume: 1
+  GFM: {fileID: 0}

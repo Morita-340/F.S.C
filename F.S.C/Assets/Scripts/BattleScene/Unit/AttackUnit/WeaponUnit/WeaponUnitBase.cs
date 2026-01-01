@@ -6,8 +6,6 @@ using UnityEngine;
 
 public class WeaponUnitBase : AttackUnit
 {
-    [SerializeField]protected GameObject DividableIcon;
-    private GameObject icon;
     public override GameObject UnitSetting(string tagName, int layerNum)
     {
         return base.UnitSetting(tagName, layerNum);
@@ -37,10 +35,6 @@ public class WeaponUnitBase : AttackUnit
                 Destroy(child.gameObject);
             }
         }
-        icon = Instantiate(DividableIcon,this.gameObject.transform,false);
-        if(GetThisUnitData().dividable){
-            icon.SetActive(true);
-        }else{icon.SetActive(false);}
         base.Start();
     }
 
@@ -48,16 +42,10 @@ public class WeaponUnitBase : AttackUnit
     protected override void Update()
     {
         base.Update();
-        if(this.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
-            if(GetThisUnitData().dividable){
-                icon.SetActive(true);
-            }else{icon.SetActive(false);}
-        }
-        else{ReactorLevelUISSpRenderer.enabled=true;}
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
-        if(isPrime)yield return base.NormalAttack(TargetPosition);
+        yield return base.NormalAttack(TargetPosition);
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {

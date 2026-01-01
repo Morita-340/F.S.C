@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FSCGeneral;
 
 public class WeaponBase : MonoBehaviour
 {
@@ -24,7 +25,9 @@ public class WeaponBase : MonoBehaviour
     /// </summary>
     [SerializeField,Range(1.1f,10f)]protected float velocityEfficiency = 1;
     [SerializeField,ReadOnly]protected SoundController SCer;
-    public int GetAttackPower(){
+    SpriteRenderer spriteRenderer;
+    public int GetAttackPower()
+    {
         return attackPower;
     }
     public void SetAttackEfficiency(int efficiency){
@@ -63,10 +66,28 @@ public class WeaponBase : MonoBehaviour
         isHoming = true;
         targetObj = inputTargetObj;
     }
+    public void SetColor()
+    {
+        
+    }
     // Start is called before the first frame update
     protected virtual void Start()
     {
         //SCer.PlaySE(0);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+        {
+            case GSetting.ObjTagName.PlayerWeapon1:
+                {
+                    spriteRenderer.color = Color.green;
+                    break;
+                }
+            case GSetting.ObjTagName.EnemyWeapon1:
+                {
+                    spriteRenderer.color = Color.red;
+                    break;
+                }
+        }
     }
 
     // Update is called once per frame
@@ -87,4 +108,5 @@ public class WeaponBase : MonoBehaviour
             myTransform.up = direction;
         }
     }
+    
 }

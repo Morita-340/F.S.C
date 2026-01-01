@@ -8,4 +8,9 @@ public class RefineEnemyUnitAttackManagementScript : RefineAbstractUnitAttackMan
     {
         base.Start();
     }
+    public override bool SetTargetPosition(Vector3 inputTargetPosion, RaycastHit2D enemyHit2D)
+    {
+        //Debug.LogAssertion("NNNNNNN");
+        return base.SetTargetPosition(inputTargetPosion, enemyHit2D);
+    }
 }

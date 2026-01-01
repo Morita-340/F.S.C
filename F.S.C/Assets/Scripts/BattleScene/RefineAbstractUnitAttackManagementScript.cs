@@ -19,7 +19,7 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     float NextNormalAttack = 0f;
     bool inTimeRangeOFChargeAttack = false;
     float nextChargeAttackTime = 0f;
-    [SerializeField,ReadOnly]protected Vector3 TargetPosition;
+    [SerializeField,ReadOnly]protected Vector3 TargetPosition = Vector3.zero;
     public virtual bool SetTargetPosition(Vector3 inputTargetPosion,RaycastHit2D enemyHit2D)
     {
         bool rockONFlag = false;
@@ -42,12 +42,14 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     /// <param name="time">ロックオンし始めてから経過した時間。ロックオンが外れると0に戻る</param>
     public virtual void NormalAttack(float time)
     {
+        Debug.Log("AUAMS normal time" + time + " " + NextNormalAttack);
         if (time < 0) { NextNormalAttack = 0; }
         if (time >= NextNormalAttack)
         {
-            Debug.Log("AUAMS normal time" + time + " " + NextNormalAttack);
+            Debug.Log("AUAMS normal timeA" + time + " " + NextNormalAttack);
             foreach (AbstractPartsController Parts in PartsList)
             {
+                Debug.Log("QQQQ");
                 Parts.NormalAttack(TargetPosition);
             }
             NextNormalAttack += normalAttackInterval;

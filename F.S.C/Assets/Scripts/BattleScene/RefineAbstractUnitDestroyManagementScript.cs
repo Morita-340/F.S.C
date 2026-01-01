@@ -33,6 +33,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     protected bool initialUpdate = true;
     protected bool caluculateFlag = false;
+    [SerializeField,ReadOnly]
     protected List<AbstractPartsController> PartsList = new List<AbstractPartsController>();
     //横型探索用のスタック用リスト
     private Stack<UnitData> StackForBreathFirstSearch = new Stack<UnitData>();
@@ -50,11 +51,20 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         MCC = GameObject.Find("Main Camera")?.GetComponent<MainCameraController>();
         SetUnitData();
     }
+    protected virtual void Update()
+    {
+        if (initialUpdate)
+        {
+            initialUpdate = false;
+            CaluculateCombatPower();
+        }
+    }
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
     /// </summary>
     public virtual void SetUnitData()
     {
+        //if (this is RefineEnemyUnitDestroyManagementScript) GSetting.RefineDebugAssertinLog(transform, "AAAAAA");
         //オブジェクト構造が変わったため変更
         PartsList.Clear();
         //パーツリストを取得（各パーツがそれぞれの子オブジェクトであるユニットを取得しているのでこれでいい）
@@ -68,8 +78,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                 childParts.RegeneProcess();
             }
         }
-        caluculateFlag = true;
-        //combatPower = CaluculateCombatPower();
+        combatPower = CaluculateCombatPower();
     }
     /// <summary>
     /// 破壊時に呼び出されるDestroyProcess
@@ -78,7 +87,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     /// <param name="inputIsDead">コアの破壊により機体が撃墜されたかどうかを識別</param>
     public virtual void DestroyProcess(UnitData DeleteData,bool inputIsDead)
     {
-        //オブジェクト構造が変わったため変更
+        //探索が届かなかったユニットAlreadySearch = falseのユニットは分離対象となる
         UnitBreathFirstSearch(ThisUnitSCore.GetThisUnitData());
         MCC.ExplosionShake(0.3f, 0.2f);
         Regenerate(inputIsDead);
@@ -90,10 +99,12 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         //combatPower = CaluculateCombatPower();
     }
     //幅優先探索の処理(リンクの繋がっているユニットの洗い出し)
+    /*ここのAlreadySearchがおかしい！*/
     private void UnitBreathFirstSearch(UnitData SerachStartUnit)
     {
         StackForBreathFirstSearch.Push(SerachStartUnit);
         SerachStartUnit.AlreadySearch = true;
+        Debug.LogWarning("AAC" + SerachStartUnit.ReturnThisUnit().gameObject.name);
         StackCopy.Add(SerachStartUnit);
         while (StackForBreathFirstSearch.Count > 0)
         {
@@ -101,14 +112,15 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             DataAddToDoubleList(PopData.ReturnFourWayLink());
         }
     }
+    /*ここのAlreadySearchがおかしい！*/
     private void DataAddToDoubleList(List<UnitData> unitDataList)
     {
         foreach (UnitData unitData in unitDataList)
         {
             if (unitData == null || unitData.ReturnThisUnit() == null) { continue; }//ここにDebug.Logを挟まないこと。処理のスパイクが発生します
-            if (unitData.AlreadySearch != false) { continue; }
+            if (unitData.AlreadySearch == true) { continue; }
             StackForBreathFirstSearch.Push(unitData);
-            Debug.LogWarning(unitData.ReturnThisUnit().gameObject.name);
+            Debug.LogWarning("AAB" + unitData.ReturnThisUnit().gameObject.name);
             unitData.AlreadySearch = true;
             StackCopy.Add(unitData);
         }
@@ -125,9 +137,10 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         //各パーツ制御者に、分離する＝探索がfalseなユニットを親オブジェクトごと丸々渡してもらう
         foreach (AbstractPartsController Parts in PartsList)
         {
-            Debug.Log("FFF"+Parts.AllUnitSearched(true,0)+Parts.gameObject.name);
-            //falseになったユニットが存在しない=全てtrueなパーツはあとの処理を飛ばす
+            Debug.LogWarning("FFF"+Parts.AllUnitSearched(true,0)+Parts.gameObject.name);
+            //falseになったユニットが存在しない=全てtrueなパーツ=コアと繋がっている=分離対象ではないパーツはあとの処理を飛ばす
             if (Parts.AllUnitSearched(true,0)) { continue; }
+            //分離対象が存在するパーツは分離対象のユニットを全てリストにまとめておく
             Parts.SetNotResearchUnitList();
             Debug.LogWarning(Parts.name);
             NotResearchPartsList.Add(Parts);
@@ -147,9 +160,10 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                 if (Parts.AllUnitSearched(false,1)) { continue; }
                 Parts.SetRegeneUnitList();
                 RegenePartsList.Add(Parts);
+                //再生成対象が初めて検出された時のみこの処理を行う
                 if (regeneFirstTime == true)
                 {
-                    //再生成対象が初めて検出された時のみこの処理を行う
+                    //再生成時の回転角及び座標を計算する
                     GameObject unitObj = FirstSearchData.ReturnThisUnit().gameObject;
                     UnitDefferenceVector = new Vector3(unitObj.transform.localPosition.x, unitObj.transform.localPosition.y, 0);
                     //ベクトルだから引き算の計算を逆にしてはいけない
@@ -179,19 +193,16 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                     FM.UnitList.Remove(unitData);
                 }
                 //DuplicateParentOnly()実行時には子オブジェクトは空だったので、改めて初期設定
-                PartsObj.GetComponent<AbstractPartsController>().RegeneProcess();
-                //子オブジェクトを全て再生成した場合はこのクラスからのパーツの参照を丸ごと消去
-                if (Parts.AllUnitSearched(true, 2))
-                {
-                    //パーツ側でもオブジェクトとデータの消去を行う
-                    PartsList.Remove(Parts);
-                }
+                AbstractPartsController APC = PartsObj.GetComponent<AbstractPartsController>();
+                APC.RegeneProcess();
             }
-            //パーツのうち、今回の探索ですべてのUnitがtrueになったものを除外する
+            //パーツのうち、今回の探索ですべてのUnitがtrueになったものを除外する（APCのDeleteChildUnitData()で既に探索済みかつ再生成済みのオブジェクトはデータもオブジェクトも消去済み）
             foreach (AbstractPartsController Parts in NotResearchPartsList)
             {
-                if (Parts.AllUnitSearched(true, 0) && !(Parts is BodyPartsController))
+                if (Parts.transform.childCount == 0 && !(Parts is BodyPartsController))
                 {
+                    Debug.LogWarning("AAZ"+Parts.gameObject.name);
+                    PartsList.Remove(Parts);
                     Destroy(Parts.gameObject);
                 }
             }
@@ -265,21 +276,43 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                 PartsList.Add(childParts);
             }
         }
+        //GSetting.RefineDebugAssertinLog(transform,PartsList.Count.ToString());
         //各パーツで計測した戦闘力をそのまま加算
         foreach (AbstractPartsController Parts in PartsList)
         {
+            //GSetting.RefineDebugAssertinLog(transform,Parts.CaluculateCombatPower().ToString() +"+"+ Parts.GetAttackPower());
             combatPower += Parts.CaluculateCombatPower();
             attackPower += Parts.GetAttackPower();
             //Debug.Log(combatPower);
         }
         return combatPower;
     }
-    private GameObject DuplicateParentOnly(GameObject originalParent,Vector3 basePosition,Transform parent)
+    /// <summary>
+    /// 子オブジェクトは無視して、コンポーネントはコピーしたい
+    /// </summary>
+    /// <param name="originalParent"></param>
+    /// <param name="basePosition"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    private GameObject DuplicateParentOnly(GameObject originalParent, Vector3 basePosition, Transform parent)
     {
+        GameObject newParent = new GameObject(originalParent.name);
+        if (originalParent.GetComponent<BodyPartsController>())
+        {
+            BodyPartsController BPC = newParent.AddComponent<BodyPartsController>();
+            BPC = originalParent.GetComponent<BodyPartsController>();
+        }
+        else
+        {
+            AbstractPartsController APC = newParent.AddComponent<AbstractPartsController>();
+            APC = originalParent.GetComponent<AbstractPartsController>();
+        }
+        /*
         // 新しい空オブジェクトを生成
         GameObject newParent = new GameObject(originalParent.name);
-        newParent.transform.parent = parent;
+        */
 
+        newParent.transform.parent = parent;
         //分離一個目のパーツからの相対位置を取得
         //Transformに反映
         newParent.transform.localPosition = originalParent.transform.localPosition - basePosition;
@@ -287,13 +320,15 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         newParent.transform.rotation = originalParent.transform.rotation;
         newParent.transform.localScale = originalParent.transform.localScale;
 
+        /*
         // 元の親に付いているコンポーネントをコピー
         foreach (var component in originalParent.GetComponents<Component>())
         {
             if (component is Transform) continue; // Transformは除外
-            UnityEditorInternal.ComponentUtility.CopyComponent(component);
-            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newParent);
+            if (component == null) continue;
+            newParent.AddComponent(component);
         }
+        */
 
         return newParent;
     }

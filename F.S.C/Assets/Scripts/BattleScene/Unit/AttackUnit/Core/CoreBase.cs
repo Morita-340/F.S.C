@@ -35,9 +35,12 @@ public class CoreBase : AttackUnit
     /// </summary>
     protected override void DestroyUnit()
     {
-        CEM.ExplosionActive(true);
-        FR.DestroyRMM();
-        DestroyCore();
+        if (!ReAUDMS.GetIsDead())
+        {   
+            CEM.ExplosionActive(true);
+            FR.DestroyRMM();
+            DestroyCore();
+        }
     }
     protected void DestroyCore(){
         if(this.gameObject.tag == GSetting.ObjTagName.PlayerUnit.ToString()){
@@ -51,7 +54,7 @@ public class CoreBase : AttackUnit
     IEnumerator DestroyObj(){
         APC.DeleteAllRangeMesh();
         FM.DeleteData(ThisUnitData);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
         DestroyImmediate(this.gameObject.transform.root.gameObject);
     }
     public bool InCoreRange(Vector3 TargetPositon){

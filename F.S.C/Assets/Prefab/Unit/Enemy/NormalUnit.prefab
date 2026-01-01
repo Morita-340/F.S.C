@@ -153,6 +153,7 @@ MonoBehaviour:
   offsetRotation: 0
   isPrime: 1
   DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
+  APC: {fileID: 0}
   attackEfficiency: 1
   SCer: {fileID: 0}
 --- !u!114 &781686125089175486
@@ -187,6 +188,7 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}
 --- !u!120 &6717824560086707930

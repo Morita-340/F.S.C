@@ -11,7 +11,7 @@ public class KazagurumaController : EnemyUnitMoveManagementScript
         SCer = GetComponent<SoundController>();
         base.Start();
         stateMachine = new StateMachine();
-        stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));
+        stateMachine.ChangeState(new RollingAttackState(Player,rb2d, this.transform,SCer));
     }
 
     // Update is called once per frame
@@ -19,13 +19,9 @@ public class KazagurumaController : EnemyUnitMoveManagementScript
     {
         base.Update();
         stateMachine.Update();
-        //プレイヤーを発見したら
-        if(Player != null){
-            if(Player?.name != null){
-                stateMachine.ChangeState(new RollingAttackState(rb2d,transform,Player,SCer));
-                }
-            else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
-        }else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
+        //プレイヤーを取得できなければ
+        if(Player == null){
+        stateMachine.ChangeState(new SampleIdle(Player,rb2d,this.transform,stateMachine,AEC));}
     }
 }
 /// <summary>
@@ -35,7 +31,6 @@ public class RollingAttackState : AttackState
 {
     Rigidbody2D myRb2d;
     Transform myTransform;
-    GameObject Player;
     SoundController SCer;
     float force = 10;
     float torque = 5;
@@ -47,10 +42,10 @@ public class RollingAttackState : AttackState
     float decelateTime = 1.5f;
     float subtractTorqueTime = 1f;
     float idleTime = 5f;
-    public RollingAttackState(Rigidbody2D inputRb2d, Transform inputTransform ,GameObject inputPlayer,SoundController inputSCer){
+    public RollingAttackState(GameObject inputPlayer,Rigidbody2D inputRb2d, Transform inputTransform ,SoundController inputSCer){
+        Player = inputPlayer;
         myRb2d = inputRb2d;
         myTransform = inputTransform;
-        Player = inputPlayer;
         SCer = inputSCer;
     }
     public override void Enter()
@@ -60,32 +55,39 @@ public class RollingAttackState : AttackState
     public override void Update()
     {
         float nowTime = Time.time % (lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime + idleTime);
-        if(nowTime < lookTime){
-        //プレイヤー方向を向いて
-            Look();
-        }else if(nowTime < lookTime + accelateTime){
-        //加速
+        if (nowTime < lookTime)
+        {
+        }
+        else if (nowTime < lookTime + accelateTime)
+        {
+            //加速
             myRb2d.AddForce(myTransform.forward * force);
         }
-        else if(nowTime < lookTime + accelateTime + addTorqueTime){
-        //回転する
+        else if (nowTime < lookTime + accelateTime + addTorqueTime)
+        {
+            //回転する
             myRb2d.AddTorque(torque);
             SCer.PlaySE(0);
         }
-        else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime){
-        //何もせず慣性に従って突進する
+        else if (nowTime < lookTime + accelateTime + addTorqueTime + raidTime)
+        {
+            //何もせず慣性に従って突進する
         }
-        else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime){
-        //減速する
+        else if (nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime)
+        {
+            //減速する
             myRb2d.AddTorque(-torque);
         }
-        else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime){
+        else if (nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime)
+        {
             SCer.FadeSE();
-        //一定時間経つと回転がじわじわと遅くなり静止する
+            //一定時間経つと回転がじわじわと遅くなり静止する
             myRb2d.AddForce(-myTransform.forward * force);
         }
-        else if(nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime + idleTime){
-        //一定時間完全静止する
+        else if (nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime + idleTime)
+        {
+            //一定時間完全静止する
+            myRb2d.angularVelocity = 0;
         }
         base.Update();
     }

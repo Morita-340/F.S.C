@@ -77,7 +77,7 @@ public class HUD : MonoBehaviour
                         flag = false; break;
                     default: flag = true; break;
                 }
-                Debug.LogWarning(hit.gameObject.name);
+                //Debug.LogWarning(hit.gameObject.name);
                 if (flag) Debug.LogWarning(hit.gameObject.name); break;
             }
         }

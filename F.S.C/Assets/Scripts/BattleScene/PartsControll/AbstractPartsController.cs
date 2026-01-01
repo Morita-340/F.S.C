@@ -50,12 +50,16 @@ public class AbstractPartsController : MonoBehaviour
     /// <summary>
     /// 受動ジョイントユニット側の
     /// </summary>
+    [SerializeField,ReadOnly]
     protected List<PassiveJointUnit> PassiveJointLink = new List<PassiveJointUnit>();
     /// <summary>
     /// ActiveJointは如何なるパーツに対しても一つのみ（合体対象の合体向きの候補が増えてしまって合体までの操作数が増えてしまうのは、操作テンポを悪くしかねないため）
     /// </summary>
+    [SerializeField,ReadOnly]
     protected ActiveJointUnit ActiveJointLink;
+    [SerializeField, ReadOnly]
     protected int PartsAttackPower = 0;
+    [SerializeField, ReadOnly]
     protected int PartsHP = 0;
     private void NotifyThisIsPreviewPart()
     {
@@ -67,6 +71,7 @@ public class AbstractPartsController : MonoBehaviour
         if (previewFlag) return;
         SetPartSetting();
         SetUnitData();
+        initialFlag = true;
         AnalysisDamageStatus();
     }
     /// <summary>
@@ -127,6 +132,7 @@ public class AbstractPartsController : MonoBehaviour
             //Debug.Log("GGG" + childUnitObject.tag+childObjTagName.ToString());
             if (childUnitObject.tag == childObjTagName.ToString())
             {
+                if(ChildUnit is AttackUnit){ Debug.Log(ChildUnit.GetThisUnitData()); }
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
                 ChildUnit.ReRegistData();
             }
@@ -245,6 +251,7 @@ public class AbstractPartsController : MonoBehaviour
     /// </summary>
     private void CountNOJU()
     {
+        PassiveJointLink.Clear();
         if (initialFlag)
         {
             numOfInitialJointUnit = 0;
@@ -386,7 +393,7 @@ public class AbstractPartsController : MonoBehaviour
         NotifyThisIsPreviewPart();
         //Debug.Log("GGG" +childObjTagName.ToString());
         ChildUnitDataList.Remove(DeleteData);
-        ReAUDMS.DestroyProcess(DeleteData, inputIsDead);
+        ReAUDMS?.DestroyProcess(DeleteData, inputIsDead);
     }
     /// <summary>
     /// パーツに含まれるデータを削除する
@@ -464,8 +471,10 @@ public class AbstractPartsController : MonoBehaviour
         NotResearchUnitList.Clear();
         foreach (UnitData unitData in ChildUnitDataList)
         {
+            //格納すべきユニットを格納できてない
             if (unitData.AlreadySearch == false)
             {
+                GSetting.RefineDebugAssertinLog(unitData.ReturnThisUnit().transform,"A");
                 NotResearchUnitList.Add(unitData);
             }
         }
@@ -476,6 +485,7 @@ public class AbstractPartsController : MonoBehaviour
         NotifyThisIsPreviewPart();
         int combatPower = 0;
         PartsAttackPower = 0;
+        bool primeUnitHPAdded = false;
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject childUnitObject = gameObject.transform.GetChild(i).gameObject;
@@ -487,19 +497,24 @@ public class AbstractPartsController : MonoBehaviour
                 //Debug.LogAssertion(combatPower);
                 if (AU != null)
                 {
+                    if (AU.GetIsPrime() && primeUnitHPAdded) continue;
+                    //GSetting.RefineDebugAssertinLog(transform, AU.GetAttackPower().ToString());
                     combatPower += AU.GetUnitStatus();
-                    PartsAttackPower += AU.GetUnitAttackPower();
+                    PartsAttackPower += AU.GetAttackPower();
                     PartsHP += AU.GetHP();
+                    if (AU.GetIsPrime()) primeUnitHPAdded = true;
                 }
                 else if (WCUB != null)
                 {
                     combatPower += WCUB.GetUnitStatus();
                     PartsHP += WCUB.GetUnitStatus();
+                    if (WCUB.GetIsPrime()) primeUnitHPAdded = true;
                 }
                 else if (reactorBase != null)
                 {
                     combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();
                     PartsHP += reactorBase.GetUnitStatus();
+                    if(reactorBase.GetIsPrime())primeUnitHPAdded = true;
                 }
             }
         }
@@ -552,11 +567,13 @@ public class AbstractPartsController : MonoBehaviour
     {
         NotifyThisIsPreviewPart();
         if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない"); }
-        foreach (UnitData child in ChildUnitDataList)
+        foreach (Transform TF in transform)
         {
+            UnitBase unitBase = TF.GetComponent<UnitBase>();
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
-            if (child.ReturnThisUnit() is AttackUnit AU)
+            if (unitBase is AttackUnit AU)
             {
+                Debug.Log("LLLL");
                 StartCoroutine(AU.NormalAttack(TargetPosition));
             }
         }

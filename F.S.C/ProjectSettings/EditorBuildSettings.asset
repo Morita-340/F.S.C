@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TutorialStage.unity
     guid: 635bda50e015c454ab5a4271ed4d80b5
+  - enabled: 1
+    path: Assets/Scenes/StagePlayerSelectMenu.unity
+    guid: 5964d0296d714af4eb269408538ca373
   m_configObjects: {}

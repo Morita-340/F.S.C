@@ -28,7 +28,9 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// 小破及び無傷のパーツのグループをまとめたリスト
     /// </summary>
     List<List<AbstractPartsController>> PartsGroupList = new List<List<AbstractPartsController>>();
+    [SerializeField,ReadOnly]
     private int partsAttackPower = 0;
+    [SerializeField,ReadOnly]
     private int partsHP = 0;
     // Start is called before the first frame update
     private void Awake()
@@ -84,9 +86,11 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         }
         foreach (AbstractPartsController part in ChildPartsList)
         {
+            part.CaluculateCombatPower();
             partsAttackPower += part.GetAttackPower();
             partsHP += part.GetHP();
         }
+        Debug.LogAssertion("AAAA");
         AnalysisConnectSituation();
 
     }
@@ -210,6 +214,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         //子パーツを値コピー。参照ではないためコピー元に影響は無い
         List<AbstractPartsController> ChildPartsListCopy = new List<AbstractPartsController>(ChildPartsList);
         //まとまりを作る
+        Debug.LogAssertion("AAAA");
         ConnectSituationBreathFirstSearch(ChildPartsListCopy);
         //まとまりに応じて場合分け
         RecordConnectSituation();
@@ -226,10 +231,12 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// </summary>
     private void ConnectSituationBreathFirstSearch(List<AbstractPartsController> ChildPartsListCopyRef)
     {
+        Debug.LogAssertion("AAAB");
         while (ChildPartsListCopyRef.Count > 0)
         {
             AbstractPartsController APC = ChildPartsListCopyRef[0];
             GSetting.PartsDamageStatus? partsDamageStatus = APC.GetPartsDamageStatus();
+            Debug.LogAssertion("AAAC");
             //小破・無傷以外（登録忘れ含む）なら探索対象から除外
             if (!(partsDamageStatus == GSetting.PartsDamageStatus.NoDamage || partsDamageStatus == GSetting.PartsDamageStatus.MinorDamage))
             {
@@ -239,6 +246,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
                 {
                     GSetting.RefineDebugAssertinLog(APC.transform, "損傷状況の登録情報がおかしい" + partsDamageStatus);
                 }
+                Debug.LogAssertion("AAAD");
                 continue;
             }
             //小破及び無傷の場合＝まとまりに分ける
@@ -248,6 +256,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
             //まとまり一つをリストとして格納を進めていくためにリストを定義
             List<AbstractPartsController> Parts = new List<AbstractPartsController>();
             //=今回のループで使うリストにスタックの種になるパーツを格納
+            Debug.LogAssertion("AAAE"+APC.gameObject.name);
             Parts.Add(APC);
             APC.SetSearchFlag(true);
             //ローカルの方のコピーリストから探索済みパーツを削除する
@@ -263,14 +272,17 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
                     AbstractPartsController jointedAP = joint.GetJointedAnotherPart();
                     if (jointedAP != null) partsLink.Add(jointedAP);
                 }
-                AbstractPartsController A_jointedAP = popAPC.GetActiveJointLink().GetJointedAnotherPart();
+                Debug.Log("AAV" + popAPC.GetActiveJointLink());
+                AbstractPartsController A_jointedAP = popAPC.GetActiveJointLink()?.GetJointedAnotherPart();
                 if (A_jointedAP != null) partsLink.Add(A_jointedAP);
                 //リストを走査
                 foreach (AbstractPartsController part in partsLink)
                 {
+                    Debug.LogAssertion("AAAU"+part.gameObject.name);
                     //未探索　かつ　損傷が小破及び無傷　なら
                     if (!part.GetSearchFlag() && (part.GetPartsDamageStatus() == GSetting.PartsDamageStatus.NoDamage || part.GetPartsDamageStatus() == GSetting.PartsDamageStatus.MinorDamage))
                     {
+                        Debug.LogAssertion("AAAV"+part.gameObject.name);
                         //スタックにリンクを格納する
                         stack.Push(part);
                         //ローカルの方のコピーリストから探索済みパーツを削除する
@@ -283,6 +295,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
                     }
                 }
             }
+            Debug.LogAssertion("AAAW");
             //while文終了。
             //まとまりのリストに格納しておく
             PartsGroupList.Add(Parts);
@@ -325,6 +338,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// </summary>
     private void RecordConnectSituation()
     {
+        Debug.LogAssertion("AAAZ"+PartsGroupList.Count);
         switch (PartsGroupList.Count)
         {
             case 0:
@@ -472,7 +486,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     void Update()
     {
         if(transform.childCount == 0){Destroy(gameObject);}
-        //rb2D.velocity = new Vector3(InstMoveAndRotateVector.x,InstMoveAndRotateVector.y,0);
-        //transform.Rotate(0,0,InstMoveAndRotateVector.z);
+        rb2D.velocity = new Vector3(InstMoveAndRotateVector.x,InstMoveAndRotateVector.y,0);
+        transform.Rotate(0,0,InstMoveAndRotateVector.z);
     }
 }

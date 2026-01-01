@@ -24,7 +24,6 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
         foreach (AbstractPartsController APC in PartsList)
         {
             List<PassiveJointUnit> passivejointList = APC.GetPassiveJointLinkList();
-            //Debug.LogAssertion(passivejointList.Count);
             foreach (JointUnit jointUnit in passivejointList)
             {
                 if (jointUnit.isJointLinkEmpty())
@@ -37,24 +36,23 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
         //Debug.LogAssertion("jointUnitSPositionList.Count" + jointUnitSPositionList.Count);
         return jointUnitSPositionList;
     }
-    public List<float> GetSelectedJointSOffsetRotation()
+    public List<PassiveJointUnit> GetSelectedPassiveJointList()
     {
-        List<float> JointSOffsetRotationList = new List<float>();
+        List<PassiveJointUnit> EmptyPassiveJointList = new List<PassiveJointUnit>();
         //Debug.LogAssertion(PartsList.Count);
         foreach (AbstractPartsController APC in PartsList)
         {
             List<PassiveJointUnit> passivejointList = APC.GetPassiveJointLinkList();
             //Debug.LogAssertion(passivejointList.Count);
-            foreach (JointUnit jointUnit in passivejointList)
+            foreach (PassiveJointUnit jointUnit in passivejointList)
             {
                 if (jointUnit.isJointLinkEmpty())
                 {
-                    float OffsetRotation = jointUnit.GetOffsetRotation();
-                    JointSOffsetRotationList.Add(OffsetRotation);
+                    EmptyPassiveJointList.Add(jointUnit);
                 }
             }
         }
-        return JointSOffsetRotationList;
+        return EmptyPassiveJointList;
     }
     public override int CaluculateCombatPower(){
         //データ登録をする際のタグを決めている

@@ -5,29 +5,32 @@ using FSCGeneral;
 /// <summary>
 /// EnemyUnitの移動と攻撃の制御を行う
 /// </summary>
-public class EnemyUnitMoveManagementScript : MonoBehaviour
+public class EnemyUnitMoveManagementScript : AbstractUnitMoveManagementScript
 {
     [SerializeField]bool Setting = false;
     private MainCameraController MainCamera;
+    /// <summary>
+    /// 自身からプレイヤーに対する相対ベクトル
+    /// </summary>
     private Vector2 PlayerVector;
     protected List<GameObject> DiscoveredObjectList = new List<GameObject>();
-    [SerializeField]protected Rigidbody2D rb2d;
     protected bool playerFlag = false;
     [SerializeField,ReadOnly]protected GameObject Player;
     protected StateMachine stateMachine;
-    protected EnemyUnitAttackManagementScript EUAMS;
+    protected RefineEnemyUnitAttackManagementScript ReEUAMS;
     // Start is called before the first frame update
-    protected virtual void Start()
+    protected override void Start()
     {
+        base.Start();
         MainCamera = GameObject.Find("Main Camera").GetComponent<MainCameraController>();
-        EUAMS = GetComponent<EnemyUnitAttackManagementScript>();
+        Player = MainCamera.GetPlayer();
+        ReEUAMS = GetComponent<RefineEnemyUnitAttackManagementScript>();
     }
 
     // Update is called once per frame
     protected virtual void Update()
     {
         if(!Setting){
-        PlayerRecognize();
         PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
             if(PlayerVector.x > 95 || PlayerVector.x < -95){MoveAroundPlayer(0);}
             if(PlayerVector.y >70 || PlayerVector.y < -70){MoveAroundPlayer(1);}
@@ -48,7 +51,9 @@ public class EnemyUnitMoveManagementScript : MonoBehaviour
     }
     /// <summary>
     /// プレイヤーの認識はここ
+    /// 2025/12/22いらない
     /// </summary>
+    /*
     private void PlayerRecognize(){
         if(DiscoveredObjectList.Count != 0){
             foreach(GameObject gameObject in DiscoveredObjectList){
@@ -60,6 +65,7 @@ public class EnemyUnitMoveManagementScript : MonoBehaviour
             }
         }else{Player = null;}
     }
+    */
     public void SetInputObjList(List<GameObject> ObjectList){
         DiscoveredObjectList = ObjectList;
         //Debug.LogWarning("DiscoveredObjectList Count"+DiscoveredObjectList.Count);

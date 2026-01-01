@@ -217,6 +217,10 @@ PrefabInstance:
       propertyPath: childObjTagName
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+      propertyPath: PartsAttackPower
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3523753489675476202, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -324,6 +328,17 @@ PrefabInstance:
       addedObject: {fileID: 8228239075793209494}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+--- !u!114 &347824752042352669 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+  m_PrefabInstance: {fileID: 2232863035754510825}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9dc2e2ef82dde2a4f83df0f4511409cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1417296394515188279 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 961385024382989278, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
@@ -350,11 +365,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: attackPower
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: combatPower
-      value: 8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: primeUnitsHP
@@ -364,13 +379,21 @@ PrefabInstance:
       propertyPath: ThisUnitSCore
       value: 
       objectReference: {fileID: 1417296394515188279}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: PartsList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: PartsList.Array.data[0]
+      value: 
+      objectReference: {fileID: 347824752042352669}
     - target: {fileID: 2592146093401355715, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: m_Name
       value: BatWing Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5449649238186118266, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: normalAttackInterval
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5684843399499634240, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: BackAugmentors.Array.size
@@ -454,7 +477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7215966066374445253, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: drive_maximum_speed_factor
-      value: 10
+      value: 11.3
       objectReference: {fileID: 0}
     - target: {fileID: 7215966066374445253, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: drive_minimum_speed_factor

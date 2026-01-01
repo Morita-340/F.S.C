@@ -14,7 +14,7 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
     {
         base.Start();
         stateMachine = new StateMachine();
-        stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));
+        stateMachine.ChangeState(new SampleIdle(Player,rb2d, this.transform,stateMachine,AEC));
     }
 
     // Update is called once per frame
@@ -24,10 +24,10 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
         stateMachine.Update();
         if(Player != null){
             if(Player.name != null){
-                stateMachine.ChangeState(new SampleAttackState(Player,transform,rb2d,EUAMS));
+                stateMachine.ChangeState(new SampleAttackState(Player,transform,rb2d,ReEUAMS,stateMachine));
                 }
-            else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
-        }else{stateMachine.ChangeState(new SampleIdle(rb2d,this.transform));}
+            else{stateMachine.ChangeState(new SampleIdle(Player,rb2d, this.transform,stateMachine,AEC));}
+        }else{stateMachine.ChangeState(new SampleIdle(Player,rb2d, this.transform,stateMachine,AEC));}
     }
 }
 /// <summary>
@@ -35,31 +35,66 @@ public class EnemySampleController : EnemyUnitMoveManagementScript
 /// </summary>
 public class SampleIdle : IdleState
 {
-    Rigidbody2D myRb2d;
-    Transform myTransform;
-    int[] rotateAngleList = new int[6]{3,10,5,-3,-10,-5};
-    float idleTime = 4f;
-    float rotateTime = 1f;
+    protected Rigidbody2D myRb2d;
+    protected Transform myTransform;
+    int[] rotateAngleList = new int[6] { 3, 10, 5, -3, -10, -5 };
+    protected float idleTime = 4f;
+    protected float rotateTime = 2f;
     float selectAngle = 0;
-    public SampleIdle(Rigidbody2D rb2d,Transform transform){
+    protected float nowTime;
+    protected float randomTime = 0;
+    protected AugmentorEffectController AEC;
+    public SampleIdle(GameObject inputPlayer, Rigidbody2D rb2d, Transform transform, StateMachine inputStateMachine, AugmentorEffectController inputAEC)
+    {
+        Player = inputPlayer;
         myRb2d = rb2d;
         myTransform = transform;
+        randomTime = Random.Range(0, 1);
+        stateMachine = inputStateMachine;
+        AEC = inputAEC;
     }
     public override void Update()
     {
-        base .Update();
-        float nowTime = Time.time % (idleTime + rotateTime);
-        if(nowTime < idleTime){
+        base.Update();
+        nowTime = Time.time % (idleTime + rotateTime + randomTime);
+        if (nowTime < idleTime)
+        {
             selectAngle = rotateAngleList[Random.Range(0, rotateAngleList.Count())];
             myRb2d.AddForce(myTransform.up * 1f);
-        }else if(nowTime < idleTime + rotateTime){
+            AEC.MoveForward();
+        }
+        else if (nowTime < idleTime + rotateTime + randomTime)
+        {
             RandomRotate(selectAngle);
         }
     }
-    private void RandomRotate(float rotateAngle){
+    private void RandomRotate(float rotateAngle)
+    {
         myRb2d.velocity = myTransform.up * 10f;
         myRb2d.AddTorque(rotateAngle);
+        if (rotateAngle <= 0)
+        {
+            AEC.RightTurn();
+        }
+        else
+        {
+            AEC.LeftTurn();
+        }
         myRb2d.angularVelocity = 0;
+    }
+    protected void LookAtPlayer()
+    {
+        Vector2 direction = Player.transform.position - myTransform.position;
+        if (Vector2.SignedAngle(direction, myTransform.up) <= 0)
+        {
+            AEC.RightTurn();
+        }
+        else
+        {
+            AEC.LeftTurn();
+        }
+        myTransform.up = direction;
+
     }
 }
 /// <summary>
@@ -68,10 +103,9 @@ public class SampleIdle : IdleState
 /// </summary>
 public class SampleAttackState : AttackState
 {
-    GameObject Player;
-    Transform myTransform;
-    Rigidbody2D rb2D;
-    EnemyUnitAttackManagementScript EUAMS;
+    protected Transform myTransform;
+    protected Rigidbody2D rb2D;
+    protected RefineEnemyUnitAttackManagementScript ReEUAMS;
     /// <summary>
     /// 加速倍率
     /// </summary>
@@ -79,27 +113,53 @@ public class SampleAttackState : AttackState
     /// <summary>
     /// 法線方向に加速するスパン
     /// </summary>
-    float sideStepSpan = 10;
-    public SampleAttackState(GameObject inputPlayer,Transform inputTransform,Rigidbody2D inputRb2D,EnemyUnitAttackManagementScript inputEUAMS){
+    protected float sideStepSpan = 10;
+    protected float nowTime;
+    protected float attackTime = -0.5f;
+    bool playerDetected = false;
+    public SampleAttackState(GameObject inputPlayer, Transform inputTransform, Rigidbody2D inputRb2D, RefineEnemyUnitAttackManagementScript inputEUAMS, StateMachine inputStateMachine)
+    {
         Player = inputPlayer;
         myTransform = inputTransform;
         rb2D = inputRb2D;
-        EUAMS = inputEUAMS;
+        ReEUAMS = inputEUAMS;
+        stateMachine = inputStateMachine;
     }
     public override void Enter()
     {
         Debug.Log("HyperAttack: Enter");
     }
     public override void Update(){
-        Debug.Log("HyperAttack: Update");
         base.Update();
-        float nowTime = Time.time % sideStepSpan;
-        if(nowTime == 0){
-            SideStep(rb2D,myTransform,sideStepVelocityEfficiency);
-        }else{
-            EUAMS.NormalAttack(nowTime);
+        RaycastHit2D[] raycastHit2Ds = Physics2D.RaycastAll(myTransform.position, (Player.transform.position - myTransform.position).normalized*30);
+        Debug.DrawLine(myTransform.position, (Player.transform.position - myTransform.position).normalized * 30,Color.cyan);
+        for (int i = 0; i < raycastHit2Ds.Count(); i++)
+        {
+            RaycastHit2D hit2D = raycastHit2Ds[i];
+            if (hit2D.transform.root.tag == GSetting.ObjTagName.PlayerUnit.ToString())
+            {
+                ReEUAMS.SetTargetPosition(Player.transform.position, hit2D);
+                attackTime += Time.deltaTime;
+                playerDetected = true;
+                break;
+            }
+        }
+        if (!raycastHit2Ds.Any(hit2D => hit2D.transform.root.tag == GSetting.ObjTagName.PlayerUnit.ToString()))
+        {
+            attackTime = -0.5f;
+        }
+        Debug.Log("GGGGGGGGG"+attackTime);
+        nowTime = Time.time % sideStepSpan;
+        if (nowTime == 0)
+        {
+            SideStep(rb2D, myTransform, sideStepVelocityEfficiency);
+        }
+        else
+        {
             LookPlayer(myTransform);
         }
+        ReEUAMS.NormalAttack(attackTime);
+        Debug.Log("HyperAttack: Update");
     }
     /// <summary>
     /// 法線方向への加速処理

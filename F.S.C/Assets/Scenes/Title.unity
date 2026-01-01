@@ -776,7 +776,7 @@ PrefabInstance:
       objectReference: {fileID: 1645798859}
     - target: {fileID: 2101296661779718357, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: TranslateScene
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6844431143947409137, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_Color.b
@@ -1689,7 +1689,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &895476675
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1734,6 +1734,7 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}
 --- !u!114 &895476677
@@ -1749,6 +1750,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
+  executableFlag: 0
   chargeThreshold: 1
   ChargeSlider: {fileID: 1630687307}
   ExecuteSlider: {fileID: 1716510834}
@@ -3077,8 +3079,9 @@ MonoBehaviour:
   SEList: []
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
-  playOnAwake: 1
+  playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}
 --- !u!4 &1645798862
@@ -3144,10 +3147,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

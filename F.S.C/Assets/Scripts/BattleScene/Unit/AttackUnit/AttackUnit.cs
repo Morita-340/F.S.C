@@ -9,11 +9,9 @@ public class AttackUnit : UnitBase
     [SerializeField]protected WeaponBase NormalWeapon;
     [SerializeField]protected WeaponBase ChargeWeapon;
     [SerializeField]protected GameObject ReactorLevelUI;
-    protected GameObject InstReactorLevelUI;
-    protected SpriteRenderer ReactorLevelUISSpRenderer;
     protected FanRange FR;
     protected LineRenderer lineRenderer;
-    [SerializeField,ReadOnly]protected Vector3 targetPosition =new Vector3(10,0,0);
+    [SerializeField,ReadOnly]protected Vector3 targetPosition =new Vector3(0,0,0);
     protected Vector3[] positions = new Vector3[]{};
     [SerializeField]
     protected bool isHoming = false;
@@ -39,15 +37,11 @@ public class AttackUnit : UnitBase
         SetWeaponPower();
         if(isPrime){attackTimeOffset = 0;}
         else{attackTimeOffset = UnityEngine.Random.Range(0.1f,0.9f);}
-        if(tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString()||tag == GSetting.ObjTagName.DestroyedUnit.ToString()){
-            InstReactorLevelUI = Instantiate(ReactorLevelUI,this.gameObject.transform);
-            InstReactorLevelUI.transform.position = this.transform.position + new Vector3(0,0,-2);
-            ReactorLevelUISSpRenderer = InstReactorLevelUI.GetComponent<SpriteRenderer>();
-        }
+        targetPosition = transform.position;
         //照準までの軌跡の描画初期設定
         positions = new Vector3[]{transform.position,targetPosition};
-        if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.green;lineRenderer.endColor = Color.green;}
-        if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.red;}
+        if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.green;}
+        if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = new Color(0,0,0,0);}
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
         base.Start();
@@ -70,6 +64,7 @@ public class AttackUnit : UnitBase
     }
     public int GetAttackPower()
     {
+        //GSetting.RefineDebugAssertinLog(transform, normalAttackPower+"+"+chargeAttackPower+"+"+attackEfficiency+"+"+EXP);
         return (normalAttackPower + chargeAttackPower) * (attackEfficiency + EXP);
     }
     /// <summary>
@@ -83,10 +78,6 @@ public class AttackUnit : UnitBase
     // Update is called once per frame
     protected override void Update()
     {
-        if((tag == GSetting.ObjTagName.PlayerUnit.ToString() || tag == GSetting.ObjTagName.EnemyUnit.ToString())&&ReactorLevelUISSpRenderer.enabled){
-            ReactorLevelUISSpRenderer.color 
-            = new Color(attackEfficiency/*+EXP*//(int)GSetting.UniqueMagicNumber.AttackEfficiencyONReactorLevel/100,1,1,0.5f);
-        }
         if(FR.InRange(targetPosition)){
             lineRenderer.enabled = true;
             positions = new Vector3[]{transform.position,targetPosition};
@@ -94,19 +85,20 @@ public class AttackUnit : UnitBase
         }else{lineRenderer.enabled = false;}
         if (FR.InRockONRange(targetPosition)&&enemyHit2D&&isHoming)
         {
-            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.red;}
-            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.blue;}
+            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.red;}
+            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.blue;lineRenderer.endColor = new Color(0,0,0,0);}
         }
         else
         {
-            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = Color.green;lineRenderer.endColor = Color.green;}
-            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = Color.white;}
+            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.green;}
+            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = new Color(0,0,0,0);}
         }
         base.Update();
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
         if(NormalWeapon == null){yield break;}
+        Debug.Log("LLLL");
         if(FR.InRange(TargetPosition)){
             yield return base.NormalAttack(TargetPosition);
             Vector3 FirePosition = this.transform.position;
@@ -130,12 +122,14 @@ public class AttackUnit : UnitBase
             //InstWeapon.SetVelocity(thisVelocity);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
-            if (FR.InRockONRange(targetPosition) && isHoming)
+            //if (FR.InRockONRange(targetPosition) && isHoming)
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity;
+            if (FR.InRockONRange(targetPosition))
             {
-                InstWeapon.SetHoming(enemyHit2D.collider?.gameObject);
+                //InstWeapon.SetHoming(enemyHit2D.collider?.gameObject);
+                weaponVelocity *= 5;
             }
             yield return new WaitForSeconds(attackTimeOffset);
-            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity;
             switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
                 case GSetting.ObjTagName.PlayerUnit:{
                     break;}

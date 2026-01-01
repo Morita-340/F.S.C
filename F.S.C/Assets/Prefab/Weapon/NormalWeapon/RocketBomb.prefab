@@ -104,7 +104,7 @@ MonoBehaviour:
   attackPower: 3
   isHoming: 0
   targetObj: {fileID: 0}
-  velocityEfficiency: 5
+  velocityEfficiency: 7
   SCer: {fileID: 0}
   graceTime: 5
 --- !u!50 &8177833823725131474
@@ -199,5 +199,6 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}

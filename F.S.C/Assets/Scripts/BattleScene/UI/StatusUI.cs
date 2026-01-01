@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
@@ -23,6 +22,17 @@ public class StatusUI : HUD
     public void SetValue(int inputValue)
     {
         goalValue = inputValue;
+        if (goalValue < 0) goalValue = 0;
+    }
+    protected override void Start()
+    {
+        //ゲージがあるあたりの場所（目視で判断）
+        base.Start();
+        rayPos = (Vector2)thisRectTransform.position + new Vector2(thisRectTransform.sizeDelta.x / 2, -thisRectTransform.sizeDelta.y / 2);
+    }
+    protected override void Update()
+    {
+        rayPos = (Vector2)thisRectTransform.position + new Vector2(thisRectTransform.sizeDelta.x / 2, -thisRectTransform.sizeDelta.y / 2);
         //値を変更する際に一度だけ実行
         if (goalValue != nowValue) {
             if (changeFlag)
@@ -36,16 +46,6 @@ public class StatusUI : HUD
         {
             changeFlag = true;
         }
-    }
-    protected override void Start()
-    {
-        //ゲージがあるあたりの場所（目視で判断）
-        base.Start();
-        rayPos = (Vector2)thisRectTransform.position + new Vector2(thisRectTransform.sizeDelta.x / 2, -thisRectTransform.sizeDelta.y / 2);
-    }
-    protected override void Update()
-    {
-        rayPos = (Vector2)thisRectTransform.position + new Vector2(thisRectTransform.sizeDelta.x / 2, -thisRectTransform.sizeDelta.y / 2);
         base.Update();
     }
     IEnumerator ValueChangeAnim()
@@ -54,7 +54,7 @@ public class StatusUI : HUD
         //徐々に数値を変化させていく
         DOTween.To(() => nowValue, (x) => nowValue = x, goalValue, changeTime);
         UIStretch(valueText, changeTime);
-        valueText.text = (Mathf.FloorToInt(nowValue)+1).ToString();
+        valueText.text = Mathf.RoundToInt(nowValue).ToString();
         guage.sizeDelta = new Vector2(nowValue *100/*ゲージのWidth*/ /maxValue, guage.sizeDelta.y);
         yield break;
     }

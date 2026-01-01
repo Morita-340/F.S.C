@@ -60,7 +60,9 @@ public class UnitBase : MonoBehaviour
     protected UnitData ThisUnitData;
     private RectTransform uiRectTransform;
     [SerializeField,ReadOnly] protected SoundController SCer;
-    public UnitData GetThisUnitData(){
+    private AbstractUnitMoveManagementScript AUMMS;
+    public UnitData GetThisUnitData()
+    {
         return ThisUnitData;
     }
     /// <summary>
@@ -72,8 +74,9 @@ public class UnitBase : MonoBehaviour
     public virtual GameObject UnitSetting(string tagName, int layerNum)
     {
         tag = tagName;
+        if(tagName == GSetting.ObjTagName.PlayerUnit.ToString()){isPrime = true;}
         this.gameObject.layer = layerNum;
-        GSetting.RefineDebugAssertinLog(transform,tag);
+        //GSetting.RefineDebugAssertinLog(transform,tag);
         return this.gameObject;        
     }
     /// <summary>
@@ -133,7 +136,8 @@ public class UnitBase : MonoBehaviour
     protected virtual void Start(){
         APC = thisGameObject.transform.parent.GetComponent<AbstractPartsController>();
         ReAUDMS = thisGameObject.transform.root.GetComponent<RefineAbstractUnitDestroyManagementScript>();
-        if(isPrime){HitPoint = ReAUDMS.GetPrimeUnitsHP();}
+        AUMMS = thisGameObject.transform.root.GetComponent<AbstractUnitMoveManagementScript>();
+        if (isPrime) { HitPoint = ReAUDMS.GetPrimeUnitsHP(); }
         InstHitPoint = HitPoint;
         if(InstHitPoint <= 0){InstHitPoint = 1;}
         spriteRenderer = this.gameObject.GetComponent<SpriteRenderer>();
@@ -261,7 +265,7 @@ public class UnitBase : MonoBehaviour
                 RayPosition = LinkRotation * RayOffsetDirection + this.gameObject.transform.position;
                 break;
         }
-        if(this is JointUnit){Debug.LogAssertion(transform.root.gameObject.name+" " + transform.parent.gameObject.name+" " + gameObject.name+ "\n" + LinkRotation.eulerAngles);}
+        //if(this is JointUnit){Debug.LogAssertion(transform.root.gameObject.name+" " + transform.parent.gameObject.name+" " + gameObject.name+ "\n" + LinkRotation.eulerAngles);}
         return Physics2D.RaycastAll(RayPosition, new Vector3(0, 0, 1));
     }
     // Update is called once per frame
@@ -379,10 +383,16 @@ public class UnitBase : MonoBehaviour
                         break;}
                     case GSetting.ObjTagName.EnemyUnit:{
                         SCer.PlaySE(0);
-                        //素体ユニットであるかどうかで減算対象を変える
-                        if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(HitPoint);}
-                        else{
-                        DamageCount(HitPoint);}
+                                //素体ユニットであるかどうかで減算対象を変える
+                                if (isPrime)
+                                {
+                                    ReAUDMS.DecreasePrimeUnitsHP(10);
+                                    AUMMS.KnockBack(collision2D.ClosestPoint(transform.position));
+                                }
+                                else
+                                {
+                                    DamageCount(10);
+                                }
                         break;}
                     //プレイヤーのリアクターの効果範囲であれば攻撃倍率を加算する
                     case GSetting.ObjTagName.ReactorEffect:{
@@ -431,12 +441,24 @@ public class UnitBase : MonoBehaviour
                     case GSetting.ObjTagName.PlayerWeapon1:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
                         SCer.PlaySE(0);
-                        if(HitPoint >0){DamageCount(HitWeapon.GetTotalDamage());}
+                        if(HitPoint >0){
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower()); }
+                                    else
+                                    {
+                                        DamageCount(HitWeapon.GetTotalDamage());
+                                    }
+                                }
                         break;}
                     case GSetting.ObjTagName.PlayerWeapon2:{
                         WeaponBase HitWeapon = collision2D.GetComponent<WeaponBase>();
                         SCer.PlaySE(0);
-                        if(HitPoint >0)DamageCount(HitWeapon.GetTotalDamage());
+                        if(HitPoint >0){
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower()); }
+                                    else
+                                    {
+                                        DamageCount(HitWeapon.GetTotalDamage());
+                                    }
+                                }
                         break;}
                     case GSetting.ObjTagName.PlayerUnit:{
                         SCer.PlaySE(0);
@@ -546,12 +568,16 @@ public class UnitBase : MonoBehaviour
     public virtual void TakeDamage(int damagePoint){
         HitPoint -= damagePoint;
     }
+    public bool GetIsPrime() {
+        return isPrime;
+    }
     /// <summary>
     ///デバッグ用の被弾処理。それ以外では使わないこと
     /// </summary>
-    public void DebugDamaged(){
+    public void DebugDamaged()
+    {
         //素体ユニットであるかどうかで減算対象を変える
-        if(isPrime){ReAUDMS?.DecreasePrimeUnitsHP(1);}
-        else{DamageCount(1);}
+        if (isPrime) { ReAUDMS?.DecreasePrimeUnitsHP(1); }
+        else { DamageCount(1); }
     }
 }

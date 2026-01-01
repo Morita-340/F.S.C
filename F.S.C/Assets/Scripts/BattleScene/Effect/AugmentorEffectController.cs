@@ -122,7 +122,7 @@ public class AugmentorEffectController : MonoBehaviour
     }
     public void IgniteBoost()
     {
-        Debug.LogWarning("DDDDDD");
+        //Debug.LogWarning("DDDDDD");
         if (FrontAugmentors.Count != 0)
         {
             foreach (GameObject Augmentor in FrontAugmentors)
@@ -168,7 +168,7 @@ public class AugmentorEffectController : MonoBehaviour
     }
     public void MoveForward()
     {
-        Debug.LogWarning("AAAAAAA");
+        //Debug.LogWarning("AAAAAAA");
         if (FrontAugmentors.Count != 0)
         {
             foreach (GameObject Augmentor in FrontAugmentors)

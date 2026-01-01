@@ -241,10 +241,6 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
         yield return new WaitForSeconds(time);
         foreach (GameObject obj in ParentObjectList)
         {
-            if (obj.GetComponent<DestroyedUnitManagementScript>().WeaponControllConected())
-            {
-                StartCoroutine(WaitUntilSuccessTextFade(0.5f, obj));
-            }
         }
     }
     /// <summary>
@@ -281,10 +277,20 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     /// </summary>
     private void PlayerInfoDisplay()
     {
-        PlayerAttackPower.SetValue(RePUDMS.GetAttackPower());
-        PlayerHP.SetValue(RePUDMS.GetPrimeUnitsHP());
-        PlayerThrustPower.SetValue((int)(PUMMS.GetMaximumSpeed() * 10));
-        NumOfJointUnit.SetValue(RePUDMS.GetAllEmptyPassiveJointSPositionList().Count);
+        if (RePUDMS.GetIsDead())
+        {
+            PlayerAttackPower.SetValue(0);
+            PlayerHP.SetValue(RePUDMS.GetPrimeUnitsHP());
+            PlayerThrustPower.SetValue(0);
+            NumOfJointUnit.SetValue(0);
+        }
+        else
+        {
+            PlayerAttackPower.SetValue(RePUDMS.GetAttackPower());
+            PlayerHP.SetValue(RePUDMS.GetPrimeUnitsHP());
+            PlayerThrustPower.SetValue((int)(PUMMS.GetMaximumSpeed() * 10));
+            NumOfJointUnit.SetValue(RePUDMS.GetAllEmptyPassiveJointSPositionList().Count);
+        }
     }
     public IEnumerator WreckInfoOpen(RefineDestroyedUnitManagementScript ReDUMS)
     {
@@ -292,7 +298,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
         WreckInfoDisplay(ReDUMS);
         yield break;
     }
-    public IEnumerable WreckInfoClose()
+    public IEnumerator WreckInfoClose()
     {
         WreckInfo.transform.DOScaleY(0, 0.2f);
         WreckInfoReset();

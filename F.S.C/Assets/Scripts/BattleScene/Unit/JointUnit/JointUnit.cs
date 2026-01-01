@@ -9,7 +9,7 @@ public class JointUnit : UnitBase
 {
     public float GetOffsetRotation()
     {
-        return offsetRotation;
+        return offsetRotation + transform.localRotation.eulerAngles.z;
     }
     protected override void GetAdjacentObjLink(string SelectedObjTag)
     {

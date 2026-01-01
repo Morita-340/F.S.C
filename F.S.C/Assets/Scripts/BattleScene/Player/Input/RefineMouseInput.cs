@@ -22,10 +22,15 @@ public class RefineMouseInput : MonoBehaviour
     private float WheelInputWhenSelected = 0;
     private bool isSelected = false;
     private bool isRockON = false;
+    /// <summary>
+    /// isRockONの切り替わり検知
+    /// </summary>
+    private BoolEdgeTrigger isRockONtrigger;
     [SerializeField]
     Texture2D NormalCursorImage;
     [SerializeField]
     Texture2D RockONCursorImage;
+    [SerializeField]
     PlayerSActionFeedBackUIController PSAFBUIC;
     // Start is called before the first frame update
     void Start()
@@ -34,6 +39,7 @@ public class RefineMouseInput : MonoBehaviour
         PlayerUnit = FindObjectOfType<RefinePlayerUnitDestroyManagementScript>().gameObject;
         InitialSetting();
         SCer = GetComponent<SoundController>();
+        isRockONtrigger = new BoolEdgeTrigger(() => isRockON);
     }
     /// <summary>
     /// このクラスで使うコンポーネントのインスタンスの参照を諸々設定
@@ -60,9 +66,6 @@ public class RefineMouseInput : MonoBehaviour
         }
         if (isRockON)
         {
-            Debug.LogAssertion("AAAA");
-            //ロックオン時の「ピピッ」って感じの音を鳴らす
-            SCer.PlaySE(0);
             Cursor.SetCursor(RockONCursorImage, new Vector2(40, 40), CursorMode.Auto);
         }
         else
@@ -70,6 +73,11 @@ public class RefineMouseInput : MonoBehaviour
             //カーソル変更処理
             Cursor.SetCursor(NormalCursorImage, new Vector2(40, 40), CursorMode.Auto);
 
+        }
+        if (isRockONtrigger.Rising())
+        {   
+            //ロックオン時の「ピピッ」って感じの音を鳴らす
+            SCer.PlaySE(0);
         }
         RePC.SetPreviewInfo(RePUDMS, WheelInputWhenSelected, ReDUMS);
         target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
@@ -228,7 +236,7 @@ public class RefineMouseInput : MonoBehaviour
                     GainEXP(ReDUMS);
                     //残ったまとまりのうち、クリック時にカーソルがかざしていたまとまりを鹵獲対象とする
                     CapturePartsGroup = ReDUMS.GetSelectPartsGroup(APC);
-                    GSetting.RefineDebugAssertinLog(APC.transform, "aaa\n");
+                    //GSetting.RefineDebugAssertinLog(APC.transform, "aaa\n");
                     Debug.LogAssertion(CapturePartsGroup.Count);
 
                     foreach (AbstractPartsController apc in CapturePartsGroup)
@@ -273,13 +281,15 @@ public class RefineMouseInput : MonoBehaviour
     {
         //グローバル変数の方に代入
         ReDUMS = inputReDUMS;
-        PSAFBUIC.WreckInfoOpen(ReDUMS);
+        StartCoroutine(PSAFBUIC.WreckInfoOpen(ReDUMS));
+        yield return new WaitForSeconds(0.5f);
         //右クリックまたはホイールクリックをするまで先に進まない
         yield return new WaitUntil(() => Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2));
         Debug.LogAssertion("AAA");
         //右クリックなら処理を進める
         if (Input.GetMouseButtonDown(1))
         {
+            Debug.LogWarning(RePC.CapturePartsCoveredPlayer());
             //設置場所が機体と被るか？
             if (RePC.CapturePartsCoveredPlayer())//被る
             {
@@ -327,7 +337,7 @@ public class RefineMouseInput : MonoBehaviour
                 ReDUMS.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
                 */
                 List<CaptureObjInfo> CaptureObjInfoList = RePC.GetCaptureObjInfos();
-                PSAFBUIC.WreckInfoClose();
+                StartCoroutine(PSAFBUIC.WreckInfoClose());
                 StartCoroutine(ReDUMS.ColliderAndSpriteProcess(0));
                 //座標決定、合体処理
                 //合体させるactivejointUnitがあるパーツの座標を取得
@@ -352,6 +362,7 @@ public class RefineMouseInput : MonoBehaviour
             Debug.LogAssertion("DDD");
             PartsRelease(ReDUMS);
         }
+        Debug.LogAssertion("KKKK");
     }
     /// <summary>
     /// 大破したパーツを強化ポイントに変換して消去し、機体の経験値に加算
@@ -389,7 +400,7 @@ public class RefineMouseInput : MonoBehaviour
     /// <param name="ReDUMS"></param>
     private void PartsRelease(RefineDestroyedUnitManagementScript ReDUMS)
     {
-        PSAFBUIC.WreckInfoClose();
+        StartCoroutine(PSAFBUIC.WreckInfoClose());
         ReDUMS.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         RePC.DeletePreviewInfo();
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(2));
