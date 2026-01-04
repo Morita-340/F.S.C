@@ -123,9 +123,10 @@ public class AttackUnit : UnitBase
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
             WeaponLook(InstWeapon,TargetPosition);
             //if (FR.InRockONRange(targetPosition) && isHoming)
-            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity;
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity*0.3f;
             if (FR.InRockONRange(targetPosition))
             {
+                Debug.LogWarning("WWW");
                 //InstWeapon.SetHoming(enemyHit2D.collider?.gameObject);
                 weaponVelocity *= 5;
             }

@@ -14,16 +14,16 @@ using FSCGeneral;
 /// </summary>
 public class StageIcon : GeneralUIIconController
 {
+    //[SerializeField]
+    //private StageData stageData = new StageData();
     [SerializeField]
-    private StageData stageData = new StageData();
-    [SerializeField,ReadOnly]
+    private BattleStageData BSD;
+    [SerializeField, ReadOnly]
     StageSelectManager SSM;
     [SerializeField, ReadOnly]
     StagePlayerSelectMenuManager SPSMM;
     [SerializeField, ReadOnly]
     GeneralFlagManager GFM;
-    private float chargeTime = 0;
-    private float selectTime = 1;
     protected bool executeOnce = true;
     // Start is called before the first frame update
     protected override void Start()
@@ -41,15 +41,16 @@ public class StageIcon : GeneralUIIconController
 
         if (Input.GetMouseButtonDown(0) && CursolSelected)
         {
-            SSM.SetSelectedStage(this.stageData);
+            if(BSD == null){ SCer.PlaySE(2); return;}
+            SSM.SetSelectedStage(BSD);
             SPSMM.ChangeToPlayerSelectMenu();
-            GFM.SetStageName(this.stageData.StageName);
+            GFM.SetStageData(BSD);
             SCer.PlaySE(1);
         }
     }
     public override void OnPointerEnter(PointerEventData eventData){
         base.OnPointerEnter(eventData);
-        SSM.SetDisplayStageData(stageData);
+        SSM.SetDisplayStageData(BSD);
     }
 }
 /// <summary>

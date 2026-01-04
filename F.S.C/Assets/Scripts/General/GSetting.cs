@@ -101,6 +101,7 @@ namespace FSCGeneral{
             InterceptEnemyForce = 3,
             TutorialStage = 4,
             StagePlayerSelectMenu = 5,
+            RefineStageTest = 6,
         }
         /// <summary>
         /// Tag&LayerManager内に記述しているUserLayerのインデックスナンバーを取得

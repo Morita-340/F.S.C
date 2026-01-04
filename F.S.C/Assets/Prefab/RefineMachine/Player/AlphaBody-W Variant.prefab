@@ -519,11 +519,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: attackPower
-      value: 17
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: combatPower
-      value: 17
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: primeUnitsHP
@@ -2862,7 +2862,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: PartsAttackPower
-      value: 17
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3523753489675476202, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: m_Sprite

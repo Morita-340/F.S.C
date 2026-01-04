@@ -17,8 +17,8 @@ public class StageSelectManager : MonoBehaviour
     [SerializeField]
     TakeOffButton takeOffButton;
     //シーン上でプレイヤーが選択した
-    private StageData DisplayStageData;
-    private StageData SelectedStageData;
+    private BattleStageData DisplayStageData;
+    private BattleStageData SelectedStageData;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,28 +28,28 @@ public class StageSelectManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StageName.text = DisplayStageData?.StageName;
-        StageSummary.text = DisplayStageData?.StageSummary;
-        StageAdvise.text = DisplayStageData?.StageAdvise;
+        StageName.text = DisplayStageData?.GetStageName();
+        StageSummary.text = DisplayStageData?.GetStageSummary();
+        StageAdvise.text = DisplayStageData?.GetStageAdvise();
     }
     /// <summary>
     /// カーソルが重なったステージの情報を格納する
     /// </summary>
     /// <param name="displayStageData"></param>
-    public void SetDisplayStageData(StageData displayStageData){
-        if(displayStageData != null){
-            DisplayStageData = displayStageData;
+    public void SetDisplayStageData(BattleStageData displayBSD){
+        if(displayBSD != null){
+            DisplayStageData = displayBSD;
         }
     }
     /// <summary>
     /// ステージを選択した際にここに格納する
     /// </summary>
     /// <param name="SD"></param>
-    public void SetSelectedStage(StageData SD){
-        if (SD != null)
+    public void SetSelectedStage(BattleStageData BSD){
+        if (BSD != null)
         {
-            SelectedStageData = SD;
-            takeOffButton.SetTranslateScene(SelectedStageData.scene);
+            SelectedStageData = BSD;
+            takeOffButton.SetTranslateScene(SelectedStageData.GetSceneName());
         }
     }
 }

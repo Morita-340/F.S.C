@@ -173,7 +173,7 @@ public class UnitBase : MonoBehaviour
             rightUnit = GetRightLink(SelectedObjTag);
             leftUnit = GetLeftLink(SelectedObjTag);
         }
-        else { Debug.LogAssertion("ShapeType is null!"); }
+        else { GSetting.RefineDebugAssertinLog(transform,"ShapeType is null!"); }
         RegistData(upperUnit, downerUnit, rightUnit, leftUnit);
     }
     private void RegistData(UnitBase upperUnit,UnitBase downerUnit,UnitBase rightUnit,UnitBase leftUnit){

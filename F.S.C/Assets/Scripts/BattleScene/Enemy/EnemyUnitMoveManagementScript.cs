@@ -7,7 +7,7 @@ using FSCGeneral;
 /// </summary>
 public class EnemyUnitMoveManagementScript : AbstractUnitMoveManagementScript
 {
-    [SerializeField]bool Setting = false;
+    [SerializeField] bool Setting = false;
     private MainCameraController MainCamera;
     /// <summary>
     /// 自身からプレイヤーに対する相対ベクトル
@@ -15,7 +15,7 @@ public class EnemyUnitMoveManagementScript : AbstractUnitMoveManagementScript
     private Vector2 PlayerVector;
     protected List<GameObject> DiscoveredObjectList = new List<GameObject>();
     protected bool playerFlag = false;
-    [SerializeField,ReadOnly]protected GameObject Player;
+    [SerializeField, ReadOnly] protected GameObject Player;
     protected StateMachine stateMachine;
     protected RefineEnemyUnitAttackManagementScript ReEUAMS;
     // Start is called before the first frame update
@@ -30,23 +30,30 @@ public class EnemyUnitMoveManagementScript : AbstractUnitMoveManagementScript
     // Update is called once per frame
     protected virtual void Update()
     {
-        if(!Setting){
-        PlayerVector = transform.position -MainCamera.GetPlayer().transform.position;
-            if(PlayerVector.x > 95 || PlayerVector.x < -95){MoveAroundPlayer(0);}
-            if(PlayerVector.y >70 || PlayerVector.y < -70){MoveAroundPlayer(1);}
+        if (!Setting)
+        {
+            PlayerVector = transform.position - MainCamera.GetPlayer().transform.position;
+            if (PlayerVector.x > 95 || PlayerVector.x < -95) { MoveAroundPlayer(0); }
+            if (PlayerVector.y > 70 || PlayerVector.y < -70) { MoveAroundPlayer(1); }
         }
     }
     /// <summary>
     /// カメラは常にプレイヤーを追うので、敵が画面外の離れた場所に行ってしまった際の詰み防止
     /// </summary>
-    private void MoveAroundPlayer(int moveMode){
-        if (MainCamera != null){
+    private void MoveAroundPlayer(int moveMode)
+    {
+        if (MainCamera != null)
+        {
             Vector2 PlayerVector = this.transform.position - MainCamera.GetPlayer().transform.position;
-            if(moveMode == 0){//x方向の移動
-                this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3( - PlayerVector.x,PlayerVector.y,0)*0.95f;
-            }else if(moveMode == 1){//y方向の移動
-                this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3(PlayerVector.x, - PlayerVector.y,0)*0.95f;
-            }else{Debug.LogWarning("Invalid moveMode");}
+            if (moveMode == 0)
+            {//x方向の移動
+                this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3(-PlayerVector.x, PlayerVector.y, 0) * 0.95f;
+            }
+            else if (moveMode == 1)
+            {//y方向の移動
+                this.transform.position = MainCamera.GetPlayer().transform.position + new Vector3(PlayerVector.x, -PlayerVector.y, 0) * 0.95f;
+            }
+            else { Debug.LogWarning("Invalid moveMode"); }
         }
     }
     /// <summary>
@@ -66,8 +73,13 @@ public class EnemyUnitMoveManagementScript : AbstractUnitMoveManagementScript
         }else{Player = null;}
     }
     */
-    public void SetInputObjList(List<GameObject> ObjectList){
+    public void SetInputObjList(List<GameObject> ObjectList)
+    {
         DiscoveredObjectList = ObjectList;
         //Debug.LogWarning("DiscoveredObjectList Count"+DiscoveredObjectList.Count);
+    }
+    public void ScrollForce(Vector2 scrollVec)
+    {
+        rb2d.velocity += scrollVec;
     }
 }

@@ -14,19 +14,19 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     [SerializeField]
     PlayerSActionFeedBackUIController PSAFBUIC;
     [SerializeField] ResultUIController RUC;
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     GeneralFlagManager GFM;
     [SerializeField]
     RefineMouseInput ReMI;
     [SerializeField]
     MainCameraController MCC;
-    [SerializeField]StageStartTrigger SST;
+    [SerializeField] StageStartTrigger SST;
     [SerializeField]
     CameraPlayerHomingTrigger CPHT;
-    [SerializeField]GameObject PlayerSpawnPoint;
-    [SerializeField]GameObject PauseMenu;
-    [SerializeField,ReadOnly] WindowTranslateButton BackToSettingButton;
-    [SerializeField,ReadOnly] WindowTranslateButton ReStartButton;
+    [SerializeField] GameObject PlayerSpawnPoint;
+    [SerializeField] GameObject PauseMenu;
+    [SerializeField, ReadOnly] WindowTranslateButton BackToSettingButton;
+    [SerializeField, ReadOnly] WindowTranslateButton ReStartButton;
     [SerializeField] GameObject MotherShip;
     [SerializeField] TextMeshProUGUI EventGoal;
     [SerializeField] ExplainText explainText;
@@ -37,6 +37,7 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     {
         GFM = FindObjectOfType<GeneralFlagManager>();
         Player = Instantiate(GFM.GetSelectedPlayer().Item1, PlayerSpawnPoint.transform.position, Quaternion.Euler(Vector3.zero));
+        BSD = GFM.GetStageData();
         RePUDMS = Player.GetComponent<RefinePlayerUnitDestroyManagementScript>();
         ReMI.SetPlayer(Player);
         ReMI.SetPSAFBUIC(PSAFBUIC);
@@ -52,34 +53,46 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isBattleEnd && Input.GetKeyDown(KeyCode.Space)){
+        if (!isBattleEnd && Input.GetKeyDown(KeyCode.Space))
+        {
             Pause();
         }
     }
-    IEnumerator GameFlow() {
+    IEnumerator GameFlow()
+    {
         yield return StartCoroutine(StartPerformance());
         List<RefineWaveData> waveDataList = BSD.GetWaveDataList();
-        foreach (RefineWaveData waveData in waveDataList)
+        for (int i = 0; i < waveDataList.Count; i++)
         {
+            RefineWaveData waveData = waveDataList[i];
+            int nowWaveCount = i + 1;
+            yield return WSEUIC.WaveStartUI(nowWaveCount, nowWaveCount == waveDataList.Count, GFM.GetStageName());
             //ウェーブの目的を大まかにテキスト表示
             EventGoal.text = waveData.GetGoalText();
             //説明テキストのテキスト設定＋配置
             explainText.SetText(waveData.GetExplainText(), waveData.GetExplainTexPos());
-            IWaveRuntime runtime = waveData.InitialSetting(this,RePUDMS);
+            IWaveRuntime runtime = waveData.InitialSetting(this, RePUDMS);
+            //スクロールするならカメラも設定が必要
+            if (waveData is ScrollWaveIF SWIF) { Debug.LogAssertion("DDDDAA"); SWIF.SetMCC(MCC); }
             yield return new WaitUntil(() => runtime.GetSuccessFlag() || runtime.GetFailureFlag());
-            waveData.DestroyProcess(this);
-            if (runtime.GetFailureFlag()) {
+            if (runtime.GetFailureFlag())
+            {
                 situation = GSetting.ResultSituation.MissionFailed;
                 break;
             }
-            situation = GSetting.ResultSituation.AllWaveClear;
+            waveData.DestroyProcess(this);
+            NoDamageClearWaveNumCountUp();
+            WSEUIC.WaveClearUI();
+            yield return new WaitForSeconds(3f);
+            if (nowWaveCount == waveDataList.Count) { situation = GSetting.ResultSituation.AllWaveClear; }
         }
 
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
         BattleEndProcess(situation);
     }
-    IEnumerator StartPerformance() {
-        WSEUIC.StageEntryUI(GFM.GetStageName());
+    IEnumerator StartPerformance()
+    {
+        WSEUIC.StageEntryUI(BSD.GetStageName());
         //yield return new WaitForSeconds(0.2f);
         //MCC.EngineIgniteShake();
         Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(0);
@@ -98,9 +111,10 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     /// ポーズメニューのONを制御する
     /// 物理的にツマミとボタンが有効になる
     /// </summary>
-    private void Pause(){
+    private void Pause()
+    {
         //ポーズメニューの有効化
-        PauseMenu.transform.localScale = new Vector3(1,1,1);
+        PauseMenu.transform.localScale = new Vector3(1, 1, 1);
         //ポーズメニューのUIボタンの有効化
         BackToSettingButton.Executable(true);
         ReStartButton.Executable(true);
@@ -109,9 +123,10 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         //SEやBGMを一時停止
         WSEUIC.PauseUI();
     }
-    public void UnPause(){
+    public void UnPause()
+    {
         //ポーズメニューの無効化
-        PauseMenu.transform.localScale=new Vector3(0,1,1);
+        PauseMenu.transform.localScale = new Vector3(0, 1, 1);
         //ポーズメニューのUIボタンの無効化
         BackToSettingButton.Executable(false);
         ReStartButton.Executable(false);
@@ -119,8 +134,13 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         //SEやBGMの一時停止を解除
         WSEUIC.UnPauseUI();
     }
-    private void BattleEndProcess(GSetting.ResultSituation situation) {
+    private void BattleEndProcess(GSetting.ResultSituation situation)
+    {
         WSEUIC.BattleEnd();
         StartCoroutine(RUC.ResultUI(situation));
+    }
+    private void NoDamageClearWaveNumCountUp(){
+        if(RePUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}
+        RePUDMS.noDamageFlagReset();
     }
 }

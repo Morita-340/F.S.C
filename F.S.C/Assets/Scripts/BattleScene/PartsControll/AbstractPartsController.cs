@@ -124,7 +124,7 @@ public class AbstractPartsController : MonoBehaviour
     protected virtual void SetUnitData()
     {
         ChildUnitDataList.Clear();
-        GSetting.RefineDebugAssertinLog(transform, gameObject.transform.childCount.ToString());
+        //GSetting.RefineDebugAssertinLog(transform, gameObject.transform.childCount.ToString());
         for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject childUnitObject = gameObject.transform.GetChild(i).gameObject;
@@ -474,7 +474,7 @@ public class AbstractPartsController : MonoBehaviour
             //格納すべきユニットを格納できてない
             if (unitData.AlreadySearch == false)
             {
-                GSetting.RefineDebugAssertinLog(unitData.ReturnThisUnit().transform,"A");
+                //GSetting.RefineDebugAssertinLog(unitData.ReturnThisUnit().transform,"A");
                 NotResearchUnitList.Add(unitData);
             }
         }

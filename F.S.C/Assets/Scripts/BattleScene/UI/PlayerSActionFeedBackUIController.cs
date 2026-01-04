@@ -37,6 +37,8 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
     StatusUI WreckHP;
     [SerializeField]
     HUD HowToOpenPoseMenu;
+    [SerializeField]
+    HUD ExplainText;
     Camera MainCamera;
     List<HUD> HUDList;
     /*:::::::::::::::::*/
@@ -66,7 +68,7 @@ public class PlayerSActionFeedBackUIController : MonoBehaviour
         MainCamera = FindObjectOfType<Camera>();
         RePUDMS = FindObjectOfType<RefinePlayerUnitDestroyManagementScript>();
         PUMMS = FindObjectOfType<PlayerUnitMoveManagementScript>();
-        HUDList = new List<HUD> { PlayerAttackPower, PlayerHP, PlayerThrustPower, NumOfJointUnit, EventGoal, WreckAttackPower, WreckHP, HowToOpenPoseMenu };
+        HUDList = new List<HUD> { PlayerAttackPower, PlayerHP, PlayerThrustPower, NumOfJointUnit, EventGoal, WreckAttackPower, WreckHP, HowToOpenPoseMenu,ExplainText };
         foreach (HUD hud in HUDList)
         {
             hud.SetCamera(MainCamera);

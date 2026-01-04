@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447b59a96aa58d540807d0063170a575, type: 3}
+  m_Name: WaveScrollTest
+  m_EditorClassIdentifier: 
+  GoalText: "\u9032\u3081\uFF01"
+  ExplainText: 
+  ExplainTexPos: {x: 0, y: 0}
+  waveShapePreset: 0
+  instantiableEnemyList:
+  - {fileID: 7182266524061389325, guid: 6fede02c47c61e7419aed3c846966e3c, type: 3}
+  MCC: {fileID: 0}
+  ScrollStartPos: {x: 0, y: 10}
+  ScrollGoalPos: {x: 0, y: 200}
+  scrollTime: 30

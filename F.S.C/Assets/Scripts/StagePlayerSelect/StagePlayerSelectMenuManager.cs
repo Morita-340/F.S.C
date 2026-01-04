@@ -16,12 +16,12 @@ public class StagePlayerSelectMenuManager : MonoBehaviour
     }
     public void ChangeToPlayerSelectMenu()
     {
-        PlayerSelectManagerObject.transform.DOScaleX(1,0.3f);
+        //PlayerSelectManagerObject.transform.DOScaleX(1,0.3f);
         StageSelectManagerObject.transform.DOScaleX(0,0.3f);
     }
     public void ChangeToStageSelectMenu()
     {
-        PlayerSelectManagerObject.transform.DOScaleX(0,0.3f);
+        //PlayerSelectManagerObject.transform.DOScaleX(0,0.3f);
         StageSelectManagerObject.transform.DOScaleX(1,0.3f);
     }
 }

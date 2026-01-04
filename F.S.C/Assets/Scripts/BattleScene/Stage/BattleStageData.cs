@@ -12,9 +12,9 @@ public class BattleStageData : ScriptableObject
     private List<RefineWaveData> WaveDataList = new List<RefineWaveData>();
     [SerializeField]
     private string StageName;
-    [SerializeField]
+    [SerializeField, TextArea]
     private string StageSummary;
-    [SerializeField]
+    [SerializeField, TextArea]
     private string StageAdvise;
     [SerializeField]
     private bool StageAlreadyCleared = false;
@@ -23,5 +23,21 @@ public class BattleStageData : ScriptableObject
     public List<RefineWaveData> GetWaveDataList()
     {
         return WaveDataList;
+    }
+    public string GetStageName()
+    {
+        return StageName;
+    }
+    public string GetStageSummary()
+    {
+        return StageSummary;
+    }
+    public string GetStageAdvise()
+    {
+        return StageAdvise;
+    }
+    public GSetting.SceneName GetSceneName()
+    {
+        return scene;
     }
 }

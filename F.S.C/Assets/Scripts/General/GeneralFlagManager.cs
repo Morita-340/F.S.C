@@ -10,19 +10,21 @@ public sealed class GeneralFlagManager : MonoBehaviour
     /// <summary>
     /// ゲーム全体の音ボリューム。これを弄れるようにすることでプレイヤーが簡単に音量調整できる
     /// </summary>
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     private float generalSoundVolume = 1;
     [SerializeField]
-    private List<BodyFlag> BodyList = new List<BodyFlag>(){};
+    private List<BodyFlag> BodyList = new List<BodyFlag>() { };
     /// <summary>
     /// 設定画面で決めたプレイヤーの素体の機体と武器をそのまま格納。ゲームシーンで読みだす
     /// </summary>
-    [SerializeField,ReadOnly]private GameObject SelectedBody;
-    [SerializeField,ReadOnly]private GameObject SelectedWeapon;
-    [SerializeField,ReadOnly]private string stageName;
+    [SerializeField, ReadOnly] private GameObject SelectedBody;
+    [SerializeField, ReadOnly] private GameObject SelectedWeapon;
+    [SerializeField, ReadOnly] private string stageName;
+    [SerializeField, ReadOnly] private BattleStageData BSD;
     [SerializeField]
     //private List<WeaponFlag> WeaponList = new List<WeaponFlag>(){};
-    public float GetSoundVolume(){
+    public float GetSoundVolume()
+    {
         return generalSoundVolume;
     }
     /// <summary>
@@ -30,24 +32,28 @@ public sealed class GeneralFlagManager : MonoBehaviour
     /// </summary>
     /// <param name="volume">入力下限を0とした音量ツマミの角度変化量</param>
     /// <param name="volumeRange">入力上限-入力下限</param>
-    public void SetSoundVolume(float volume,float inputVolumeRange){
+    public void SetSoundVolume(float volume, float inputVolumeRange)
+    {
         float volumeRange = inputVolumeRange;
-        if(volume < 0){return;}
-        if(volumeRange == 0){volume = 1;}
+        if (volume < 0) { return; }
+        if (volumeRange == 0) { volume = 1; }
         Debug.LogWarning(volume + " " + volumeRange);
         //AudioSourceコンポーネントでは0-1で調整するのでそれに合うようにする
-        generalSoundVolume = volume/volumeRange;
+        generalSoundVolume = volume / volumeRange;
     }
-    public List<BodyFlag> GetBodyList(){
+    public List<BodyFlag> GetBodyList()
+    {
         return BodyList;
     }
     //public List<WeaponFlag> GetWeaponList(){
     //    return WeaponList;
     //}
-    void Start(){
+    void Start()
+    {
         DontDestroyOnLoad(gameObject);
     }
-    public void SetSelectedBody(BodyFlag body){
+    public void SetSelectedBody(BodyFlag body)
+    {
         SelectedBody = body.Body;
     }
     //public void SetSelectedWeapon(WeaponFlag weapon){
@@ -57,14 +63,25 @@ public sealed class GeneralFlagManager : MonoBehaviour
     /// 設定画面で選んだ兵装と武器を引き渡し生成に用いる
     /// </summary>
     /// <returns></returns>
-    public (GameObject,GameObject) GetSelectedPlayer(){
-        return (SelectedBody,SelectedWeapon);
+    public (GameObject, GameObject) GetSelectedPlayer()
+    {
+        return (SelectedBody, SelectedWeapon);
     }
-    public void SetStageName(string inputName){
+    public void SetStageName(string inputName)
+    {
         stageName = inputName;
     }
-    public string GetStageName(){
+    public string GetStageName()
+    {
         return stageName;
+    }
+    public void SetStageData(BattleStageData inputBSD)
+    {
+        BSD = inputBSD;
+    }
+    public BattleStageData GetStageData()
+    {
+        return BSD;
     }
 }
 /// <summary>

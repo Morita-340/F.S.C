@@ -1012,6 +1012,7 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: b91fc556b37837d49b0cf4f08e72bf67, type: 3}
+  - {fileID: 8300000, guid: 49addca3811e6c54597015e28d60c9c9, type: 3}
   - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
@@ -1033,12 +1034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
-  stageData:
-    StageName: ---
-    StageSummary: Now Reserching ...
-    StageAdvise: 
-    StageAlreadyCleared: 0
-    scene: 2
+  BSD: {fileID: 0}
   SSM: {fileID: 1824841267}
   SPSMM: {fileID: 0}
   GFM: {fileID: 0}
@@ -1765,6 +1761,7 @@ MonoBehaviour:
   SEList:
   - {fileID: 8300000, guid: b91fc556b37837d49b0cf4f08e72bf67, type: 3}
   - {fileID: 8300000, guid: 49addca3811e6c54597015e28d60c9c9, type: 3}
+  - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
@@ -1785,12 +1782,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
-  stageData:
-    StageName: "\u5C04\u6483\u8A13\u7DF4"
-    StageSummary: "\u521D\u3081\u3066\u306E\u4EFB\u52D9\u3067\u3042\u308B\n\u6A5F\u4F53OS\u306E\u4ED5\u7D44\u307F\u3092\u3057\u3063\u304B\u308A\u7406\u89E3\u3057\u3066\u304F\u308C"
-    StageAdvise: "\u30C1\u30E5\u30FC\u30C8\u30EA\u30A2\u30EB\u306B\u5F93\u3063\u3066\u64CD\u4F5C\u306B\u6163\u308C\u3088\u3046"
-    StageAlreadyCleared: 0
-    scene: 2
+  BSD: {fileID: 0}
   SSM: {fileID: 1824841267}
   SPSMM: {fileID: 0}
   GFM: {fileID: 0}
@@ -2598,6 +2590,7 @@ MonoBehaviour:
   WreckAttackPower: {fileID: 0}
   WreckHP: {fileID: 0}
   HowToOpenPoseMenu: {fileID: 0}
+  ExplainText: {fileID: 0}
 --- !u!1 &1102429671
 GameObject:
   m_ObjectHideFlags: 0
@@ -4931,6 +4924,7 @@ MonoBehaviour:
   SEList:
   - {fileID: 8300000, guid: b91fc556b37837d49b0cf4f08e72bf67, type: 3}
   - {fileID: 8300000, guid: 49addca3811e6c54597015e28d60c9c9, type: 3}
+  - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
@@ -4951,12 +4945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
-  stageData:
-    StageName: "\u6575\u653B\u6483\u90E8\u968A\u8FCE\u6483"
-    StageSummary: "\u60D1\u661F\u3078\u63A5\u8FD1\u3059\u308B\u653B\u6483\u90E8\u968A\u3092\u6392\u9664\u305B\u3088"
-    StageAdvise: "\u8907\u6570\u56DE\u306B\u6E21\u308B\u6CE2\u72B6\u653B\u6483\u304C\u4E88\u60F3\u3055\u308C\u308B\n\u30B3\u30A2\u3092\u6483\u3061\u629C\u304D\u52B9\u7387\u3088\u304F\u5BFE\u51E6\u305B\u3088"
-    StageAlreadyCleared: 0
-    scene: 3
+  BSD: {fileID: 11400000, guid: f26430437efbef64bae8b38150b244ab, type: 2}
   SSM: {fileID: 1824841267}
   SPSMM: {fileID: 0}
   GFM: {fileID: 0}
@@ -5052,6 +5041,7 @@ MonoBehaviour:
   BGMList: []
   SEList:
   - {fileID: 8300000, guid: b91fc556b37837d49b0cf4f08e72bf67, type: 3}
+  - {fileID: 8300000, guid: 49addca3811e6c54597015e28d60c9c9, type: 3}
   - {fileID: 8300000, guid: aa3bc8aac41bdfd48982ec5eb4732141, type: 3}
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
@@ -5073,12 +5063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SCer: {fileID: 0}
-  stageData:
-    StageName: ---
-    StageSummary: Now Reserching ...
-    StageAdvise: 
-    StageAlreadyCleared: 0
-    scene: 2
+  BSD: {fileID: 0}
   SSM: {fileID: 1824841267}
   SPSMM: {fileID: 0}
   GFM: {fileID: 0}

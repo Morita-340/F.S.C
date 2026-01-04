@@ -34,8 +34,10 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     [SerializeField] bool Setting = false;
     [SerializeField] protected SoundController Scer;
     [SerializeField, ReadOnly] protected bool isAuto = false;
-    [SerializeField,ReadOnly]protected bool isIgnited = false;
-    [SerializeField,ReadOnly]protected bool notDrive = false;
+    [SerializeField, ReadOnly] protected bool isIgnited = false;
+    [SerializeField, ReadOnly] protected bool notDrive = false;
+    [SerializeField, ReadOnly] protected bool isScrollMode = false;
+    Vector2 ScrollVec = Vector2.zero;
     /// <summary>
     /// 出撃演出時にはプレイヤーの操作を受け付けてほしくないので
     /// </summary>
@@ -57,15 +59,16 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     // Update is called once per frame
     void Update()
     {
-        if(!notDrive){Manipulate();}
-        else if(isIgnited){AEC.IgniteBoost();}
+        if (!notDrive) { Manipulate(); }
+        else if (isIgnited) { AEC.IgniteBoost(); }
         else if (isAuto) { AEC.MoveForward(); }
         if (Input.GetKey(KeyCode.LeftShift)) { isBoost = true; }
         else { isBoost = false; }
     }
     void FixedUpdate()
     {
-        if (!Setting && !isAuto && !notDrive) Drive();
+        if (!Setting && !isAuto && !notDrive && !isScrollMode) Drive();
+        if (isScrollMode) ScrollDrive();
     }
     /// <summary>
     /// このオブジェクトを前後に動かす命令
@@ -82,7 +85,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            Decelerate(-forward);
+            Decelerate(-forward,Vector2.zero);
             if (Input.GetKeyDown(KeyCode.S))
             {
                 //ブースト音
@@ -103,7 +106,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         }
         else if (Input.GetKey(KeyCode.W))
         {
-            Accelerate(forward);
+            Accelerate(forward,Vector2.zero);
             if (Input.GetKeyDown(KeyCode.W))
             {
                 //ブースト音
@@ -139,8 +142,12 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     /// <summary>
     /// 正面方向へ加速する
     /// </summary>
-    void Accelerate(Vector2 forward)
+    void Accelerate(Vector2 forward,Vector2 terminalVelocity)
     {
+        float xMaxVec = drive_maximum_speed_factor + terminalVelocity.x;
+        float yMaxVec = drive_maximum_speed_factor + terminalVelocity.y;
+        float xMinVec = -drive_minimum_speed_factor - terminalVelocity.x;
+        float yMinVec = -drive_minimum_speed_factor - terminalVelocity.y;
         if (isBoost)
         {
             //rb2d.velocity += forward * 0.3f * 正方向のスラスター個数による加速倍率;
@@ -150,9 +157,9 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             rb2d.velocity += forward * 0.3f;
         }
         //閾値の範囲を超えれば
-        if (rb2d.velocity.x > drive_maximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_maximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor)
+        if (rb2d.velocity.x > xMaxVec  || rb2d.velocity.x < xMinVec || rb2d.velocity.y > yMaxVec || rb2d.velocity.y < yMinVec)
         {
-            rb2d.velocity = new Vector2(forward.x * drive_maximum_speed_factor - 0.3f, forward.y * drive_maximum_speed_factor - 0.3f);
+            rb2d.velocity = new Vector2(forward.x * drive_maximum_speed_factor + terminalVelocity.x - 0.3f, forward.y * drive_maximum_speed_factor + terminalVelocity.y - 0.3f);
             //rb2d.velocity -= forward * 0.4f;
         }
 
@@ -160,8 +167,12 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     /// <summary>
     /// 正面方向への速度を減速する
     /// </summary>
-    void Decelerate(Vector2 behind)
+    void Decelerate(Vector2 behind,Vector2 terminalVelocity)
     {
+        float xMaxVec = drive_maximum_speed_factor + terminalVelocity.x;
+        float yMaxVec = drive_maximum_speed_factor + terminalVelocity.y;
+        float xMinVec = -drive_minimum_speed_factor - terminalVelocity.x;
+        float yMinVec = -drive_minimum_speed_factor - terminalVelocity.y;
         if (isBoost)
         {
             //rb2d.velocity += behind * 0.3f * 逆方向のスラスター個数による加速倍率;
@@ -171,10 +182,169 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             rb2d.velocity += behind * 0.3f;
         }
         //閾値の範囲を超えれば
-        if (rb2d.velocity.x > drive_maximum_speed_factor || rb2d.velocity.x < -drive_minimum_speed_factor || rb2d.velocity.y > drive_maximum_speed_factor || rb2d.velocity.y < -drive_minimum_speed_factor)
+        if (rb2d.velocity.x > xMaxVec  || rb2d.velocity.x < xMinVec || rb2d.velocity.y > yMaxVec || rb2d.velocity.y < yMinVec)
         {
-            rb2d.velocity = new Vector2(behind.x * drive_minimum_speed_factor + 0.3f, behind.y * drive_minimum_speed_factor + 0.3f);
+            rb2d.velocity = new Vector2(behind.x * drive_minimum_speed_factor - terminalVelocity.x + 0.3f, behind.y * drive_minimum_speed_factor - terminalVelocity.y + 0.3f);
             //rb2d.velocity -= behind * 0.4f;
+        }
+    }
+    /// <summary>
+    /// 速度が引数の値に少しずつ収束していく
+    /// </summary>
+    /// <param name="terminalVelocity"></param>
+    void SpeedConvergence(Vector2 terminalVelocity)
+    {
+        if (terminalVelocity.x > rb2d.velocity.x)
+        {
+            rb2d.velocity += new Vector2(0.3f, 0);
+        }
+        else
+        {
+            rb2d.velocity -= new Vector2(0.3f, 0);
+        }
+        if (terminalVelocity.y > rb2d.velocity.y)
+        {
+            rb2d.velocity += new Vector2(0,0.3f);
+        }
+        else
+        {
+            rb2d.velocity -= new Vector2(0,0.3f);
+        }
+    }
+    void ScrollDrive()
+    {
+        Vector2 forward = this.transform.up;
+        float rot = Vector3.Angle(ScrollVec, forward);
+        Debug.LogAssertion("WWW"+rot);
+        //スクロール方向を向いている
+        if (rot < 70)
+        {         
+            if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W))
+            {
+                rb2d.velocity = Vector2.zero;
+                AEC.PositionFix();
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                Decelerate(-forward, ScrollVec);
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    //ブースト音
+                    Scer.PlaySE(0);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.MoveBackRight();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.MoveBackLeft();
+                }
+                else
+                {
+                    AEC.MoveBack();
+                }
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                Accelerate(forward, ScrollVec);
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    //ブースト音
+                    Scer.PlaySE(0);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.MoveForwardLeft();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.MoveForwardRight();
+                }
+                else
+                {
+                    AEC.MoveForward(1.5f);
+                }
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.LeftTurn();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.RightTurn();
+                }
+                else {AEC.MoveForward();}
+                SpeedConvergence(ScrollVec);
+                Scer.FadeSE();
+            }
+        }
+        //スクロール方向に対して後ろ向き
+        else
+        {
+            SpeedConvergence(Vector2.zero);            
+            if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W))
+            {
+                rb2d.velocity = Vector2.zero;
+                AEC.PositionFix();
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                Decelerate(-forward, Vector2.zero);
+                if (Input.GetKeyDown(KeyCode.S))
+                {
+                    //ブースト音
+                    Scer.PlaySE(0);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.MoveBackRight();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.MoveBackLeft();
+                }
+                else
+                {
+                    AEC.MoveBack();
+                }
+            }
+            else if (Input.GetKey(KeyCode.W))
+            {
+                Accelerate(forward, Vector2.zero);
+                if (Input.GetKeyDown(KeyCode.W))
+                {
+                    //ブースト音
+                    Scer.PlaySE(0);
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.MoveForwardLeft();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.MoveForwardRight();
+                }
+                else
+                {
+                    AEC.MoveForward();
+                }
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.A))
+                {
+                    AEC.LeftTurn();
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    AEC.RightTurn();
+                }
+                else { AEC.Idle(); }
+                Scer.FadeSE();
+            }
         }
     }
     /// <summary>
@@ -258,7 +428,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             case 0:
                 {
                     isAuto = true;
-                    Scer.PlaySE(1,true);
+                    Scer.PlaySE(1, true);
                     float igniteVelocity = 0;
                     while (rb2d.velocity.y < drive_maximum_speed_factor + 10)
                     {
@@ -272,8 +442,8 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             case 1:
                 {
                     isAuto = false;
-                    Scer.PlaySE(1,true);
-                    Decelerate(-transform.up);
+                    Scer.PlaySE(1, true);
+                    Decelerate(-transform.up,Vector2.zero);
                     AEC.MoveBack();
                     break;
                 }
@@ -286,10 +456,17 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             default: { break; }
         }
     }
-    public void Ignition()
+    public IEnumerator Ignition()
     {
-        //アフターバーナーちょび点火
-        AEC.MoveForward(0.3f);
+        float time = 0;
+        Scer.PlaySE(0);
+        while (time > 5)
+        {
+            //アフターバーナーちょび点火
+            AEC.MoveForward(0.4f);
+            time += Time.deltaTime;
+        }
+        yield return null;
     }
     public IEnumerator TakeOFF()
     {
@@ -320,5 +497,15 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     public float GetMaximumSpeed()
     {
         return drive_maximum_speed_factor;
+    }
+    public void ScrollEnable(Vector2 inputScrollVec)
+    {
+        ScrollVec = inputScrollVec;
+        isScrollMode = true;
+    }
+    public void ScrollDisable()
+    {
+        rb2d.velocity *= 0.3f;
+        isScrollMode = false;
     }
 }
