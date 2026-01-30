@@ -227,10 +227,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u64CD\u4F5C\u65B9\u6CD5\nW\t\t\t\uFF1A\u524D\u9032\r\nS\t\t\t\uFF1A\u5F8C\u9000\r\nA\t\t\t\uFF1A\u5DE6\u65CB\u56DE\r\nD\t\t\t\uFF1A\u53F3\u65CB\u56DE\r\n\u53F3\u30AF\u30EA\u30C3\u30AF\t\t\uFF1A\u653B\u6483\u3001\uFF08\u30C1\u30E3\u30FC\u30B8\u5B8C\u4E86\u6642\uFF09\u30C1\u30E3\u30FC\u30B8\u653B\u6483\n\u30DE\u30A6\u30B9\u30C9\u30E9\u30C3\u30B0\t\uFF1A\u6575\u3092\u72D9\u3046\u3001UI\u306E\u9078\u629E\u3001\u30C1\u30E3\u30FC\u30B8\r\n\u5DE6\u30AF\u30EA\u30C3\u30AF\t\t\uFF1A\uFF08\u5408\u4F53\u53EF\u80FD\u6642\uFF09\u9E75\u7372\u3057\u305F\u30D1\u30FC\u30C4\u3092\u81EA\u6A5F\u3068\u5408\u4F53\n\u203B\u30D1\u30FC\u30C4\u304C\u81EA\u6A5F\u306B\u88AB\u3055\u3063\u3066\u3044\u305F\u308A\u96E2\u308C\u3066\u3044\u308B\u3068\u5408\u4F53\u3067\u304D\u307E\u305B\u3093"
+  m_text: "\u64CD\u4F5C\u65B9\u6CD5\nW\t\t\uFF1A\u524D\u9032\r\nS\t\t\uFF1A\u5F8C\u9000\r\nA\t\t\uFF1A\u5DE6\u65CB\u56DE\r\nD\t\t\uFF1A\u53F3\u65CB\u56DE\r\n\u53F3\u30AF\u30EA\u30C3\u30AF\t\uFF1A\u653B\u6483\u3001\uFF08\u30C1\u30E3\u30FC\u30B8\u5B8C\u4E86\u6642\uFF09\u30C1\u30E3\u30FC\u30B8\u653B\u6483\n\u30DE\u30A6\u30B9\u30C9\u30E9\u30C3\u30B0\t\uFF1A\u6575\u3092\u72D9\u3046\u3001UI\u306E\u9078\u629E\u3001\u30C1\u30E3\u30FC\u30B8\r\n\u5DE6\u30AF\u30EA\u30C3\u30AF\t\uFF1A\uFF08\u5408\u4F53\u53EF\u80FD\u6642\uFF09\u9E75\u7372\u3057\u305F\u30D1\u30FC\u30C4\u3092\u81EA\u6A5F\u3068\u5408\u4F53\n\u203B\u30D1\u30FC\u30C4\u304C\u81EA\u6A5F\u306B\u88AB\u3055\u3063\u3066\u3044\u305F\u308A\u96E2\u308C\u3066\u3044\u308B\u3068\u5408\u4F53\u3067\u304D\u307E\u305B\u3093"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
-  m_sharedMaterial: {fileID: 7892524304066038207, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
+  m_sharedMaterial: {fileID: -6208394142337221180, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -363,8 +363,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: PoseMenu
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
-  m_sharedMaterial: {fileID: 7892524304066038207, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
+  m_sharedMaterial: {fileID: -6208394142337221180, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -612,6 +612,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4677259153818465658}
     m_Modifications:
+    - target: {fileID: 3950403225370414173, guid: bc9e9eae5d640c24d98a5f6114ac686f, type: 3}
+      propertyPath: m_text
+      value: 'Close
+
+        PoseMenu'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3950403225370414173, guid: bc9e9eae5d640c24d98a5f6114ac686f, type: 3}
+      propertyPath: m_characterSpacing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4382366714814367345, guid: bc9e9eae5d640c24d98a5f6114ac686f, type: 3}
       propertyPath: m_Name
       value: PauseMenuCloseButton
@@ -716,7 +726,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_text
-      value: BackToStageSelect
+      value: 'BackTo
+
+        StageSelect'
       objectReference: {fileID: 0}
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_fontStyle
@@ -724,7 +736,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_characterSpacing
-      value: -12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_HorizontalAlignment
@@ -854,7 +866,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_text
-      value: BattleRestart
+      value: 'Battle
+
+        Restart'
       objectReference: {fileID: 0}
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_fontStyle
@@ -862,7 +876,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 500006975519362790, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_characterSpacing
-      value: -12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 933243696970712266, guid: 210262bc2117d064b86f2bdb05110f7a, type: 3}
       propertyPath: m_Name

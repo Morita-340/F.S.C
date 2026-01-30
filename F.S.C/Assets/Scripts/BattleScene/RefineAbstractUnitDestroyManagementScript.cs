@@ -13,7 +13,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     [SerializeField]
     protected GameObject ThisGameObject;
     [SerializeField]
-    private CoreBase ThisUnitSCore;
+    protected CoreBase ThisUnitSCore;
     //分離処理時の分離したユニットの親オブジェクト
     [SerializeField]
     GameObject DestroyParentUnitObject;

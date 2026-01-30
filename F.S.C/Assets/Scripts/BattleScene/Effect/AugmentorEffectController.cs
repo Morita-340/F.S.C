@@ -236,17 +236,17 @@ public class AugmentorEffectController : MonoBehaviour
         }
         if(BackAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackAugmentors){
-                EffectIncreaseRapidly(Augmentor,boostEfficiency);
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
         if(BackLeftAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackLeftAugmentors){
-                EffectIncreaseRapidly(Augmentor,boostEfficiency);
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
         if(BackRightAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackRightAugmentors){
-                EffectIncreaseRapidly(Augmentor,boostEfficiency);
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
     }
@@ -352,7 +352,9 @@ public class AugmentorEffectController : MonoBehaviour
             }
         }
     }
-    public void MoveForwardLeft(){
+    public void MoveForwardRight(float inputBoostEfficiency){
+        float boostEfficiency = inputBoostEfficiency;
+        if(boostEfficiency <= 0)boostEfficiency = 0.1f;
         if(FrontAugmentors.Count != 0){
             foreach(GameObject Augmentor in FrontAugmentors){
                 StartCoroutine(EfefctReduction(Augmentor));
@@ -370,12 +372,12 @@ public class AugmentorEffectController : MonoBehaviour
         }
         if(BackAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackAugmentors){
-                EffectIncrease(Augmentor,1f);
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
         if(BackLeftAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackLeftAugmentors){
-                EffectIncrease(Augmentor,0.5f);
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
         if(BackRightAugmentors.Count != 0){
@@ -384,34 +386,128 @@ public class AugmentorEffectController : MonoBehaviour
             }
         }
     }
-    public void MoveBackRight(){
-        if(FrontAugmentors.Count != 0){
-            foreach(GameObject Augmentor in FrontAugmentors){
-                EffectIncrease(Augmentor,1f);
+    public void MoveForwardLeft()
+    {
+        if (FrontAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (FrontLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontLeftAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (FrontRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontRightAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (BackAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+        if (BackLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackLeftAugmentors)
+            {
+                EffectIncrease(Augmentor, 0.5f);
+            }
+        }
+        if (BackRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackRightAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+    }
+    public void MoveForwardLeft(float inputBoostEfficiency){
+        float boostEfficiency = inputBoostEfficiency;
+        if(boostEfficiency <= 0)boostEfficiency = 0.1f;
+        if (FrontAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
             }
         }
         if(FrontLeftAugmentors.Count != 0){
             foreach(GameObject Augmentor in FrontLeftAugmentors){
-                EffectIncrease(Augmentor,1f);
+                StartCoroutine(EfefctReduction(Augmentor));
             }
         }
         if(FrontRightAugmentors.Count != 0){
             foreach(GameObject Augmentor in FrontRightAugmentors){
-                EffectIncrease(Augmentor,0.5f);
+                StartCoroutine(EfefctReduction(Augmentor));
             }
         }
         if(BackAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackAugmentors){
-                StartCoroutine(EfefctReduction(Augmentor));
+                EffectIncrease(Augmentor,boostEfficiency);
             }
         }
         if(BackLeftAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackLeftAugmentors){
-                StartCoroutine(EfefctReduction(Augmentor));
+                EffectIncrease(Augmentor,1f);
             }
         }
         if(BackRightAugmentors.Count != 0){
             foreach(GameObject Augmentor in BackRightAugmentors){
+                EffectIncrease(Augmentor,boostEfficiency);
+            }
+        }
+    }
+    public void MoveBackRight()
+    {
+        if (FrontAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+        if (FrontLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontLeftAugmentors)
+            {
+                EffectIncrease(Augmentor, 1f);
+            }
+        }
+        if (FrontRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in FrontRightAugmentors)
+            {
+                EffectIncrease(Augmentor, 0.5f);
+            }
+        }
+        if (BackAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (BackLeftAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackLeftAugmentors)
+            {
+                StartCoroutine(EfefctReduction(Augmentor));
+            }
+        }
+        if (BackRightAugmentors.Count != 0)
+        {
+            foreach (GameObject Augmentor in BackRightAugmentors)
+            {
                 StartCoroutine(EfefctReduction(Augmentor));
             }
         }

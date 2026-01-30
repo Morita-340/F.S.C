@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 8534901622539461850}
   - component: {fileID: 8158670229112910437}
   - component: {fileID: 3115954855378620839}
+  - component: {fileID: 2051039371731403075}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -130,6 +131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Setting: 0
+  isPlayerHoming: 0
 --- !u!114 &8534901622539461850
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,7 +177,8 @@ MonoBehaviour:
   target: {x: 0, y: 0, z: 0}
   ReDUMSObj: {fileID: 7332052915261354937, guid: 24b41300dc6f3cd498e81441cf872e71, type: 3}
   NormalCursorImage: {fileID: 2800000, guid: 94762ad7d763c50499034f698f672019, type: 3}
-  RockONCursorImage: {fileID: 2800000, guid: 18172b86ee0ae21418ef5b1030743e09, type: 3}
+  RockONCursorImage: {fileID: 2800000, guid: e152b329f36eb214f9fcd7e7d5007bf8, type: 3}
+  PSAFBUIC: {fileID: 0}
 --- !u!114 &3115954855378620839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +197,19 @@ MonoBehaviour:
   ReDUMS: {fileID: 0}
   PreviewPosition: {x: 0, y: 0, z: 0}
   PreviewRotation: {x: 0, y: 0, z: 0}
+--- !u!114 &2051039371731403075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8670030287841049984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be9ae854589a8c47b29bb3bdbe39494, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetAspect: 1.7777778
 --- !u!1001 &611470377714818127
 PrefabInstance:
   m_ObjectHideFlags: 0

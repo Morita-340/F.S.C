@@ -10,7 +10,9 @@ public class AbstractExplosionEffectManager : MonoBehaviour
     /// </summary>
     [SerializeField]protected GameObject ExplosionObj;
     [SerializeField,ReadOnly]protected SoundController SCer;
-    protected virtual void Awake(){
+    protected int EffectRadius = 1;
+    protected virtual void Awake()
+    {
         SCer = GetComponent<SoundController>();
     }
     protected virtual void Start(){
@@ -19,7 +21,7 @@ public class AbstractExplosionEffectManager : MonoBehaviour
         //爆発エフェクトが徐々にフェードアウトする仕組み
         if(flag == true){
             ExplosionObj.SetActive(flag);
-            Vector3 ExplosionScale = ExplosionObj.transform.localScale;
+            Vector3 ExplosionScale = new Vector3(EffectRadius, EffectRadius, EffectRadius);
             ExplosionObj.transform.localScale = new Vector3(1,1,1);
             StartCoroutine(DestroyObjectGradually(ExplosionObj.GetComponent<SpriteRenderer>(),ExplosionScale));
         }else{ExplosionObj.SetActive(flag);}

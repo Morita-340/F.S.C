@@ -78,20 +78,24 @@ public class AttackUnit : UnitBase
     // Update is called once per frame
     protected override void Update()
     {
-        if(FR.InRange(targetPosition)){
-            lineRenderer.enabled = true;
-            positions = new Vector3[]{transform.position,targetPosition};
-            lineRenderer.SetPositions(positions);
-        }else{lineRenderer.enabled = false;}
-        if (FR.InRockONRange(targetPosition)&&enemyHit2D&&isHoming)
+        //射程内
+        if (FR.InRange(targetPosition))
         {
-            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.red;}
-            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.blue;lineRenderer.endColor = new Color(0,0,0,0);}
+            lineRenderer.enabled = true;
+            positions = new Vector3[] { transform.position, targetPosition };
+            lineRenderer.SetPositions(positions);
+        }
+        else { lineRenderer.enabled = false; }
+        //ロックオン射程内
+        if (FR.InRockONRange(targetPosition) && enemyHit2D && isHoming)
+        {
+            if (tag == GSetting.ObjTagName.PlayerUnit.ToString()) { lineRenderer.startColor = new Color(0, 0, 0, 0); lineRenderer.endColor = Color.red; }
+            if (tag == GSetting.ObjTagName.EnemyUnit.ToString()) { lineRenderer.startColor = Color.blue; lineRenderer.endColor = new Color(0, 0, 0, 0); }
         }
         else
         {
-            if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.green;}
-            if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = new Color(0,0,0,0);}
+            if (tag == GSetting.ObjTagName.PlayerUnit.ToString()) { lineRenderer.startColor = new Color(0, 0, 0, 0); lineRenderer.endColor = Color.green; }
+            if (tag == GSetting.ObjTagName.EnemyUnit.ToString()) { lineRenderer.startColor = Color.red; lineRenderer.endColor = new Color(0, 0, 0, 0); }
         }
         base.Update();
     }
@@ -99,46 +103,57 @@ public class AttackUnit : UnitBase
     {
         if(NormalWeapon == null){yield break;}
         Debug.Log("LLLL");
-        if(FR.InRange(TargetPosition)){
+        //射程内
+        if (FR.InRange(TargetPosition))
+        {
             yield return base.NormalAttack(TargetPosition);
             Vector3 FirePosition = this.transform.position;
             Quaternion FireRotation = this.transform.rotation;
             //ロケット弾を前方に射出
             string tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
-            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-                case GSetting.ObjTagName.PlayerUnit:{
-                    tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
-                    break;}
-                case GSetting.ObjTagName.EnemyUnit:{
-                    tagName = GSetting.ObjTagName.EnemyWeapon1.ToString();
-                    break;
-                }
-                default:break;
+            switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+            {
+                case GSetting.ObjTagName.PlayerUnit:
+                    {
+                        tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
+                        break;
+                    }
+                case GSetting.ObjTagName.EnemyUnit:
+                    {
+                        tagName = GSetting.ObjTagName.EnemyWeapon1.ToString();
+                        break;
+                    }
+                default: break;
 
             }
             NormalWeapon.tag = tagName;
-            WeaponBase InstWeapon = Instantiate(NormalWeapon,FirePosition,FireRotation);
+            WeaponBase InstWeapon = Instantiate(NormalWeapon, FirePosition, FireRotation);
             Vector2 thisVelocity = this.transform.root.GetComponent<Rigidbody2D>().velocity;
             //InstWeapon.SetVelocity(thisVelocity);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            WeaponLook(InstWeapon,TargetPosition);
+            WeaponLook(InstWeapon, TargetPosition);
             //if (FR.InRockONRange(targetPosition) && isHoming)
-            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *NormalWeapon.GetVelocityEfficiency()+ thisVelocity*0.3f;
-            if (FR.InRockONRange(targetPosition))
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta() * 10 * NormalWeapon.GetVelocityEfficiency() + thisVelocity * 0.3f;
+            //ロックオン射程内
+            if (FR.InRockONRange(targetPosition) && enemyHit2D && isHoming)
             {
                 Debug.LogWarning("WWW");
                 //InstWeapon.SetHoming(enemyHit2D.collider?.gameObject);
-                weaponVelocity *= 5;
+                weaponVelocity *= 4;
             }
             yield return new WaitForSeconds(attackTimeOffset);
-            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-                case GSetting.ObjTagName.PlayerUnit:{
-                    break;}
-                case GSetting.ObjTagName.EnemyUnit:{
-                    weaponVelocity = 0.7f * weaponVelocity;
-                    break;
-                }
-                default:break;
+            switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+            {
+                case GSetting.ObjTagName.PlayerUnit:
+                    {
+                        break;
+                    }
+                case GSetting.ObjTagName.EnemyUnit:
+                    {
+                        weaponVelocity = 0.7f * weaponVelocity;
+                        break;
+                    }
+                default: break;
             }
             InstWeapon.SetVelocity(weaponVelocity);
         }

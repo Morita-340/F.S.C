@@ -23,7 +23,7 @@ public class ForcedScrollRuntime : IWaveRuntime
         EnemyList = EUDMSList;
         InstPosList = inputInstPosList;
         initialSettingFlag = true;
-        scrollTime = inputScrollTime;
+        scrollTime = inputScrollTime < 0? 1:inputScrollTime;
     }
     public void ScrollFlowCall(MainCameraController inputMCC, Vector2 StartPos, Vector2 GoalPos)
     {
@@ -33,11 +33,13 @@ public class ForcedScrollRuntime : IWaveRuntime
     {
         Debug.LogAssertion("DDDD");
         //自機のスクロール設定(挙動設定)
+        //スクロール時間＝(スクロール時間%生成スパン)*生成スパン+(スクロール時間 - (スクロール時間%生成スパン)*生成スパン)
         MCC = inputMCC;
         scrollStartPos = StartPos;
         scrollGoalPos = GoalPos;
         float flowTime = scrollTime;
         float spawnSpan = (30 < scrollTime / 4) ? scrollTime / 4 : 30;
+        int scheduledSpawnTimes = (int)(scrollTime / spawnSpan);
         float nowTime = 0;
         //カメラのプレイヤー追従を解除
         MCC.SetPlayerHoming(false);
@@ -46,7 +48,7 @@ public class ForcedScrollRuntime : IWaveRuntime
         //StartPosまで移動してもらったらGoalPosまでの移動開始
         StartCoroutine(MCC.MoveToScrollGoalPos(GoalPos, scrollTime));
         RePUDMS.gameObject.GetComponent<PlayerUnitMoveManagementScript>().ScrollEnable((GoalPos - StartPos)/scrollTime);
-        do
+        while (nowTime < scheduledSpawnTimes)
         {
             //最短30秒ごと、最長scrollTime/4で生成を繰り返す
             foreach (RefineEnemyUnitDestroyManagementScript ReEUDMS in ReSpS.Spawn(RePUDMS.GetCombatPower(), EnemyList, InstPosList))
@@ -55,12 +57,16 @@ public class ForcedScrollRuntime : IWaveRuntime
                 ReEUDMS.gameObject.GetComponent<EnemyUnitMoveManagementScript>().ScrollForce((GoalPos - StartPos).normalized);
                 SpawnedEnemyList.Add(ReEUDMS);
             }
-            nowTime += spawnSpan;
-            yield return new WaitForSeconds(spawnSpan > scrollTime?scrollTime:spawnSpan);
-        } while (nowTime <= scrollTime);
+            nowTime ++;
+            yield return new WaitForSeconds(spawnSpan);
+        }
         //自機のスクロール設定(挙動設定)解除
         RePUDMS.gameObject.GetComponent<PlayerUnitMoveManagementScript>().ScrollDisable();
-        yield return new WaitForSeconds(scrollTime - nowTime <0?0f:scrollTime - nowTime);
+        yield return new WaitForSeconds(scrollTime - scheduledSpawnTimes*spawnSpan <=0?0f:scrollTime - scheduledSpawnTimes*spawnSpan);
+        //所定の位置にプレイヤーが移動するまで待つ（判定とプレイヤーがぶつかる場所が丁度画面真ん中になるよう調整された専用の当たり判定オブジェクトを用意）
+        //※こうしないとスクロール時間が終了した途端にカメラがギュンッと動いてしまう＋次のウェーブ開始地点が想定エリア外になってしまう
+        //yield return new WaitUntil(なんやかんや);
+        //判定取得後にステージ上のオブジェクトを動かして逆走出来ないようにする必要がある
         //カメラのプレイヤー追従を開始（２連続のスクロールの場合ならその時に解除すればいい※全てのウェーブでMCC参照を取ってくるのが面倒くさいのでこうした）
         MCC.SetPlayerHoming(true);
         Debug.LogAssertion("JJHHHHH"+RePUDMS.GetIsDead());

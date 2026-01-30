@@ -611,7 +611,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7215966066374445253, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: turn_factor
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7215966066374445253, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: maximum_turn_factor

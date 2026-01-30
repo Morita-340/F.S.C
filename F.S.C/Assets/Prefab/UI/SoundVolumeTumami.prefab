@@ -114,6 +114,7 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}
 --- !u!1 &6643117771143765637
@@ -151,7 +152,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 100}
-  m_SizeDelta: {x: 250, y: 100}
+  m_SizeDelta: {x: 260, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4737645727328005876
 CanvasRenderer:
@@ -185,8 +186,8 @@ MonoBehaviour:
 
     S - L'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
-  m_sharedMaterial: {fileID: 7892524304066038207, guid: 755ee559e1f7d64478d75a11cd09b881, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
+  m_sharedMaterial: {fileID: -6208394142337221180, guid: 57b7a076abdec944b824cdf88cf32aef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

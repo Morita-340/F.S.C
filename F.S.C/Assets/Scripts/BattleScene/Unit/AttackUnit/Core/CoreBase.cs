@@ -31,12 +31,24 @@ public class CoreBase : AttackUnit
         base.Update();
     }
     /// <summary>
+    /// 分離回数が一定値を超えた際に強制的に撃破させるpublic処理。ゲームのテンポ向上を目的とする
+    /// </summary>
+    public void OutCoreDestroyProcess()
+    {
+        if (this.gameObject.tag == GSetting.ObjTagName.EnemyUnit.ToString())
+        {
+            CEM.ExplosionActive(true);
+            FR.DestroyRMM();
+            DestroyCore();
+        }
+    }
+    /// <summary>
     /// コアが破壊された場合はプレイヤーユニットが完全に消去される
     /// </summary>
     protected override void DestroyUnit()
     {
         if (!ReAUDMS.GetIsDead())
-        {   
+        {
             CEM.ExplosionActive(true);
             FR.DestroyRMM();
             DestroyCore();

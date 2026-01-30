@@ -52,8 +52,7 @@ public class ResultUIController : MonoBehaviour
     public IEnumerator ResultUI(GSetting.ResultSituation situation){
         //目標値の設定
         bool isClear = IsThisSituationClear(situation);
-        if(isClear){StartCoroutine(SCer.PlayBGM(0));}
-        else{StartCoroutine(SCer.PlayBGM(1));}
+        StartCoroutine(ResultSound(isClear));
         resultSituation = situation.ToString();
         var resultStatus = PAFBUC.GetPlayerFinalStatus();
         defeatpoint = resultStatus.Item1;
@@ -95,8 +94,21 @@ public class ResultUIController : MonoBehaviour
         switch (resultSituation){
             default:break;}
     }
-    public void noDamageClearWaveNumCountUp(){
-        noDamageClearWaveNum ++;
+    private IEnumerator ResultSound(bool isClear)
+    {
+        if (isClear)
+        {
+            StartCoroutine(SCer.PlayBGM(0));
+        }
+        else
+        {
+            StartCoroutine(SCer.PlayBGM(1));
+        }
+        yield break;
+    }
+    public void noDamageClearWaveNumCountUp()
+    {
+        noDamageClearWaveNum++;
     }
     /// <summary>
     /// 入力のシチュエーションが成功なのか失敗なのかを識別する

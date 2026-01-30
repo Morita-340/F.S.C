@@ -2637,6 +2637,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1259245535370173676, guid: 9a64188693ac7ab4d9fd049d57fdbb50, type: 3}
+      propertyPath: regenePoint
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1259245535370173676, guid: 9a64188693ac7ab4d9fd049d57fdbb50, type: 3}
       propertyPath: ThisUnitSCore
       value: 
       objectReference: {fileID: 5305666695937298327}

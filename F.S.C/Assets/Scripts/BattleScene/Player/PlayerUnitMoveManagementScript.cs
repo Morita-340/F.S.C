@@ -9,7 +9,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
 {
     [SerializeField]
     GameObject PlayerUnit;
-    [SerializeField, Range(0, 3)]
+    [SerializeField, Range(0, 10)]
     float turn_factor = 2;
     [SerializeField, Range(1, 180)]
     int maximum_turn_factor = 1;
@@ -191,24 +191,28 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     /// <summary>
     /// 速度が引数の値に少しずつ収束していく
     /// </summary>
-    /// <param name="terminalVelocity"></param>
-    void SpeedConvergence(Vector2 terminalVelocity)
+    /// <param name="terminalVelocity">終端速度</param>
+    /// <param name="inputAcceleration">加速度。振り向き時の減速度合いが上がり、スクロール時のかくつきが高くなる。場面に応じて調整必須</param>
+    void SpeedConvergence(Vector2 terminalVelocity,float inputAcceleration)
     {
+        //加速度。これはデフォルト値
+        float acceleration = 0.1f;
+        acceleration = inputAcceleration;
         if (terminalVelocity.x > rb2d.velocity.x)
         {
-            rb2d.velocity += new Vector2(0.3f, 0);
+            rb2d.velocity += new Vector2(acceleration, 0);
         }
         else
         {
-            rb2d.velocity -= new Vector2(0.3f, 0);
+            rb2d.velocity -= new Vector2(acceleration, 0);
         }
         if (terminalVelocity.y > rb2d.velocity.y)
         {
-            rb2d.velocity += new Vector2(0,0.3f);
+            rb2d.velocity += new Vector2(0,acceleration);
         }
         else
         {
-            rb2d.velocity -= new Vector2(0,0.3f);
+            rb2d.velocity -= new Vector2(0,acceleration);
         }
     }
     void ScrollDrive()
@@ -255,11 +259,11 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
-                    AEC.MoveForwardLeft();
+                    AEC.MoveForwardLeft(1.5f);
                 }
                 else if (Input.GetKey(KeyCode.D))
                 {
-                    AEC.MoveForwardRight();
+                    AEC.MoveForwardRight(1.5f);
                 }
                 else
                 {
@@ -277,14 +281,14 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                     AEC.RightTurn();
                 }
                 else {AEC.MoveForward();}
-                SpeedConvergence(ScrollVec);
+                SpeedConvergence(ScrollVec,0.1f);
                 Scer.FadeSE();
             }
         }
         //スクロール方向に対して後ろ向き
         else
         {
-            SpeedConvergence(Vector2.zero);            
+            SpeedConvergence(Vector2.zero,0.5f);            
             if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.W))
             {
                 rb2d.velocity = Vector2.zero;
@@ -418,7 +422,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         Debug.Log("PUMMS" + minimum_rotation + " " + thisRotationZ + " " + right_miximum_rotation + "g" + PlayerUnit.transform.rotation.eulerAngles.z);
     }
     /// <summary>
-    /// ステージ入場時の演出用
+    /// ステージ入場時の演出用・強制スクロール時の画面外出た時
     /// </summary>
     public void AutoPilot(int PilotMode)
     {
@@ -451,6 +455,15 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             case 2:
                 {
                     isAuto = false;
+                    break;
+                }
+            //強制スクロールウェーブ時のコアが画面外に出た時の復帰処理
+            case 3:
+                {
+                    //コアが画面外に出た時にカメラ座標-コア座標ベクトルがスクロール座標と比較して90°以上あるなら、
+                        //rotation=スクロール方向、一定時間（1s-1.5s程度）の加速処理
+                    //コアが画面外に出た時にカメラ座標-コア座標ベクトルがスクロール座標と比較して90°未満なら
+                        //加速しても画面外に出ない
                     break;
                 }
             default: { break; }

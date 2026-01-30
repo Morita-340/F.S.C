@@ -411,7 +411,9 @@ public class UnitBase : MonoBehaviour
                             }
                         }
                         break;}
-                    case GSetting.ObjTagName.CoreExplosion:{
+                        /*
+                    case GSetting.ObjTagName.CoreExplosion:
+                            {
                         CoreBase coreBase = collision2D.transform.parent.GetComponent<CoreEffectManager>().GetThisCore();
                         if(HitPoint > 0){
                             if(isPrime){ReAUDMS.DecreasePrimeUnitsHP(coreBase.GetUnitStatus());}
@@ -420,6 +422,7 @@ public class UnitBase : MonoBehaviour
                             }
                         }
                         break;}
+                        */
                     case GSetting.ObjTagName.GrenadeExplosion:{
                         GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
                         if(HitPoint > 0){

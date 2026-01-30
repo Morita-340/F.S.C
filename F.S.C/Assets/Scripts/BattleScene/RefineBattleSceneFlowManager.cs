@@ -75,6 +75,11 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
             //スクロールするならカメラも設定が必要
             if (waveData is ScrollWaveIF SWIF) { Debug.LogAssertion("DDDDAA"); SWIF.SetMCC(MCC); }
             yield return new WaitUntil(() => runtime.GetSuccessFlag() || runtime.GetFailureFlag());
+            //最終ウェーブでボス撃破時は爆発演出が入るため、それ以降は機体操作受付拒否+無敵+ポーズ画面開くのを拒否
+            if (nowWaveCount == waveDataList.Count && runtime.GetSuccessFlag())
+            {
+                yield return new WaitForSeconds(3f);
+            }
             if (runtime.GetFailureFlag())
             {
                 situation = GSetting.ResultSituation.MissionFailed;
@@ -82,11 +87,15 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
             }
             waveData.DestroyProcess(this);
             NoDamageClearWaveNumCountUp();
-            WSEUIC.WaveClearUI();
-            yield return new WaitForSeconds(3f);
+            if (nowWaveCount == waveDataList.Count) { }
+            else
+            {
+                WSEUIC.WaveClearUI();
+                yield return new WaitForSeconds(3f);
+            }
             if (nowWaveCount == waveDataList.Count) { situation = GSetting.ResultSituation.AllWaveClear; }
         }
-
+        isBattleEnd = true;
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
         BattleEndProcess(situation);
     }

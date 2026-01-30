@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PauseMenuCloseButton : SliderButton
 {
-    BattleSceneFlowManager BSFM;
+    RefineBattleSceneFlowManager ReBSFM;
     protected override void Start()
     {
         base.Start();
-        BSFM = FindObjectOfType<BattleSceneFlowManager>();
+        ReBSFM = FindObjectOfType<RefineBattleSceneFlowManager>();
     }
 
     // Update is called once per frame
@@ -17,7 +17,7 @@ public class PauseMenuCloseButton : SliderButton
         base.Update();
         if(executeFlag){
             SCer.PlaySE(1);
-            BSFM.UnPause();
+            ReBSFM.UnPause();
             executeFlag = false;
             ExecuteSlider.sizeDelta = new Vector2(0,ExecuteSlider.sizeDelta.y);
         }

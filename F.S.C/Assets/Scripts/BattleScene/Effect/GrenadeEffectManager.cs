@@ -36,7 +36,7 @@ public class GrenadeEffectManager : AbstractExplosionEffectManager
     }
     private void SetGrenadeExplosionScope(int scopeRadius){
         //コライダーではなくスケールなのは、エフェクト（仮でスプライト、後でアニメーションに変更する予定）のサイズも変えないといけないから
-        ExplosionObj.transform.localScale = new Vector3(scopeRadius*2,scopeRadius*2,scopeRadius*2);
+        EffectRadius = scopeRadius * 2;
         ExplosionObj.transform.localPosition = new Vector3(0,0,10);
     }
 }

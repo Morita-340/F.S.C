@@ -35,9 +35,9 @@ public class ReactorEffectManager : AbstractExplosionEffectManager
         EffectScope.SetActive(flag);
     }
     public void SetReactorEffectScope(int scopeRadius){
+        EffectRadius = scopeRadius * 2;
         //コライダーではなくスケールなのは、エフェクト（仮でスプライト、後でアニメーションに変更する予定）のサイズも変えないといけないから
         EffectScope.transform.localScale = new Vector3(scopeRadius*2,scopeRadius*2,scopeRadius*2);
-        ExplosionObj.transform.localScale = new Vector3(scopeRadius*2,scopeRadius*2,scopeRadius*2);
         EffectScope.transform.localPosition = new Vector3(0,0,10);
         ExplosionObj.transform.localPosition = new Vector3(0,0,10);
     }
