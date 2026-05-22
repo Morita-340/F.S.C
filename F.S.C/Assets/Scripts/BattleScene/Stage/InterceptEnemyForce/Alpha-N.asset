@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52c398f2eb85b674da34236e6a263079, type: 3}
-  m_Name: WaveEliminateTest
+  m_Name: Alpha-N
   m_EditorClassIdentifier: 
-  GoalText: "\u6575\u3092\u6BB2\u6EC5\u305B\u3088\uFF01"
+  GoalText: "\u6575\u3092\u6BB2\u6EC5\u305B\u3088"
   ExplainText: 
   ExplainTexPos: {x: 0, y: 0}
-  waveShapePreset: 8
+  waveShapePreset: 7
   instantiableEnemyList:
-  - {fileID: 7182266524061389325, guid: 6fede02c47c61e7419aed3c846966e3c, type: 3}
-  - {fileID: 7182266524061389325, guid: 6fede02c47c61e7419aed3c846966e3c, type: 3}
+  - {fileID: 5434272985713230928, guid: 76ec5edbbb525374ab71f5405cdd3d60, type: 3}
+  - {fileID: 5434272985713230928, guid: 76ec5edbbb525374ab71f5405cdd3d60, type: 3}

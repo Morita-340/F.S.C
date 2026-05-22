@@ -9,6 +9,7 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     [SerializeField, ReadOnly]
     BattleStageData BSD;
     RefinePlayerUnitDestroyManagementScript RePUDMS;
+    PlayerUnitMoveManagementScript PUMMS;
     [SerializeField]
     WaveStartEndUIController WSEUIC;
     [SerializeField]
@@ -39,6 +40,7 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         Player = Instantiate(GFM.GetSelectedPlayer().Item1, PlayerSpawnPoint.transform.position, Quaternion.Euler(Vector3.zero));
         BSD = GFM.GetStageData();
         RePUDMS = Player.GetComponent<RefinePlayerUnitDestroyManagementScript>();
+        PUMMS = Player.GetComponent<PlayerUnitMoveManagementScript>();
         ReMI.SetPlayer(Player);
         ReMI.SetPSAFBUIC(PSAFBUIC);
         BackToSettingButton = PauseMenu.transform.Find("BackToSettingButton").GetChild(0).GetComponent<WindowTranslateButton>();
@@ -70,7 +72,8 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
             //ウェーブの目的を大まかにテキスト表示
             EventGoal.text = waveData.GetGoalText();
             //説明テキストのテキスト設定＋配置
-            explainText.SetText(waveData.GetExplainText(), waveData.GetExplainTexPos());
+            //explainText?.SetText(waveData.GetExplainText(), waveData.GetExplainTexPos());
+            Debug.LogWarning("WWWWWWWW"+waveDataList.Count);
             IWaveRuntime runtime = waveData.InitialSetting(this, RePUDMS);
             //スクロールするならカメラも設定が必要
             if (waveData is ScrollWaveIF SWIF) { Debug.LogAssertion("DDDDAA"); SWIF.SetMCC(MCC); }
@@ -78,6 +81,8 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
             //最終ウェーブでボス撃破時は爆発演出が入るため、それ以降は機体操作受付拒否+無敵+ポーズ画面開くのを拒否
             if (nowWaveCount == waveDataList.Count && runtime.GetSuccessFlag())
             {
+                //無敵
+                RePUDMS.SetInvincible(true);
                 yield return new WaitForSeconds(3f);
             }
             if (runtime.GetFailureFlag())
@@ -97,21 +102,21 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         }
         isBattleEnd = true;
         //最終ウェーブまで到達またはプレイヤーが撃墜されたのでスコア計算を行いバトルを終える
-        BattleEndProcess(situation);
+        StartCoroutine(BattleEndProcess(situation));
     }
     IEnumerator StartPerformance()
     {
         WSEUIC.StageEntryUI(BSD.GetStageName());
         //yield return new WaitForSeconds(0.2f);
         //MCC.EngineIgniteShake();
-        Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(0);
+        PUMMS.AutoPilot(0);
         //画面中央に来たら追従開始
         yield return new WaitUntil(() => CPHT.CameraPlayerHoming());
         MCC.SetIsPlayerHomingTrue();
         StartCoroutine(PSAFBUIC.UIStartUp());
         //母艦が画面外になるよう（アナログ的に設定）移動できれば処理終了。戦闘開始
         yield return new WaitUntil(() => SST.StageStart());
-        Player.GetComponent<PlayerUnitMoveManagementScript>().AutoPilot(2);
+        PUMMS.AutoPilot(2);
         //母艦は見た目だけなので戦闘中は非表示
         MotherShip.SetActive(false);
         WSEUIC.StageEntryUIFade();
@@ -143,13 +148,40 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         //SEやBGMの一時停止を解除
         WSEUIC.UnPauseUI();
     }
-    private void BattleEndProcess(GSetting.ResultSituation situation)
+    private IEnumerator BattleEndProcess(GSetting.ResultSituation situation)
     {
         WSEUIC.BattleEnd();
         StartCoroutine(RUC.ResultUI(situation));
+            Debug.LogAssertion(PUMMS.transform.position+"VVVV1" +BSD.GetAfterCleared1stMovePos());
+        //一定時間経ったら強制的にステージ選択画面に戻る必要があるためタイマー計測開始
+        StartCoroutine(ForceBackToStageSelect());
+        //向きと中継地点を決める
+        yield return StartCoroutine(PUMMS.SetAutoPilotVector(BSD.GetAfterCleared1stMovePos()));
+            Debug.LogAssertion(PUMMS.transform.position+"VVVV2" +BSD.GetAfterCleared1stMovePos());
+        //オートパイロットで進む
+        PUMMS.AutoPilot(4);
+        //中継地点に到達
+        yield return new WaitUntil(() => (PUMMS.transform.position - BSD.GetAfterCleared1stMovePos()).magnitude <3);
+        //さらに向きを変えて
+        yield return StartCoroutine(PUMMS.SetAutoPilotVector(BSD.GetAfterClearedLastMovePos()));
+        //オートパイロット
+        PUMMS.AutoPilot(4);
     }
-    private void NoDamageClearWaveNumCountUp(){
-        if(RePUDMS.GetNoDamageFlag()){RUC.noDamageClearWaveNumCountUp();}
+    /// <summary>
+    /// ステージ終了後リザルト画面から3分以上遷移操作を行わなかった場合に強制的にステージ画面へ遷移する仕組み
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ForceBackToStageSelect()
+    {
+            Debug.LogAssertion("VVVV3");
+        yield return new WaitForSeconds(180);
+            Debug.LogAssertion("VVVV4");
+        //遷移ボタンを押した判定
+        RUC.BackToStageSelect();
+    }
+    private void NoDamageClearWaveNumCountUp()
+    {
+        if (RePUDMS.GetNoDamageFlag()) { RUC.noDamageClearWaveNumCountUp(); }
         RePUDMS.noDamageFlagReset();
     }
 }

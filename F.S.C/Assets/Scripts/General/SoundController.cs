@@ -165,7 +165,7 @@ public class SoundController : MonoBehaviour
     /// 呼び出されたら、現在再生中のSEのAudioSourceの音量を少しずつ下げ、0になるまで待つ
     /// </summary>
     public IEnumerator FadeSE(){
-        SEPlayer.volume = Mathf.Lerp(SEPlayer.volume,0,0.5f);
+        SEPlayer.volume = Mathf.Lerp(SEPlayer.volume,0,0.2f);
         yield return new WaitWhile(() => SEPlayer.volume == 0);
     }
     public void ChangeSEPitch(float input) {

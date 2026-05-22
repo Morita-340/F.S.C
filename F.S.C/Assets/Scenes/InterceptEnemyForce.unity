@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 964131}
   - component: {fileID: 964133}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: BackImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -205,13 +205,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 964129}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3204c39d78171224693877c8a56d9bb9, type: 3}
+  m_Script: {fileID: 11500000, guid: 18f4ab2f26afaf54db6162548fe885fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rawImage: {fileID: 964131}
-  xSpeed: 0.0016
-  ySpeed: 0.0009
-  roop: 0
+  spriteDepth: 0.01
+  MainCamera: {fileID: 519420031}
 --- !u!1 &312711036
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,7 +230,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &312711037
 MonoBehaviour:
   m_ObjectHideFlags: 0

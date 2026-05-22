@@ -16,6 +16,7 @@ public class EliminateAllEnemy : RefineWaveData
     //色んなルール（変数）を記述
     public override IWaveRuntime InitialSetting(RefineBattleSceneFlowManager ReBSFM, RefinePlayerUnitDestroyManagementScript inputRePUDMS)
     {
+        Debug.LogWarning("WWWWWWWW");
         EAERT = ReBSFM.AddComponent<EliminateAllEnemyRunTime>();
         waveRuntime = EAERT;
         EAERT.InitialSetting(inputRePUDMS, instantiableEnemyList,GetSelectedWaveShapePreset());

@@ -8,7 +8,7 @@ public class CoreEffectManager : AbstractExplosionEffectManager
 {
     [SerializeField,ReadOnly]
     CoreBase ThisCore;
-    [SerializeField,Range(2,10)]int explosionScopeRadius = 2;
+    [SerializeField,Range(2,10)]protected int explosionScopeRadius = 2;
 
     public CoreBase GetThisCore(){
         return ThisCore;

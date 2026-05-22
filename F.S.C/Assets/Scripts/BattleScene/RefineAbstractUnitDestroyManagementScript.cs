@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FSCGeneral;
+using System;
 /// <summary>
 /// AUDMSのリファイン版。
 /// AUDMS→Unitで管理していたが、複数のUnitをまとめて一つの機能として動かせるようにしたくなった。そこでAPCという役割を追加し、ReAUDMS→APC→Unitという構造で動かす
@@ -23,6 +24,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     protected GSetting.ObjTagName childObjTagName;
     [SerializeField, Range(1, 100)]
     protected int primeUnitsHP = 10;
+    protected int initPrimeUnitHP = 10;
     [SerializeField, ReadOnly]
     protected int combatPower = 0;
     [SerializeField, ReadOnly]
@@ -44,6 +46,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     protected virtual void Awake()
     {
         ThisGameObject = gameObject;
+        initPrimeUnitHP = primeUnitsHP;
     }
     // Start is called before the first frame update
     protected virtual void Start()
@@ -254,9 +257,25 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     {
         return primeUnitsHP;
     }
-    public void DecreasePrimeUnitsHP(int decreaseValue)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="decreaseValue"></param>
+    /// <param name="ratio"></param>
+    public virtual void DecreasePrimeUnitsHP(int decreaseValue, bool ratio)
     {
-        primeUnitsHP -= decreaseValue;
+        if (!ratio)
+        {
+            primeUnitsHP -= decreaseValue;
+        }
+        else
+        {
+            //割合ダメージ量を計算
+            int decreaseRatioValue = (int)(initPrimeUnitHP *(decreaseValue / 100f));
+            Debug.LogWarning(initPrimeUnitHP +" "+decreaseValue+" "+decreaseRatioValue);
+            //HP割合減少値の計算結果が0-1間なら1として扱う＝最小でも1ダメージは食らう
+            primeUnitsHP -= decreaseRatioValue > 0 ? decreaseRatioValue : 1;
+        }
     }
     public int GetCombatPower(){
         return combatPower;

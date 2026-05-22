@@ -50,12 +50,12 @@ public class AbstractPartsController : MonoBehaviour
     /// <summary>
     /// 受動ジョイントユニット側の
     /// </summary>
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     protected List<PassiveJointUnit> PassiveJointLink = new List<PassiveJointUnit>();
     /// <summary>
     /// ActiveJointは如何なるパーツに対しても一つのみ（合体対象の合体向きの候補が増えてしまって合体までの操作数が増えてしまうのは、操作テンポを悪くしかねないため）
     /// </summary>
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     protected ActiveJointUnit ActiveJointLink;
     [SerializeField, ReadOnly]
     protected int PartsAttackPower = 0;
@@ -132,7 +132,7 @@ public class AbstractPartsController : MonoBehaviour
             //Debug.Log("GGG" + childUnitObject.tag+childObjTagName.ToString());
             if (childUnitObject.tag == childObjTagName.ToString())
             {
-                if(ChildUnit is AttackUnit){ Debug.Log(ChildUnit.GetThisUnitData()); }
+                if (ChildUnit is AttackUnit) { Debug.Log(ChildUnit.GetThisUnitData()); }
                 ChildUnitDataList.Add(ChildUnit.GetThisUnitData());
                 ChildUnit.ReRegistData();
             }
@@ -514,7 +514,7 @@ public class AbstractPartsController : MonoBehaviour
                 {
                     combatPower += reactorBase.CaluculateReactorEffect() + reactorBase.GetUnitStatus();
                     PartsHP += reactorBase.GetUnitStatus();
-                    if(reactorBase.GetIsPrime())primeUnitHPAdded = true;
+                    if (reactorBase.GetIsPrime()) primeUnitHPAdded = true;
                 }
             }
         }
@@ -585,5 +585,12 @@ public class AbstractPartsController : MonoBehaviour
     public int GetHP()
     {
         return PartsHP;
+    }
+    public void SetInvincible(bool flag)
+    {
+        foreach (UnitData childUnitData in ChildUnitDataList)
+        {
+            childUnitData.ReturnThisUnit().SetInvincible(flag);
+        }
     }
 }

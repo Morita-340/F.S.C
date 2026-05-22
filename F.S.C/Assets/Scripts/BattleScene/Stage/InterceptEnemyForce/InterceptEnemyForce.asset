@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaveDataList:
   - {fileID: 11400000, guid: 1aa7e639833fb4a41b0954b2e51aff52, type: 2}
-  - {fileID: 11400000, guid: 1aa7e639833fb4a41b0954b2e51aff52, type: 2}
+  - {fileID: 11400000, guid: 732af14b3f76ac74882ec54b32fefd8b, type: 2}
+  - {fileID: 11400000, guid: d3ef203da64f7954bbbd5d37cee95f0b, type: 2}
   - {fileID: 11400000, guid: ef1fa5347385f6c4fb4706ea8d876bde, type: 2}
   StageName: "\u672A\u78BA\u8A8D\u90E8\u968A\u8FCE\u6483"
   StageSummary: "\u89B3\u6E2C\u30EC\u30FC\u30C0\u30FC\u306B\u672A\u78BA\u8A8D\u90E8\u968A\u3092\u691C\u77E5\u3057\u305F\n\u76F4\u3061\u306B\u8FCE\u6483\u306B\u5411\u304B\u3048"
   StageAdvise: "\u5F31\u70B9\u3092\u898B\u6975\u3081\u3088\u3046"
+  afterCleared1stMovePos: {x: 0, y: 0, z: 0}
+  afterClearedLastMovePos: {x: 0, y: 100, z: 0}
   StageAlreadyCleared: 0
   scene: 3

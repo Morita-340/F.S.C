@@ -17,6 +17,10 @@ public class BattleStageData : ScriptableObject
     [SerializeField, TextArea]
     private string StageAdvise;
     [SerializeField]
+    private Vector3 afterCleared1stMovePos;
+    [SerializeField]
+    private Vector3 afterClearedLastMovePos;
+    [SerializeField]
     private bool StageAlreadyCleared = false;
     [SerializeField]
     private GSetting.SceneName scene;
@@ -35,6 +39,14 @@ public class BattleStageData : ScriptableObject
     public string GetStageAdvise()
     {
         return StageAdvise;
+    }
+    public Vector3 GetAfterCleared1stMovePos()
+    {
+        return afterCleared1stMovePos;
+    }
+    public Vector3 GetAfterClearedLastMovePos()
+    {
+        return afterClearedLastMovePos;
     }
     public GSetting.SceneName GetSceneName()
     {

@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroyManagementScript
 {
+    //ダメージを受けていない状態であるかどうか
     private bool noDamageFlag = true;
+    //ダメージを受け付けない（無敵）であるかどうか
+    private bool invincible = false;
     protected override void Awake()
     {
         //データ登録をする際のタグを決めている
@@ -54,15 +57,44 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
         }
         return EmptyPassiveJointList;
     }
-    public override int CaluculateCombatPower(){
+    /// <summary>
+    /// 無敵時間なら被弾しない
+    /// </summary>
+    /// <param name="decreaseValue">ダメージによるHP減少量</param>
+    public override void DecreasePrimeUnitsHP(int decreaseValue,bool ratio)
+    {
+        if (invincible)
+        {
+
+        }
+        else
+        {
+            base.DecreasePrimeUnitsHP(decreaseValue,ratio);
+            //一定時間無敵になる
+            StartCoroutine(TemporaryInvincibility(0.1f));
+        }
+    }
+    /// <summary>
+    /// 一定時間無敵になる
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    private IEnumerator TemporaryInvincibility(float time)
+    {
+        invincible = true;
+        yield return new WaitForSeconds(time);
+        invincible = false;
+    }
+    public override int CaluculateCombatPower()
+    {
         //データ登録をする際のタグを決めている
         childObjTagName = GSetting.ObjTagName.PlayerUnit;
         return base.CaluculateCombatPower();
     }
-    public override void DestroyProcess(UnitData DeleteData,bool inputIsDead)
+    public override void DestroyProcess(UnitData DeleteData, bool inputIsDead)
     {
         noDamageFlag = false;
-        base.DestroyProcess(DeleteData,inputIsDead);
+        base.DestroyProcess(DeleteData, inputIsDead);
     }
     public void RepairMachine(int RepairHP)
     {
@@ -76,7 +108,16 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
     {
         noDamageFlag = true;
     }
-    public bool GetNoDamageFlag(){
+    public bool GetNoDamageFlag()
+    {
         return noDamageFlag;
+    }
+    public void SetInvincible(bool flag)
+    {
+        invincible = flag;
+        foreach (AbstractPartsController APC in PartsList)
+        {
+            APC.SetInvincible(flag);
+        }
     }
 }

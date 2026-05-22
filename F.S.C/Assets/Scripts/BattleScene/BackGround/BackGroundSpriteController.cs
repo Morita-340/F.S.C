@@ -5,7 +5,7 @@ using UnityEngine;
 public class BackGroundSpriteController : MonoBehaviour
 {
     [SerializeField,Range(0,10)]
-    int spriteDepth = 0;
+    float spriteDepth = 0;
     [SerializeField]
     Camera MainCamera;
     RectTransform uiRectTransform;

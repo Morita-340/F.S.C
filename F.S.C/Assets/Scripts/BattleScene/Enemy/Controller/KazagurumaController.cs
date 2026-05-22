@@ -33,7 +33,7 @@ public class RollingAttackState : AttackState
     Transform myTransform;
     SoundController SCer;
     float force = 10;
-    float torque = 5;
+    float torque = 500;
     //以下時間管理用変数
     float lookTime = 1;
     float accelateTime = 1.5f;
@@ -61,7 +61,8 @@ public class RollingAttackState : AttackState
         else if (nowTime < lookTime + accelateTime)
         {
             //加速
-            myRb2d.AddForce(myTransform.forward * force);
+            Vector2 toPlayerVec = Player.transform.position -myTransform.position;
+            myRb2d.velocity = toPlayerVec.normalized * force;
         }
         else if (nowTime < lookTime + accelateTime + addTorqueTime)
         {
@@ -87,7 +88,7 @@ public class RollingAttackState : AttackState
         else if (nowTime < lookTime + accelateTime + addTorqueTime + raidTime + decelateTime + subtractTorqueTime + idleTime)
         {
             //一定時間完全静止する
-            myRb2d.angularVelocity = 0;
+            //myRb2d.angularVelocity = 0;
         }
         base.Update();
     }

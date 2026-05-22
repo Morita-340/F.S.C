@@ -30,7 +30,7 @@ public class AbstractExplosionEffectManager : MonoBehaviour
         this.transform.position = transform.position;
         this.transform.rotation = transform.rotation;
     }
-    public IEnumerator DestroyObjectGradually(SpriteRenderer SR,Vector3 ExplosionScale){
+    public virtual IEnumerator DestroyObjectGradually(SpriteRenderer SR,Vector3 ExplosionScale){
         ExplosionObj.transform.DOScale(ExplosionScale,0.1f);
         //爆発音を鳴らす
         SCer.PlaySE(0);

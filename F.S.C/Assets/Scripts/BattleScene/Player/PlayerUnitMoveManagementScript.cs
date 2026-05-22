@@ -59,7 +59,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     // Update is called once per frame
     void Update()
     {
-        if (!notDrive) { Manipulate(); }
+        if (!notDrive && !isAuto) { Manipulate(); }
         else if (isIgnited) { AEC.IgniteBoost(); }
         else if (isAuto) { AEC.MoveForward(); }
         if (Input.GetKey(KeyCode.LeftShift)) { isBoost = true; }
@@ -87,9 +87,9 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         {
             Decelerate(-forward,Vector2.zero);
             if (Input.GetKeyDown(KeyCode.S))
+                Scer.PlaySE(1);
             {
                 //ブースト音
-                Scer.PlaySE(0);
             }
             if (Input.GetKey(KeyCode.A))
             {
@@ -108,9 +108,9 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         {
             Accelerate(forward,Vector2.zero);
             if (Input.GetKeyDown(KeyCode.W))
+                Scer.PlaySE(1);
             {
                 //ブースト音
-                Scer.PlaySE(0);
             }
             if (Input.GetKey(KeyCode.A))
             {
@@ -127,6 +127,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         }
         else
         {
+            Scer.StopSE();
             if (Input.GetKey(KeyCode.A))
             {
                 AEC.LeftTurn();
@@ -136,7 +137,6 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 AEC.RightTurn();
             }
             else { AEC.Idle(); }
-            Scer.FadeSE();
         }
     }
     /// <summary>
@@ -234,7 +234,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     //ブースト音
-                    Scer.PlaySE(0);
+                    Scer.PlaySE(1);
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
@@ -255,7 +255,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 if (Input.GetKeyDown(KeyCode.W))
                 {
                     //ブースト音
-                    Scer.PlaySE(0);
+                    Scer.PlaySE(1);
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
@@ -300,7 +300,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     //ブースト音
-                    Scer.PlaySE(0);
+                    Scer.PlaySE(1);
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
@@ -321,7 +321,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                 if (Input.GetKeyDown(KeyCode.W))
                 {
                     //ブースト音
-                    Scer.PlaySE(0);
+                    Scer.PlaySE(1);
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
@@ -466,13 +466,28 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
                         //加速しても画面外に出ない
                     break;
                 }
+            //機体の進行方向に進む
+            case 4:
+                {
+                    isAuto = true;
+                    Scer.PlaySE(1, true);
+                    float igniteVelocity = 0;
+                    float currentTime = 0;
+                    while (currentTime < 8)
+                    {
+                        currentTime += Time.deltaTime;
+                        Accelerate(transform.up,Vector2.zero);
+                        AEC.MoveForward();
+                    }
+                    break;
+                }
             default: { break; }
         }
     }
     public IEnumerator Ignition()
     {
         float time = 0;
-        Scer.PlaySE(0);
+        Scer.PlaySE(2);
         while (time > 5)
         {
             //アフターバーナーちょび点火
@@ -493,7 +508,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
             {
                 isIgnited = true;
                 isAuto = true;
-                Scer.PlaySE(1, true);
+                Scer.PlaySE(3, true);
             }
             else
             {
@@ -506,6 +521,15 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         //1秒経ったら終了
         yield return new WaitForSeconds(1f);
         Scer.FadeSE();
+    }
+    public IEnumerator SetAutoPilotVector(Vector3 goalPos)
+    {
+        Vector3 goalVec = goalPos - transform.position;
+        float rotate = Vector3.SignedAngle(transform.up, goalVec, Vector3.back);
+        Debug.LogAssertion(rotate + " " + transform.rotation.z + "VVVV5" + goalVec + " " + transform.up);
+        transform.DOLocalRotate(new Vector3(0, 0, transform.rotation.eulerAngles.z - rotate), 0.2f);
+        yield return new WaitForSeconds(0.2f);
+        //transform.rotation = Quaternion.Euler(0,0,transform.rotation.eulerAngles.z-rotate);
     }
     public float GetMaximumSpeed()
     {

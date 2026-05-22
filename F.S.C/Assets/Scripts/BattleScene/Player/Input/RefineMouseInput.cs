@@ -353,6 +353,7 @@ public class RefineMouseInput : MonoBehaviour
                 Destroy(ReDUMS.gameObject);
                 isSelected = false;
                 Debug.LogAssertion("CCC");
+                SCer.PlaySE(1);
             }
 
         }//ホイールクリックならパーツをリリースして選びなおせるようにする
