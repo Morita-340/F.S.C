@@ -14,6 +14,10 @@ public class MainCameraController : MonoBehaviour
     [SerializeField,ReadOnly]
     bool isPlayerHoming = false;
     bool isScrolling = false;
+    /// <summary>
+    /// プレイヤーに対するカーソルの位置次第でカーソル側にカメラを寄らせるためのオフセット
+    /// </summary>
+    private Vector3 cursolToPlayerOffset = Vector3.zero;
     BoolEdgeTrigger isPlayerHomingTrigger;
     private List<RefineAbstractUnitDestroyManagementScript> VisibleUnitList = new List<RefineAbstractUnitDestroyManagementScript>();
     public void AddToVisibleUnitList(RefineAbstractUnitDestroyManagementScript ReAUDMS)
@@ -40,8 +44,68 @@ public class MainCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!Setting && isPlayerHoming){this.transform.position = Player.transform.position + new Vector3(0,0, -5);Debug.LogAssertion("WWWHHHWWWW");}
-        ZoomRatioControll(maxDistanse);
+        if (!Setting && isPlayerHoming) {
+            SetCursolToPlayerOffset();
+            this.transform.position = Player.transform.position + cursolToPlayerOffset + new Vector3(0, 0, -5);
+            Debug.LogAssertion("WWWHHHWWWW"); }
+        //ZoomRatioControll(maxDistanse);
+    }
+    private void SetCursolToPlayerOffset()
+    {
+        //カーソルの画面上の座標を取得
+        Vector3 CursolPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
+        //カメラの中心座標を取得
+        Vector3 CameraPos = transform.position;
+        //差分ベクトルを取得
+        Vector3 diffVec = CursolPos - CameraPos;
+        float offsetX = 0;
+        float offsetY = 0;
+        //大きさが一定以上なら定数、それ未満なら割合で設定
+        if (diffVec.sqrMagnitude < 3000)
+        {
+            offsetX = 0;
+        }
+        else if (diffVec.normalized.x > 0.7f)
+        {
+            offsetX = diffVec.normalized.x*22;
+        }
+        else if (diffVec.normalized.x < -0.7f)
+        {
+            offsetX = diffVec.normalized.x*22;
+        }
+        else
+        {
+            offsetX = 0;
+        }
+        if (diffVec.sqrMagnitude < 900)
+        {
+            offsetY = 0;
+        }
+        else if (diffVec.normalized.y > 0.4f)
+        {
+            offsetY = diffVec.normalized.y*13;
+        }
+        else if (diffVec.normalized.y < -0.4f)
+        {
+            offsetY = diffVec.normalized.y*13;
+        }
+        else
+        {
+            offsetY = 0;
+        }
+        //if (diffVec.sqrMagnitude >= 200)
+        //{
+        //    cursolToPlayerOffset = diffVec.normalized * 50;
+        //    cursolToPlayerOffset = DOVirtual.Vector3()
+        //}
+        //else if(diffVec.sqrMagnitude < 200)
+        //{
+        //    float ratio = diffVec.sqrMagnitude / 200; 
+        //    cursolToPlayerOffset = diffVec.normalized*ratio*50;
+        //}
+        //cursolToPlayerOffset = new Vector3(offsetX, offsetY, 0);
+        DOTween.To(() => cursolToPlayerOffset,(x) => cursolToPlayerOffset = x,new Vector3(offsetX, offsetY, 0),0.2f);
+        //DOVirtual.Vector3(cursolToPlayerOffset,new Vector3(offsetX, offsetY, 0),0.1f,cursolToPlayerOffset)
     }
     public void SetIsPlayerHomingTrue()
     {

@@ -7,6 +7,7 @@ public class AbstractUnitMoveManagementScript : MonoBehaviour
     [SerializeField]
     protected Rigidbody2D rb2d;
     protected bool knockBackInterval = false;
+    Coroutine KnockBackCoroutine;
     [SerializeField, ReadOnly] protected AugmentorEffectController AEC;
     protected virtual void Start()
     {
@@ -16,7 +17,7 @@ public class AbstractUnitMoveManagementScript : MonoBehaviour
     /// ノックバック
     /// </summary>
     /// <param name="hitPos"></param>
-    public void KnockBack(Vector2 hitPos)
+    public void KnockBack(Vector2 hitPos,float interval)
     {
         if (knockBackInterval)
         {
@@ -25,12 +26,12 @@ public class AbstractUnitMoveManagementScript : MonoBehaviour
         else
         {
             rb2d.velocity += ((Vector2)transform.position - hitPos).normalized * 20;
-            //めり込んで連続ヒットしたときに呼ばれないようにするために僅かにインターバルを設定
-            StartCoroutine(Temporary_knockBackInterval(0.5f));
+            //めり込んで連続ヒットしたときに呼ばれないように（超加速しないように）するために僅かにインターバルを設定
+            KnockBackCoroutine = StartCoroutine(Temporary_knockBackInterval(interval));
         }
     }
     /// <summary>
-    /// 一定時間無敵になる
+    /// 一定時間ノックバックを止める
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>

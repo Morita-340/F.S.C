@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+using Microsoft.Unity.VisualStudio.Editor;
 
 public class PlayerSelectManager : MonoBehaviour
 {
@@ -14,10 +15,12 @@ public class PlayerSelectManager : MonoBehaviour
     TakeOffPerformanceController TakeOffPC;
     [SerializeField]
     TakeOffButton takeOffButton;
-    [SerializeField,ReadOnly]
+    [SerializeField, ReadOnly]
     GeneralFlagManager GFM;
     [SerializeField]
     BackToStageSelectButton BTSSButton;
+    [SerializeField]
+    StagePlayerSelectMenuManager SPSMM;
     BodyFlag selectedMachineBody;
     BodyFlag pointedMachineBodyNowSelected;
     BodyFlag pointedMachineBody;
@@ -30,6 +33,7 @@ public class PlayerSelectManager : MonoBehaviour
         PMDM.DisplayMachine(machineBodyList);
         PMDM.SetTakeOFFButton(takeOffButton);
         takeOffButton.SetPerformanceController(TakeOffPC);
+        TakeOffPC.SetPSM(this);
     }
 
     // Update is called once per frame
@@ -67,5 +71,13 @@ public class PlayerSelectManager : MonoBehaviour
             //画面戻り操作禁止＋押した時のSE変更
             BTSSButton.SetPushAccepted(false);
         }
+    }
+    public void SetSPSMM(StagePlayerSelectMenuManager SPSMM)
+    {
+        this.SPSMM = SPSMM;
+    }
+    public void MenuClose()
+    {
+        SPSMM.MenuClose();
     }
 }

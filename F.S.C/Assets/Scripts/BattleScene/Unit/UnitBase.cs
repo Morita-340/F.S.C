@@ -397,6 +397,7 @@ public class UnitBase : MonoBehaviour
     }
     public void OnTriggerEnter2D(Collider2D collision2D)
     {
+        float interval = 0.5f;
         switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
         {
             //自身がプレイヤーの場合
@@ -412,7 +413,7 @@ public class UnitBase : MonoBehaviour
                                 {
                                     SCer.PlaySE(0);
                                     //素体ユニットであるかどうかで減算対象を変える
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false,interval, false); }
                                     else
                                     {
                                         DamageCount(HitWeapon.GetTotalDamage());
@@ -427,7 +428,7 @@ public class UnitBase : MonoBehaviour
                                 {
                                     SCer.PlaySE(0);
                                     //素体ユニットであるかどうかで減算対象を変える
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false,interval, false); }
                                     else
                                     {
                                         DamageCount(HitWeapon.GetTotalDamage());
@@ -441,8 +442,8 @@ public class UnitBase : MonoBehaviour
                                 //素体ユニットであるかどうかで減算対象を変える
                                 if (isPrime)
                                 {
-                                    ReAUDMS.DecreasePrimeUnitsHP(20,true);
-                                    AUMMS.KnockBack(collision2D.ClosestPoint(transform.position));
+                                    ReAUDMS.DecreasePrimeUnitsHP(20,true,interval,true);
+                                    AUMMS.KnockBack(collision2D.ClosestPoint(transform.position), interval);
                                 }
                                 else
                                 {
@@ -467,7 +468,7 @@ public class UnitBase : MonoBehaviour
                                 ReactorBase reactorBase = collision2D.transform.parent.GetComponent<ReactorEffectManager>().GetThisReactor();
                                 if (HitPoint > 0)
                                 {
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(reactorBase.GetReactorsEfficiencyLevel(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(reactorBase.GetReactorsEfficiencyLevel(),false,interval, false); }
                                     else
                                     {
                                         DamageCount(reactorBase.GetReactorsEfficiencyLevel());
@@ -492,7 +493,7 @@ public class UnitBase : MonoBehaviour
                                 GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
                                 if (HitPoint > 0)
                                 {
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage(), false,interval,false); }
                                     else
                                     {
                                         DamageCount(GEM.GetExplosionDamage());
@@ -516,7 +517,7 @@ public class UnitBase : MonoBehaviour
                                 SCer.PlaySE(0);
                                 if (HitPoint > 0)
                                 {
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false,interval,false); }
                                     else
                                     {
                                         DamageCount(HitWeapon.GetTotalDamage());
@@ -530,7 +531,7 @@ public class UnitBase : MonoBehaviour
                                 SCer.PlaySE(0);
                                 if (HitPoint > 0)
                                 {
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(HitWeapon.GetAttackPower(),false,interval,false); }
                                     else
                                     {
                                         DamageCount(HitWeapon.GetTotalDamage());
@@ -574,7 +575,7 @@ public class UnitBase : MonoBehaviour
                                 GrenadeEffectManager GEM = collision2D.transform.parent.GetComponent<GrenadeEffectManager>();
                                 if (HitPoint > 0)
                                 {
-                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage(),false); }
+                                    if (isPrime) { ReAUDMS.DecreasePrimeUnitsHP(GEM.GetExplosionDamage(),false,interval,false); }
                                     else
                                     {
                                         DamageCount(GEM.GetExplosionDamage());
@@ -685,7 +686,7 @@ public class UnitBase : MonoBehaviour
     public void DebugDamaged()
     {
         //素体ユニットであるかどうかで減算対象を変える
-        if (isPrime) { ReAUDMS?.DecreasePrimeUnitsHP(1,false); }
+        if (isPrime) { ReAUDMS?.DecreasePrimeUnitsHP(1,false,0.1f,false); }
         else { DamageCount(1); }
     }
     public void SetInvincible(bool flag)

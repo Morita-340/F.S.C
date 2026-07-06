@@ -1,0 +1,40 @@
+アウトラインの仕組みメモ
+1.ゲーム画面から任意レイヤーに属するオブジェクトのシルエットと色抽出
+専用カメラを用意し、CullingMaskで見たい対象のレイヤーを設定しRenderTextureに描き込めるように設定
+描き込み方はOutlineMask.shaderで設定
+SpriteRenderer の元画像を見る
+↓
+元画像の alpha だけ使う
+↓
+色は MaterialPropertyBlock の _MaskColor に置き換える
+↓
+RenderTexture に「色付きシルエット」として描く
+2.アウトライン抽出と描画
+Canvasのサイズなどを設定して画面上にアウトラインを重ねられるようにする（UIのCanvasと同じ設定。不都合が無いならCanvasはまとめる）
+その下にRawImageを作成してRenderTextureを描き込めるようにする。Materialにはアウトラインだけを抽出するものを設定（シェーダをOutlinePost.shaderにしている。以下はOutlinePost.shaderの挙動）
+RenderTexture を見る
+↓
+今のピクセルが透明か確認する
+↓
+周囲8方向に色付きシルエットがあるか確認する
+↓
+中心は透明、周囲にシルエットがある場所だけ描く
+↓
+周囲から拾った色でアウトラインを表示する
+
+量産・実装方法
+SpriteRendererを持つ任意のオブジェクトの親オブジェクトに対して
+SpriteGroupOutlineColor.csと同様の内容を持つスクリプトを記述
+
+十分に解像度の高いRenderTextureを作成
+抽出カメラを用意、CullingMaskにはアウトラインを付けたいレイヤーを選択
+Orthographic、今回の1920-1080解像度ではsizeを71（こうすることで画面上すべてをカバー）
+TargetTextureに用意したRenderTextureを設定
+OutlineCamera.csをアタッチ（スクリプト内でOutlineMaskシェーダを指定している）
+
+CanvasをUICanvasと同じ設定にする
+Materialを作成（OutlinePostシェーダをインスペクター上で指定）
+RawImageに先ほどのRenderTextureとMaterialを設定
+画面を覆うようにサイズ調整
+実行すると、
+SpriteGroupOutlineColor.csの内容が書かれたコンポーネントを含むオブジェクトの子オブジェクトがSpriteRendererを含む場合にアウトラインが描画される

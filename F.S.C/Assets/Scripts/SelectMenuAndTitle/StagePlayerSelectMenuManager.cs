@@ -9,6 +9,7 @@ public class StagePlayerSelectMenuManager : MonoBehaviour
     GameObject StageSelectManagerObject;
     [SerializeField]
     GameObject PlayerSelectManagerObject;
+    [SerializeField] MenuOpClPerformManager MeOCPM;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +18,17 @@ public class StagePlayerSelectMenuManager : MonoBehaviour
     public void ChangeToPlayerSelectMenu()
     {
         //PlayerSelectManagerObject.transform.DOScaleX(1,0.3f);
-        StageSelectManagerObject.transform.DOScaleX(0,0.3f);
+        StageSelectManagerObject.transform.DOScaleX(0, 0.3f);
+        MeOCPM.NotBlack();
     }
     public void ChangeToStageSelectMenu()
     {
         //PlayerSelectManagerObject.transform.DOScaleX(0,0.3f);
-        StageSelectManagerObject.transform.DOScaleX(1,0.3f);
+        StageSelectManagerObject.transform.DOScaleX(1, 0.3f);
+        MeOCPM.BlackOut();
+    }
+    public void MenuClose()
+    {
+        StartCoroutine(MeOCPM.MenuClose());
     }
 }

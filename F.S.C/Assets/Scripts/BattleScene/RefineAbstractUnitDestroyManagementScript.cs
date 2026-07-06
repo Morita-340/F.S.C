@@ -262,7 +262,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     /// </summary>
     /// <param name="decreaseValue"></param>
     /// <param name="ratio"></param>
-    public virtual void DecreasePrimeUnitsHP(int decreaseValue, bool ratio)
+    public virtual void DecreasePrimeUnitsHP(int decreaseValue,bool unitToUnitTouchDamageMode,float interval,bool ratio)
     {
         if (!ratio)
         {

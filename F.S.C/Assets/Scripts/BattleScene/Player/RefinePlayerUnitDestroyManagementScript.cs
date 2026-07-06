@@ -9,6 +9,7 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
     private bool noDamageFlag = true;
     //ダメージを受け付けない（無敵）であるかどうか
     private bool invincible = false;
+    private bool touchDamageInterval = false;
     protected override void Awake()
     {
         //データ登録をする際のタグを決めている
@@ -61,7 +62,7 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
     /// 無敵時間なら被弾しない
     /// </summary>
     /// <param name="decreaseValue">ダメージによるHP減少量</param>
-    public override void DecreasePrimeUnitsHP(int decreaseValue,bool ratio)
+    public override void DecreasePrimeUnitsHP(int decreaseValue,bool unitToUnitTouchDamageMode,float interval,bool ratio)
     {
         if (invincible)
         {
@@ -69,10 +70,32 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
         }
         else
         {
-            base.DecreasePrimeUnitsHP(decreaseValue,ratio);
-            //一定時間無敵になる
-            StartCoroutine(TemporaryInvincibility(0.1f));
+            //衝突ダメージのみインターバルを設ける
+            if (unitToUnitTouchDamageMode)
+            {
+                if (touchDamageInterval)
+                {
+
+                }
+                else
+                {
+                    StartCoroutine(TemporaryTouchDamageInvincibility(decreaseValue,unitToUnitTouchDamageMode,interval,ratio));
+                }
+            }
+            else
+            {
+                base.DecreasePrimeUnitsHP(decreaseValue,unitToUnitTouchDamageMode,interval,ratio);
+                //一定時間無敵になる
+                StartCoroutine(TemporaryInvincibility(0.1f));
+            }
         }
+    }
+    private IEnumerator TemporaryTouchDamageInvincibility(int decreaseValue,bool unitToUnitTouchDamageMode,float interval,bool ratio)
+    {
+        touchDamageInterval = true;
+        base.DecreasePrimeUnitsHP(decreaseValue,unitToUnitTouchDamageMode,interval,ratio);
+        yield return new WaitForSeconds(interval);
+        touchDamageInterval = false;
     }
     /// <summary>
     /// 一定時間無敵になる

@@ -10,6 +10,10 @@ public class WaveStartEndUIController : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI WaveNumberText;
     [SerializeField]
+    GameObject BlackCurtainTop;
+    [SerializeField]
+    GameObject BlackCurtainBottom;
+    [SerializeField]
     TextMeshProUGUI WaveText;
     [SerializeField]
     TextMeshProUGUI WaveClearText;
@@ -33,10 +37,26 @@ public class WaveStartEndUIController : MonoBehaviour
     {
         
     }
-    public void StageEntryUI(string inputStageName){
+    public void StageEntryUI(string inputStageName)
+    {
+        //初期値設定
         StageNameText.text = inputStageName;
+        StageNameText.alpha = 0;
+        BlackCurtainTop.transform.localScale = Vector3.one;
+        BlackCurtainBottom.transform.localScale = Vector3.one;
+        //アニメーション
+        StageNameText.DOColor(new Color(1, 1, 1, 1), 0.3f);
+        BlackCurtainTop.transform.DOScale(new Vector3(1, 0.3f, 1), 0.3f);
+        BlackCurtainBottom.transform.DOScale(new Vector3(1, 0.3f, 1), 0.3f);
     }
-    public void StageEntryUIFade(){
+    public void CurtainOFF()
+    {
+        BlackCurtainTop.transform.DOScale(new Vector3(1, 0, 1), 0.3f);
+        BlackCurtainBottom.transform.DOScale(new Vector3(1, 0, 1), 0.3f);
+        StageNameText.DOColor(new Color(1, 1, 1, 0), 0.3f);
+    }
+    public void StageEntryUIFade()
+    {
         StartCoroutine(UIFadeGradually(StageNameText));
     }
     public IEnumerator WaveStartUI(int waveNum,bool finalWaveFlag,string inputStageName){

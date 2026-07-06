@@ -67,7 +67,7 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
     }
     void FixedUpdate()
     {
-        if (!Setting && !isAuto && !notDrive && !isScrollMode) Drive();
+        if (!Setting && !isAuto && !notDrive && !isScrollMode && !knockBackInterval) Drive();
         if (isScrollMode) ScrollDrive();
     }
     /// <summary>
@@ -87,9 +87,9 @@ public class PlayerUnitMoveManagementScript : AbstractUnitMoveManagementScript
         {
             Decelerate(-forward,Vector2.zero);
             if (Input.GetKeyDown(KeyCode.S))
-                Scer.PlaySE(1);
             {
                 //ブースト音
+                Scer.PlaySE(1);
             }
             if (Input.GetKey(KeyCode.A))
             {

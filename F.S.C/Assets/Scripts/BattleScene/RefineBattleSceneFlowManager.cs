@@ -112,6 +112,7 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         PUMMS.AutoPilot(0);
         //画面中央に来たら追従開始
         yield return new WaitUntil(() => CPHT.CameraPlayerHoming());
+        WSEUIC.CurtainOFF();
         MCC.SetIsPlayerHomingTrue();
         StartCoroutine(PSAFBUIC.UIStartUp());
         //母艦が画面外になるよう（アナログ的に設定）移動できれば処理終了。戦闘開始
@@ -119,7 +120,6 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         PUMMS.AutoPilot(2);
         //母艦は見た目だけなので戦闘中は非表示
         MotherShip.SetActive(false);
-        WSEUIC.StageEntryUIFade();
     }
     /// <summary>
     /// ポーズメニューのONを制御する
