@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 84827124894147247}
   - component: {fileID: 6955163157816907857}
   - component: {fileID: 3109610609291261646}
+  - component: {fileID: 6248614076327773234}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: GrenadeExplosion
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -993227273, guid: e6cabfefcb5215a45a892f0f6b20eccc, type: 3}
+  m_Sprite: {fileID: 1536297198, guid: 5e454db4e22c6d646b423964ebbdfed4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,6 +121,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!95 &6248614076327773234
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548224196830331585}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5afbc212c65f2a045b1c976b47421050, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6674250669024275168
 GameObject:
   m_ObjectHideFlags: 0
@@ -223,6 +245,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thisRb2D: {fileID: 0}
   attackPower: 1
+  isHoming: 0
+  targetObj: {fileID: 0}
   velocityEfficiency: 3
   SCer: {fileID: 0}
   graceTime: 4
@@ -319,6 +343,10 @@ MonoBehaviour:
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  SELoopFlag: 0
+  soundVolume: 1
+  GFM: {fileID: 0}
 --- !u!1 &8263776627257352351
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,3 +416,7 @@ MonoBehaviour:
   BGMPlayer: {fileID: 0}
   SEPlayer: {fileID: 0}
   playOnAwake: 0
+  isPoseMenuUI: 0
+  SELoopFlag: 0
+  soundVolume: 1
+  GFM: {fileID: 0}

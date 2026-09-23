@@ -22,8 +22,14 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     [SerializeField, ReadOnly]
     MainCameraController MCC;
     protected GSetting.ObjTagName childObjTagName;
+    /// <summary>
+    /// 現在のPrimeUnitHP（攻撃を受けると変更されるのはこっち）
+    /// </summary>
     [SerializeField, Range(1, 100)]
     protected int primeUnitsHP = 10;
+    /// <summary>
+    /// 割合計算などを行うために用いる初期HP値
+    /// </summary>
     protected int initPrimeUnitHP = 10;
     [SerializeField, ReadOnly]
     protected int combatPower = 0;
@@ -64,6 +70,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     }
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
+    /// 合体時や分離時や初期生成時に呼ばれる
     /// </summary>
     public virtual void SetUnitData()
     {
@@ -78,7 +85,12 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             if (childUnitObject.tag == childObjTagName.ToString())
             {
                 PartsList.Add(childParts);
-                childParts.RegeneProcess();
+                //ジョイントユニットが有るパーツは再生成時に処理が必要。IPCは特に変更点が無いためこのままでよい
+                if (childParts is ReversibleConnectionPartsController)
+                {
+                    ReversibleConnectionPartsController RCPC = childParts as ReversibleConnectionPartsController;
+                    RCPC.RegeneProcess();
+                }
             }
         }
         combatPower = CaluculateCombatPower();
@@ -131,17 +143,20 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     protected virtual List<GameObject> Regenerate(bool inputIsDead)
     {
         //再生成するパーツ（破損無破損関係なし）を格納するリスト。未探索ユニットとその親のパーツ制御者だけで構成される
-        List<AbstractPartsController> NotResearchPartsList = new List<AbstractPartsController>();
+        List<ReversibleConnectionPartsController> NotResearchPartsList = new List<ReversibleConnectionPartsController>();
         //後でUI制御などに渡す用。再生成した全てのオブジェクトのリスト
         List<GameObject> ParentObjectList = new List<GameObject>();
         bool regeneFirstTime = true;
         Vector3 UnitDefferenceVector = new Vector3(0, 0, 0);
         Vector3 regenePosition = new Vector3(0, 0, 0);
         //各パーツ制御者に、分離する＝探索がfalseなユニットを親オブジェクトごと丸々渡してもらう
-        foreach (AbstractPartsController Parts in PartsList)
+        foreach (AbstractPartsController abParts in PartsList)
         {
+            //ジョイントユニットが無いならそもそも再生成する必要が無い
+            if (!(abParts is ReversibleConnectionPartsController)) { continue; }
+            ReversibleConnectionPartsController Parts = abParts as ReversibleConnectionPartsController;
             Debug.LogWarning("FFF"+Parts.AllUnitSearched(true,0)+Parts.gameObject.name);
-            //falseになったユニットが存在しない=全てtrueなパーツ=コアと繋がっている=分離対象ではないパーツはあとの処理を飛ばす
+            //falseになったユニットが存在しない=全てtrueなパーツ=コアと繋がっている=分離対象ではないパーツはあとの処理を飛ばす＝分離対象でないパーツの除外
             if (Parts.AllUnitSearched(true,0)) { continue; }
             //分離対象が存在するパーツは分離対象のユニットを全てリストにまとめておく
             Parts.SetNotResearchUnitList();
@@ -154,13 +169,15 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             List<AbstractPartsController> RegenePartsList = new List<AbstractPartsController>();
             //未探索データの中でもう一度探索をすることで、オブジェクトの接続関係でグループに分ける
             UnitData FirstSearchData = NotResearchPartsList[0].GetNotResearchUnitList()[0];
+            //二度目のBFS
             UnitBreathFirstSearch(FirstSearchData);
             //元々どのパーツに属していたのか
             //パーツそれぞれに対して今回の探索でtrueになったUnitを親オブジェクトごとまとめて渡してもらう
-            foreach (AbstractPartsController Parts in NotResearchPartsList)
+            foreach (ReversibleConnectionPartsController Parts in NotResearchPartsList)
             {
-                //分離対象のうち、今回の探索でtrueになったユニットが存在しないパーツはあとの処理を飛ばす
+                //分離対象のうち、今回の探索でtrueになったユニットが存在しない＝すぐに分離しないパーツはあとの処理を飛ばす＝今回まとめる分離対象だけ選別
                 if (Parts.AllUnitSearched(false,1)) { continue; }
+                //二度目のBFSでtrue＝今回分離対象になったUnitはフラグが立っているので、これをリストにまとめる
                 Parts.SetRegeneUnitList();
                 RegenePartsList.Add(Parts);
                 //再生成対象が初めて検出された時のみこの処理を行う
@@ -179,25 +196,29 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             //生成パーツの一つ目の座標を取得して、位置調整に使う
             Vector3 basePosition = RegenePartsList[0].transform.localPosition;
             //元のパーツの親オブジェクトごと再生成
-            foreach (AbstractPartsController Parts in RegenePartsList)
+            foreach (ReversibleConnectionPartsController Parts in RegenePartsList)
             {
                 //パーツ制御オブジェクトを生成
-                GameObject PartsObj = DuplicateParentOnly(Parts.gameObject,basePosition,ParentObject.transform);
+                GameObject PartsObj = Parts.DuplicateParentOnly(basePosition,ParentObject.transform);
                 //ユニットオブジェクトをパーツ制御オブジェクトの下に生成
+                //二度目のBFSで分離対象になったものだけがリストにまとめられている
                 List<UnitData> RegeneUnitList = Parts.GetRegeneUnitList();
                 PartsObj.transform.localPosition -= UnitDefferenceVector;
                 foreach (UnitData unitData in RegeneUnitList)
                 {
-                    GameObject RegeneObj = Instantiate(unitData.ReturnThisUnit().gameObject,PartsObj.transform).GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.ObjTagName.DestroyedUnit);;
+                    GameObject RegeneObj = Instantiate(
+                        unitData.ReturnThisUnit().gameObject, PartsObj.transform)
+                        .GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.UniqueLayerName.DestroyedUnit);
                     //RegeneObj.transform.parent = PartsObj.transform;
                     //複製元の消去（オブジェクトとデータ）
-                    unitData.ReturnThisUnit().GetAPC().DeleteChildUnitData(unitData);
+                    unitData.ReturnThisUnit()?.GetAPC().DeleteChildUnitData(unitData);
                     FieldManager FM = FieldManager.GetInstance();
                     FM.UnitList.Remove(unitData);
                 }
                 //DuplicateParentOnly()実行時には子オブジェクトは空だったので、改めて初期設定
-                AbstractPartsController APC = PartsObj.GetComponent<AbstractPartsController>();
-                APC.RegeneProcess();
+                //RCPCしか再生成しない
+                ReversibleConnectionPartsController RCPC = PartsObj.GetComponent<ReversibleConnectionPartsController>();
+                RCPC.RegeneProcess();
             }
             //パーツのうち、今回の探索ですべてのUnitがtrueになったものを除外する（APCのDeleteChildUnitData()で既に探索済みかつ再生成済みのオブジェクトはデータもオブジェクトも消去済み）
             foreach (AbstractPartsController Parts in NotResearchPartsList)
@@ -316,6 +337,8 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     private GameObject DuplicateParentOnly(GameObject originalParent, Vector3 basePosition, Transform parent)
     {
         GameObject newParent = new GameObject(originalParent.name);
+        //面倒くさいが、https://chatgpt.com/c/6aaee639-c78c-83e8-904f-60ae4ecb4a4b
+        //↑こっちで行く
         if (originalParent.GetComponent<BodyPartsController>())
         {
             BodyPartsController BPC = newParent.AddComponent<BodyPartsController>();

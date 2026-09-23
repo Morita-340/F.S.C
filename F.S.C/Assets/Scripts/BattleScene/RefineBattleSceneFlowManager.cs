@@ -14,6 +14,8 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
     WaveStartEndUIController WSEUIC;
     [SerializeField]
     PlayerSActionFeedBackUIController PSAFBUIC;
+    [SerializeField]
+    MachineStatusHUDController MSHUDC;
     [SerializeField] ResultUIController RUC;
     [SerializeField, ReadOnly]
     GeneralFlagManager GFM;
@@ -43,6 +45,9 @@ public class RefineBattleSceneFlowManager : MonoBehaviour
         PUMMS = Player.GetComponent<PlayerUnitMoveManagementScript>();
         ReMI.SetPlayer(Player);
         ReMI.SetPSAFBUIC(PSAFBUIC);
+        MSHUDC.SetPlayer(Player);
+        MSHUDC.SetPart(RePUDMS.GetPartSlotList());
+        RePUDMS.SetMSHUDC(MSHUDC);
         BackToSettingButton = PauseMenu.transform.Find("BackToSettingButton").GetChild(0).GetComponent<WindowTranslateButton>();
         ReStartButton = PauseMenu.transform.Find("ReStartButton").GetChild(0).GetComponent<WindowTranslateButton>();
     }

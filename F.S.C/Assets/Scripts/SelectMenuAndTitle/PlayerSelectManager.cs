@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
-using Microsoft.Unity.VisualStudio.Editor;
 
 public class PlayerSelectManager : MonoBehaviour
 {

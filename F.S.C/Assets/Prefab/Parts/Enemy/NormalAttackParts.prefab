@@ -45,17 +45,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1a95544ca0ad1c4ea0a701413214d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numOfInitialJointUnit: 1
   numOfInitialFunctionUnit: 1
   numOfInitialChildUnit: 1
-  numOfJointUnit: 1
   numOfFunctionUnit: 1
   numOfChildUnit: 1
-  DamageStatus: 0
   ReAUDMS: {fileID: 0}
-  ReDUMS: {fileID: 0}
   childObjTagName: 0
+  PartsAttackPower: 0
+  PartsHP: 0
+  LayerName: 0
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  PartIconSprite: {fileID: -2135176044, guid: a066e72388e97cd4abcfc7b07580f301, type: 3}
   TargetPosition: {x: 0, y: 0, z: 0}
+  numOfInitialJointUnit: 1
+  numOfJointUnit: 1
+  DamageStatus: 0
+  PassiveJointLink: []
+  ActiveJointLink: {fileID: 0}
+  ReDUMS: {fileID: 0}
 --- !u!1001 &4650743927515814235
 PrefabInstance:
   m_ObjectHideFlags: 0

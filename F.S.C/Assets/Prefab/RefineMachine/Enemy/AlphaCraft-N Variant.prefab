@@ -678,6 +678,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5635026370927315548, guid: 1b98ff495b557784a983ddb776512f63, type: 3}
+      propertyPath: explosionScopeRadius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6834805167064254332, guid: 1b98ff495b557784a983ddb776512f63, type: 3}
       propertyPath: isPrime
       value: 1

@@ -32,9 +32,9 @@ public class CoreEffectManager : AbstractExplosionEffectManager
     {
         if(ThisCore != null){this.transform.position = ThisCore.transform.position+new Vector3(0,0,5);}
     }
-    private void SetCoreExplosionScope(int scopeRadius){
+    protected void SetCoreExplosionScope(int scopeRadius){
         //コライダーではなくスケールなのは、エフェクト（仮でスプライト、後でアニメーションに変更する予定）のサイズも変えないといけないから
-        EffectRadius = scopeRadius * 2;
+        EffectRadius = scopeRadius;
         ExplosionObj.transform.localPosition = new Vector3(0,0,10);
     }
 }

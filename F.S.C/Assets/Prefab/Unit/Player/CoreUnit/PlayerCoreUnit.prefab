@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 636777388142166272}
   - component: {fileID: 299608269903601391}
   - component: {fileID: 7601528805149912322}
+  - component: {fileID: 4212125134424127877}
   m_Layer: 0
   m_Name: Explosion
   m_TagString: CoreExplosion
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -993227273, guid: e6cabfefcb5215a45a892f0f6b20eccc, type: 3}
+  m_Sprite: {fileID: 1536297198, guid: 5e454db4e22c6d646b423964ebbdfed4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -120,6 +121,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!95 &4212125134424127877
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271429096912720394}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5afbc212c65f2a045b1c976b47421050, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6727118828627115226
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,11 +297,15 @@ MonoBehaviour:
   offsetRotation: 0
   isPrime: 1
   DamageCountText: {fileID: 8274165630198760353, guid: dd1edfb860893454cbf1d7a81477821f, type: 3}
+  invincible: 0
+  APC: {fileID: 0}
   attackEfficiency: 1
   SCer: {fileID: 0}
   NormalWeapon: {fileID: 0}
   ChargeWeapon: {fileID: 6898755681416403118, guid: 7a6d338f49054c644863f863d2aefc3e, type: 3}
   ReactorLevelUI: {fileID: 5010781147635205438, guid: 60b65896cdcdb6f42a5e6a4a30ed0086, type: 3}
+  targetPosition: {x: 0, y: 0, z: 0}
+  isHoming: 0
   CEM: {fileID: 4304456824450790710}
 --- !u!114 &6032767429528697876
 MonoBehaviour:
@@ -308,6 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rangeRadius: 1
   rangeRadian: 90
+  RockOnRangeRate: 0
   RMM: {fileID: 3621056797534847057, guid: 95a1c44b12e8a674d8e195a3109225d6, type: 3}
   GeneRMM: {fileID: 0}
 --- !u!114 &2685033795697511434
@@ -329,6 +356,7 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}
 --- !u!120 &3547661312418945653
@@ -504,5 +532,6 @@ MonoBehaviour:
   SEPlayer: {fileID: 0}
   playOnAwake: 0
   isPoseMenuUI: 0
+  SELoopFlag: 0
   soundVolume: 1
   GFM: {fileID: 0}

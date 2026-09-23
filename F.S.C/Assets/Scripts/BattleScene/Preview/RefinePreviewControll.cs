@@ -47,7 +47,7 @@ public class RefinePreviewControll : MonoBehaviour
             return;
         }
         PartsGroup = new List<AbstractPartsController>(ReDUMS.GetChildPartsList());
-        AbstractPartsController CenterParts = ReDUMS.GetEmptyJoint();
+        ReversibleConnectionPartsController CenterParts = ReDUMS.GetEmptyJoint();
         //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
         List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
         //プレビューを表示するために選択中の座標や回転角を渡しておく
@@ -83,7 +83,7 @@ public class RefinePreviewControll : MonoBehaviour
             {
                 //AjointUnitがあるパーツからの相対位置
                 Vector3 RefPos = newRotation * (part.transform.position - CenterParts.transform.position);
-                PreviewPartsObjList.Add(Instantiate(part.gameObject, selectedPos + RefPos, PrevRotation, transform).GetComponent<AbstractPartsController>().SetPreview());
+                PreviewPartsObjList.Add(Instantiate(part.gameObject, selectedPos + RefPos, PrevRotation, transform).GetComponent<ReversibleConnectionPartsController>().SetPreview());
             }
         }
         //回転と移動を行う
@@ -132,12 +132,15 @@ public class RefinePreviewControll : MonoBehaviour
     }
     public List<CaptureObjInfo> GetCaptureObjInfos()
     {
-        List<AbstractPartsController> PartsGroup = ReDUMS.GetChildPartsList();
-        AbstractPartsController CenterParts = ReDUMS.GetEmptyJoint();
+        List<ReversibleConnectionPartsController> PartsGroup = ReDUMS.GetChildPartsList();
+        ReversibleConnectionPartsController CenterParts = ReDUMS.GetEmptyJoint();
         //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
         List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
         //プレビューを表示するために選択中の座標や回転角を渡しておく
         //マウスホイールで選べるようにする
+        List<CaptureObjInfo> captureObjInfoList = new List<CaptureObjInfo>();
+        //ゼロ除算対策
+        if (passiveJointList.Count == 0) { return captureObjInfoList; }
         int selectedNum = Mathf.Abs((int)wheelInput % passiveJointList.Count);
         Vector3 selectedPos = passiveJointList[selectedNum];
         Quaternion newRotation = Quaternion.Euler(RePUDMS.transform.rotation.eulerAngles
@@ -149,7 +152,6 @@ public class RefinePreviewControll : MonoBehaviour
                                                 + RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetAPC().transform.localRotation.eulerAngles
                                                 + new Vector3(0, 0, RePUDMS.GetSelectedPassiveJointList()[selectedNum].GetOffsetRotation() + 180
                                                 - CenterParts.GetActiveJointLink().GetOffsetRotation()));
-        List<CaptureObjInfo> captureObjInfoList = new List<CaptureObjInfo>();
         Debug.LogAssertion("RRR" +PartsGroup.Count +" "+ PreviewPartsObjList.Count);
         for (int i = 0; i < PartsGroup.Count; i++)
         {

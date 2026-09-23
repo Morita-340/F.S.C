@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BodyPartsController : AbstractPartsController
+public class BodyPartsController :ReversibleConnectionPartsController
 {
     protected override void CountNOFU()
     {

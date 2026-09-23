@@ -23,7 +23,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// <summary>
     /// 損傷状況に関係なく、今子オブジェクトとして存在しているパーツのリスト
     /// </summary>
-    [SerializeField,ReadOnly]List<AbstractPartsController> ChildPartsList = new List<AbstractPartsController>();
+    [SerializeField,ReadOnly]List<ReversibleConnectionPartsController> ChildPartsList = new List<ReversibleConnectionPartsController>();
     /// <summary>
     /// 小破及び無傷のパーツのグループをまとめたリスト
     /// </summary>
@@ -79,9 +79,9 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         //子オブジェクトのパーツを取得
         for (int i = 0; i < transform.childCount; i++)
         {
-            if (transform.GetChild(i).GetComponent<AbstractPartsController>())
+            if (transform.GetChild(i).GetComponent<ReversibleConnectionPartsController>())
             {
-                ChildPartsList.Add(transform.GetChild(i).GetComponent<AbstractPartsController>());
+                ChildPartsList.Add(transform.GetChild(i).GetComponent<ReversibleConnectionPartsController>());
             }
         }
         foreach (AbstractPartsController part in ChildPartsList)
@@ -109,9 +109,9 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         //子オブジェクトのパーツを取得
         for (int i = 0; i < transform.childCount; i++)
         {
-            if (transform.GetChild(i).GetComponent<AbstractPartsController>())
+            if (transform.GetChild(i).GetComponent<ReversibleConnectionPartsController>())
             {
-                ChildPartsList.Add(transform.GetChild(i).GetComponent<AbstractPartsController>());
+                ChildPartsList.Add(transform.GetChild(i).GetComponent<ReversibleConnectionPartsController>());
             }
         }
         AnalysisConnectSituation();
@@ -212,13 +212,13 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     private void AnalysisConnectSituation()
     {
         //子パーツを値コピー。参照ではないためコピー元に影響は無い
-        List<AbstractPartsController> ChildPartsListCopy = new List<AbstractPartsController>(ChildPartsList);
+        List<ReversibleConnectionPartsController> ChildPartsListCopy = new List<ReversibleConnectionPartsController>(ChildPartsList);
         //まとまりを作る
         Debug.LogAssertion("AAAA");
         ConnectSituationBreathFirstSearch(ChildPartsListCopy);
         //まとまりに応じて場合分け
         RecordConnectSituation();
-        foreach (AbstractPartsController childPart in ChildPartsList)
+        foreach (ReversibleConnectionPartsController childPart in ChildPartsList)
         {
             if (childPart.GetActiveJointLink() == null ? false:childPart.GetActiveJointLink().isJointLinkEmpty())
             {
@@ -227,56 +227,58 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         }
     }
     /// <summary>
-    /// パーツレベルのリンクを取得して横型探索を行い、小破以下のまとまりを把握し、まとまりを記録
+    /// パーツレベルのリンクを取得して横型探索を行い、小破以下のまとまりを把握し、まとまり（小破以下のパーツが2個以上直接つながっているもの）を記録
     /// </summary>
-    private void ConnectSituationBreathFirstSearch(List<AbstractPartsController> ChildPartsListCopyRef)
+    private void ConnectSituationBreathFirstSearch(List<ReversibleConnectionPartsController> ChildPartsListCopyRef)
     {
         Debug.LogAssertion("AAAB");
         while (ChildPartsListCopyRef.Count > 0)
         {
-            AbstractPartsController APC = ChildPartsListCopyRef[0];
-            GSetting.PartsDamageStatus? partsDamageStatus = APC.GetPartsDamageStatus();
+            ReversibleConnectionPartsController RCPC = ChildPartsListCopyRef[0];
+            //null込みで宣言・代入
+            GSetting.PartsDamageStatus? partsDamageStatus = RCPC.GetPartsDamageStatus();
             Debug.LogAssertion("AAAC");
-            //小破・無傷以外（登録忘れ含む）なら探索対象から除外
+            //小破・無傷以外（登録忘れ含む）なら探索対象から除外（以下のネスト内の処理を行ってcontinue）
             if (!(partsDamageStatus == GSetting.PartsDamageStatus.NoDamage || partsDamageStatus == GSetting.PartsDamageStatus.MinorDamage))
             {
-                ChildPartsListCopyRef.Remove(APC);
+                ChildPartsListCopyRef.Remove(RCPC);
                 //大破以外＝未登録orNULLならログ表示
                 if (!(partsDamageStatus == GSetting.PartsDamageStatus.HeavilyDamage))
                 {
-                    GSetting.RefineDebugAssertinLog(APC.transform, "損傷状況の登録情報がおかしい" + partsDamageStatus);
+                    GSetting.RefineDebugAssertinLog(RCPC.transform, "損傷状況の登録情報がおかしい" + partsDamageStatus);
                 }
                 Debug.LogAssertion("AAAD");
                 continue;
             }
             //小破及び無傷の場合＝まとまりに分ける
             //スタックを定義、種を格納
-            Stack<AbstractPartsController> stack = new Stack<AbstractPartsController>();
-            stack.Push(APC);
+            Stack<ReversibleConnectionPartsController> stack = new Stack<ReversibleConnectionPartsController>();
+            stack.Push(RCPC);
             //まとまり一つをリストとして格納を進めていくためにリストを定義
             List<AbstractPartsController> Parts = new List<AbstractPartsController>();
             //=今回のループで使うリストにスタックの種になるパーツを格納
-            Debug.LogAssertion("AAAE"+APC.gameObject.name);
-            Parts.Add(APC);
-            APC.SetSearchFlag(true);
+            Debug.LogAssertion("AAAE"+RCPC.gameObject.name);
+            Parts.Add(RCPC);
+            RCPC.SetSearchFlag(true);
             //ローカルの方のコピーリストから探索済みパーツを削除する
-            ChildPartsListCopyRef.Remove(APC);
+            ChildPartsListCopyRef.Remove(RCPC);
             //while文。スタックが空になるまで続ける
             while (stack.Count > 0)
             {
+                ReversibleConnectionPartsController popRCPC = stack.Pop();
                 //パーツのリンクのリストを取得する
-                AbstractPartsController popAPC = stack.Pop();
                 List<AbstractPartsController> partsLink = new List<AbstractPartsController>();
-                foreach (PassiveJointUnit joint in popAPC.GetPassiveJointLinkList())
+                //PassiveJoint=機体本体側だけに付くやつ＝パーツ生成・再生成時に有効な数を数えなおしてリストに記録してある
+                foreach (PassiveJointUnit joint in popRCPC.GetPassiveJointLinkList())
                 {
                     AbstractPartsController jointedAP = joint.GetJointedAnotherPart();
                     if (jointedAP != null) partsLink.Add(jointedAP);
                 }
-                Debug.Log("AAV" + popAPC.GetActiveJointLink());
-                AbstractPartsController A_jointedAP = popAPC.GetActiveJointLink()?.GetJointedAnotherPart();
+                Debug.Log("AAV" + popRCPC.GetActiveJointLink());
+                AbstractPartsController A_jointedAP = popRCPC.GetActiveJointLink()?.GetJointedAnotherPart();
                 if (A_jointedAP != null) partsLink.Add(A_jointedAP);
                 //リストを走査
-                foreach (AbstractPartsController part in partsLink)
+                foreach (ReversibleConnectionPartsController part in partsLink)
                 {
                     Debug.LogAssertion("AAAU"+part.gameObject.name);
                     //未探索　かつ　損傷が小破及び無傷　なら
@@ -297,11 +299,11 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
             }
             Debug.LogAssertion("AAAW");
             //while文終了。
-            //まとまりのリストに格納しておく
+            //まとまり（小破以下のパーツが2個以上直接つながっているもの）のリストに格納しておく。これを後で使う
             PartsGroupList.Add(Parts);
         }
         //探索フラグをリセットしておく
-        foreach (AbstractPartsController part in ChildPartsList)
+        foreach (ReversibleConnectionPartsController part in ChildPartsList)
         {
             part.SetSearchFlag(false);
         }
@@ -313,11 +315,15 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// <returns></returns>
     public List<AbstractPartsController> GetSelectPartsGroup(AbstractPartsController APC)
     {
+        Debug.LogAssertion(PartsGroupList.Count);
         foreach (List<AbstractPartsController> Group in PartsGroupList)
         {
+            Debug.LogAssertion(Group.Count);
             foreach (AbstractPartsController Part in Group)
             {
-                if (Part == APC)
+                //GSetting.RefineDebugAssertinLog(Part.transform,"リスト"+Part.GetType());
+                //GSetting.RefineDebugAssertinLog(APC.transform,"カーソルを合わせたほう"+APC.GetType());
+                if (Part.gameObject == APC.gameObject)
                 {
                     return Group;
                 }
@@ -328,7 +334,7 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     }
     public void ReloadJointLink()
     {
-        foreach (AbstractPartsController Part in ChildPartsList)
+        foreach (ReversibleConnectionPartsController Part in ChildPartsList)
         {
             Part.ReloadJointUnitLink();
         }
@@ -369,14 +375,14 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     }
     public void DeleteHeavilyDamagedParts()
     {
-        List<AbstractPartsController> heavilyPartsList = new List<AbstractPartsController>();
-        foreach (AbstractPartsController part in ChildPartsList)
+        List<ReversibleConnectionPartsController> heavilyPartsList = new List<ReversibleConnectionPartsController>();
+        foreach (ReversibleConnectionPartsController part in ChildPartsList)
         {
             if (part.GetPartsDamageStatus() == GSetting.PartsDamageStatus.HeavilyDamage) heavilyPartsList.Add(part);
         }
         ChildPartsList.RemoveAll(x => x.GetPartsDamageStatus() == GSetting.PartsDamageStatus.HeavilyDamage);
         //PartsGroupList
-        foreach (AbstractPartsController part in heavilyPartsList)
+        foreach (ReversibleConnectionPartsController part in heavilyPartsList)
         {
             Destroy(part.gameObject);
         }
@@ -419,13 +425,13 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
         //ReDUMSの座標をグローバル座標に変更
         transform.position = BaseGroPos;
         //各パーツのローカル座標をディ一ローカル座標 - ローカル座標にして合わせる
-        foreach (AbstractPartsController Part in ChildPartsList)
+        foreach (ReversibleConnectionPartsController Part in ChildPartsList)
         {
             Part.transform.localPosition = Part.transform.localPosition - BaseLocPos;
             Part.ReloadJointUnitLink();
         }
     }
-    public List<AbstractPartsController> GetChildPartsList()
+    public List<ReversibleConnectionPartsController> GetChildPartsList()
     {
         return ChildPartsList;
     }
@@ -434,9 +440,9 @@ public class RefineDestroyedUnitManagementScript : MonoBehaviour
     /// これを呼び出す時点で合体対象のまとまり以外を分離させている前提
     /// </summary>
     /// <returns></returns>
-    public AbstractPartsController GetEmptyJoint()
+    public ReversibleConnectionPartsController GetEmptyJoint()
     {
-        foreach (AbstractPartsController Part in ChildPartsList)
+        foreach (ReversibleConnectionPartsController Part in ChildPartsList)
         {
             ActiveJointUnit activeJoint = Part.GetActiveJointLink();
             if (activeJoint.isJointLinkEmpty())

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -57,5 +58,28 @@ public class TakeOffButton : WindowTranslateButton
     public bool GetExecuteFlag()
     {
         return executeFlag;
+    }
+    /// <summary>
+    /// シーン遷移のウィンドウ閉じのアニメーションの際にかざしてしまう問題への対処
+    /// </summary>
+    /// <param name="eventData"></param>
+   public override void OnPointerEnter(PointerEventData eventData)
+    {
+        if (executeOnceFlag)
+        {
+            CursolSelected = true;
+            SCer.PlaySE(0);
+        }
+    }
+    /// <summary>
+    /// シーン遷移のウィンドウ閉じのアニメーションの際にかざしてしまう問題への対処
+    /// </summary>
+    /// <param name="eventData"></param>
+    public override void OnPointerExit(PointerEventData eventData)
+    {
+        if (executeOnceFlag)
+        {
+            CursolSelected = false;
+        }
     }
 }

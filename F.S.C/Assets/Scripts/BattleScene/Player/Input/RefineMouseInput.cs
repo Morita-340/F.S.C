@@ -32,6 +32,7 @@ public class RefineMouseInput : MonoBehaviour
     Texture2D RockONCursorImage;
     [SerializeField]
     PlayerSActionFeedBackUIController PSAFBUIC;
+    [SerializeField] MachineStatusHUDController MSHUDC;
     // Start is called before the first frame update
     void Start()
     {
@@ -219,6 +220,11 @@ public class RefineMouseInput : MonoBehaviour
         GameObject hitObj = DestroyedHit2D.collider.gameObject;
         RefineDestroyedUnitManagementScript ReDUMS = hitObj.transform.root.GetComponent<RefineDestroyedUnitManagementScript>();
         AbstractPartsController APC = hitObj.transform.parent.GetComponent<AbstractPartsController>();
+        PartConnectToUI_IF PC2UI_IF = APC as PartConnectToUI_IF;
+        if (PC2UI_IF != null)
+        {
+            MSHUDC.SetCaputuringPart(true,PC2UI_IF.GetThisPartIcon());
+        }
         List<AbstractPartsController> CapturePartsGroup = new List<AbstractPartsController>();
         //接続状況に応じて場合分け
         switch ((GSetting.PartsConnectSituation)Enum.Parse(typeof(GSetting.PartsConnectSituation), ReDUMS.GetPartsConnectSituation().ToString(), true))
@@ -291,10 +297,11 @@ public class RefineMouseInput : MonoBehaviour
         {
             Debug.LogWarning(RePC.CapturePartsCoveredPlayer());
             //設置場所が機体と被るか？
-            if (RePC.CapturePartsCoveredPlayer())//被る
+            if (RePC.CapturePartsCoveredPlayer() || RePC.GetCaptureObjInfos().Count==0)//被るまたは枠がなし（埋まっているか、そもそも無いか）
             {
                 //エラー音を鳴らす
                 Debug.LogAssertion("BBB");
+                MSHUDC.NoCapturableIconActive();
                 //もう一度
                 StartCoroutine(DecideWhereToPutParts(CapturePartsGroup, ReDUMS));
                 yield break;
@@ -344,7 +351,7 @@ public class RefineMouseInput : MonoBehaviour
                 foreach (CaptureObjInfo part in CaptureObjInfoList)
                 {
                     Debug.LogAssertion("WWW" + part.CaptureParts.gameObject.name + part.position + part.rotation.eulerAngles + RePUDMS.transform);
-                    Instantiate(part.CaptureParts.gameObject, part.position, part.rotation, RePUDMS.transform).GetComponent<AbstractPartsController>().CaptureProcess();
+                    Instantiate(part.CaptureParts.gameObject, part.position, part.rotation, RePUDMS.transform).GetComponent<ReversibleConnectionPartsController>().CaptureProcess();
                 }
                 //合体時に回復
                 RePUDMS.RepairMachine(ReDUMS.GetHP());
@@ -363,6 +370,8 @@ public class RefineMouseInput : MonoBehaviour
             Debug.LogAssertion("DDD");
             PartsRelease(ReDUMS);
         }
+        //リリースするにしても合体させるにしてもHUDは非表示にする必要があるため
+        MSHUDC.SetCaputuringPart(false, null);
         Debug.LogAssertion("KKKK");
     }
     /// <summary>
@@ -370,9 +379,9 @@ public class RefineMouseInput : MonoBehaviour
     /// </summary>
     private void GainEXP(RefineDestroyedUnitManagementScript ReDUMS)
     {
-        List<AbstractPartsController> HeavilyDamagedPartsList = new List<AbstractPartsController>();
+        List<ReversibleConnectionPartsController> HeavilyDamagedPartsList = new List<ReversibleConnectionPartsController>();
         //大破パーツを全て取得
-        foreach (AbstractPartsController childPart in ReDUMS.GetChildPartsList())
+        foreach (ReversibleConnectionPartsController childPart in ReDUMS.GetChildPartsList())
         {
             if (childPart.GetPartsDamageStatus() == GSetting.PartsDamageStatus.HeavilyDamage)
             {

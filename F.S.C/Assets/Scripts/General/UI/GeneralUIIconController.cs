@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+/// <summary>
+/// ボタンを押すと音を出して反応するアイコンを制御できる
+/// </summary>
 public class GeneralUIIconController : MonoBehaviour , IPointerEnterHandler,IPointerExitHandler
 {
     protected bool CursolSelected = false;

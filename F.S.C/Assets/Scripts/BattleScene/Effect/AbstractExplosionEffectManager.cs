@@ -31,12 +31,14 @@ public class AbstractExplosionEffectManager : MonoBehaviour
         this.transform.rotation = transform.rotation;
     }
     public virtual IEnumerator DestroyObjectGradually(SpriteRenderer SR,Vector3 ExplosionScale){
-        ExplosionObj.transform.DOScale(ExplosionScale,0.1f);
+        //ExplosionObj.transform.DOScale(ExplosionScale,0.1f);
+        ExplosionObj.transform.localScale = ExplosionScale;
         //爆発音を鳴らす
         SCer.PlaySE(0);
-        yield return new WaitUntil(() => ExplosionObj.transform.localScale == ExplosionScale);
-        SR.DOFade(0,0.5f);
-        yield return new WaitUntil(() => SR.color.a == 0);
+        //yield return new WaitUntil(() => ExplosionObj.transform.localScale == ExplosionScale);
+        //SR.DOFade(0,0.6f);
+        //yield return new WaitUntil(() => SR.color.a == 0);
+        yield return new WaitForSeconds(0.6f);
         ExplosionObj.SetActive(false);
         yield return new WaitUntil(() => !SCer.IsPlayingSE());
         Destroy(this.gameObject);

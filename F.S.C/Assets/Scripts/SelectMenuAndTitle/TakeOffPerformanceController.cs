@@ -53,7 +53,7 @@ public class TakeOffPerformanceController : MonoBehaviour
     public IEnumerator Perform()
     {
         //アフターバーナーちょび点火
-        StartCoroutine(PUMMS.Ignition());
+        //StartCoroutine(PUMMS.Ignition());
         alertRedBlinkingFlag = false;
         yield return new WaitForSeconds(1.0f);
         //アラート赤点滅処理実行

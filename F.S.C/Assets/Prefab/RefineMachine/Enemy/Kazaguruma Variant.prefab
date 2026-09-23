@@ -6509,6 +6509,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6315245910455652255}
     m_Modifications:
+    - target: {fileID: 3540026240144753162, guid: e4570951e416a71409a52cfc6abef4ae, type: 3}
+      propertyPath: explosionScopeRadius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8039063536008419461, guid: e4570951e416a71409a52cfc6abef4ae, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

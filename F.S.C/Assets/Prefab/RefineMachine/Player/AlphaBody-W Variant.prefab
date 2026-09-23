@@ -534,6 +534,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7682030155525141463}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: slotFlag_Front
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: Integrated_Front
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: slotFlag_FrontRight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: PartsList.Array.size
       value: 1
       objectReference: {fileID: 0}

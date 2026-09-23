@@ -36,6 +36,7 @@ public abstract class IWaveRuntime : MonoBehaviour
         {
             foreach (RefineEnemyUnitDestroyManagementScript ReEUDMS in SpawnedEnemyList)
             {
+                Debug.Log(ReEUDMS.transform.name);
                 Destroy(ReEUDMS?.gameObject);
             }
         }

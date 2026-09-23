@@ -49,6 +49,7 @@ public class JointUnit : UnitBase
     {
         return transform.position + (Quaternion.Euler(transform.rotation.eulerAngles + new Vector3(0, 0, offsetRotation)) * Vector3.down);
     }
+    //ジョイントユニットは合体場所が必ずユニットの下側（ユニットスプライトのコネクタ部分が露出している部分）なので[1]
     public AbstractPartsController GetJointedAnotherPart()
     {
         AbstractPartsController jointAnotherParts = ThisUnitData.ReturnFourWayLink()[1]?.ReturnThisUnit().GetAPC();

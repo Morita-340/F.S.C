@@ -632,6 +632,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6127953709392849938}
     - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: slotFlag_BackLeft
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
+      propertyPath: Integrated_BackLeft
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2432205066673774793, guid: 39df2f489c1e1d449bb655907229b04e, type: 3}
       propertyPath: PartsList.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1554,6 +1562,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 382841845326462024}
     - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+      propertyPath: LayerName
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: DamageStatus
       value: 2
       objectReference: {fileID: 0}
@@ -1564,6 +1576,14 @@ PrefabInstance:
     - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: numOfJointUnit
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+      propertyPath: outlineColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
+      propertyPath: outlineColor.r
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1886728818323741172, guid: 3bfa5726c97fde24a9476207bb820cc5, type: 3}
       propertyPath: childObjTagName

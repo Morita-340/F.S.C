@@ -6,13 +6,13 @@ using System;
 
 public class AttackUnit : UnitBase
 {
-    [SerializeField]protected WeaponBase NormalWeapon;
-    [SerializeField]protected WeaponBase ChargeWeapon;
-    [SerializeField]protected GameObject ReactorLevelUI;
+    [SerializeField] protected WeaponBase NormalWeapon;
+    [SerializeField] protected WeaponBase ChargeWeapon;
+    [SerializeField] protected GameObject ReactorLevelUI;
     protected FanRange FR;
     protected LineRenderer lineRenderer;
-    [SerializeField,ReadOnly]protected Vector3 targetPosition =new Vector3(0,0,0);
-    protected Vector3[] positions = new Vector3[]{};
+    [SerializeField, ReadOnly] protected Vector3 targetPosition = new Vector3(0, 0, 0);
+    protected Vector3[] positions = new Vector3[] { };
     [SerializeField]
     protected bool isHoming = false;
     protected RaycastHit2D enemyHit2D;
@@ -20,13 +20,18 @@ public class AttackUnit : UnitBase
     {
         targetPosition = inputTargetPosition;
         enemyHit2D = inputEnemyHit2D;
-        return FR.InRockONRange(targetPosition)&&enemyHit2D&&isHoming == true;
+        return FR.InRockONRange(targetPosition) && enemyHit2D && isHoming == true;
     }
     /// <summary>
     /// AUAMS→AttackUnitの攻撃処理がすべての子オブジェクトに対して同時に行われているので、AttackUnit側で攻撃タイミングをずらすことで、弾幕を張ることができ、弾を当てやすくなる
     /// </summary>
     protected float attackTimeOffset;
-    protected override void Awake(){
+    public float GetAttackTimeOffset()
+    {
+        return attackTimeOffset;
+    }
+    protected override void Awake()
+    {
         FR = GetComponent<FanRange>();
         lineRenderer = GetComponent<LineRenderer>();
         base.Awake();
@@ -35,28 +40,31 @@ public class AttackUnit : UnitBase
     protected override void Start()
     {
         SetWeaponPower();
-        if(isPrime){attackTimeOffset = 0;}
-        else{attackTimeOffset = UnityEngine.Random.Range(0.1f,0.9f);}
+        if (isPrime) { attackTimeOffset = 0; }
+        else { attackTimeOffset = UnityEngine.Random.Range(0.1f, 0.9f); }
         targetPosition = transform.position;
         //照準までの軌跡の描画初期設定
-        positions = new Vector3[]{transform.position,targetPosition};
-        if(tag == GSetting.ObjTagName.PlayerUnit.ToString()){lineRenderer.startColor = new Color(0,0,0,0);lineRenderer.endColor = Color.green;}
-        if(tag == GSetting.ObjTagName.EnemyUnit.ToString()){lineRenderer.startColor = Color.red;lineRenderer.endColor = new Color(0,0,0,0);}
+        positions = new Vector3[] { transform.position, targetPosition };
+        if (tag == GSetting.ObjTagName.PlayerUnit.ToString()) { lineRenderer.startColor = new Color(0, 0, 0, 0); lineRenderer.endColor = Color.green; }
+        if (tag == GSetting.ObjTagName.EnemyUnit.ToString()) { lineRenderer.startColor = Color.red; lineRenderer.endColor = new Color(0, 0, 0, 0); }
         lineRenderer.startWidth = 0.1f;
         lineRenderer.endWidth = 0.1f;
         base.Start();
     }
-    public void SetWeaponPower(){
-        normalAttackPower = NormalWeapon?.GetAttackPower()?? 0;
-        chargeAttackPower = ChargeWeapon?.GetAttackPower()?? 0;
+    public void SetWeaponPower()
+    {
+        normalAttackPower = NormalWeapon?.GetAttackPower() ?? 0;
+        chargeAttackPower = ChargeWeapon?.GetAttackPower() ?? 0;
     }
-    public void SetChargeWeapon(WeaponBase Weapon){
+    public void SetChargeWeapon(WeaponBase Weapon)
+    {
         ChargeWeapon = Weapon;
         SetWeaponPower();
     }
-    public override int GetUnitStatus(){
+    public override int GetUnitStatus()
+    {
         SetWeaponPower();
-        return base.GetUnitStatus()/*HPのこと*/ + (normalAttackPower + chargeAttackPower)*(attackEfficiency + EXP);
+        return base.GetUnitStatus()/*HPのこと*/ + (normalAttackPower + chargeAttackPower) * (attackEfficiency + EXP);
     }
     public int GetHP()
     {
@@ -101,7 +109,7 @@ public class AttackUnit : UnitBase
     }
     public override IEnumerator NormalAttack(Vector3 TargetPosition)
     {
-        if(NormalWeapon == null){yield break;}
+        if (NormalWeapon == null) { yield break; }
         Debug.Log("LLLL");
         //射程内
         if (FR.InRange(TargetPosition))
@@ -160,46 +168,61 @@ public class AttackUnit : UnitBase
     }
     public override void ChargeAttack(Vector3 TargetPosition)
     {
-        if(ChargeWeapon == null){return;}
-        if(FR.InRange(TargetPosition)){
+        if (ChargeWeapon == null) { return; }
+        if (FR.InRange(TargetPosition))
+        {
             Vector3 FirePosition = this.transform.position;
             Quaternion FireRotation = this.transform.rotation;
             base.ChargeAttack(TargetPosition);
             string tagName = GSetting.ObjTagName.PlayerWeapon1.ToString();
-            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-                case GSetting.ObjTagName.PlayerUnit:{
-                    tagName = GSetting.ObjTagName.PlayerWeapon2.ToString();
-                    break;}
-                case GSetting.ObjTagName.EnemyUnit:{
-                    tagName = GSetting.ObjTagName.EnemyWeapon2.ToString();
-                    break;
-                }
-                default:break;
+            switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+            {
+                case GSetting.ObjTagName.PlayerUnit:
+                    {
+                        tagName = GSetting.ObjTagName.PlayerWeapon2.ToString();
+                        break;
+                    }
+                case GSetting.ObjTagName.EnemyUnit:
+                    {
+                        tagName = GSetting.ObjTagName.EnemyWeapon2.ToString();
+                        break;
+                    }
+                default: break;
 
             }
-            ChargeWeapon.tag= tagName;
-            WeaponBase InstWeapon = Instantiate(ChargeWeapon,FirePosition,FireRotation);
+            ChargeWeapon.tag = tagName;
+            WeaponBase InstWeapon = Instantiate(ChargeWeapon, FirePosition, FireRotation);
             InstWeapon.SetAttackEfficiency(attackEfficiency + EXP);
-            WeaponLook(InstWeapon,TargetPosition);
-            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta()*10 *ChargeWeapon.GetVelocityEfficiency()+ this.transform.root.GetComponent<Rigidbody2D>().velocity;
-            switch((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag,true)){
-                case GSetting.ObjTagName.PlayerUnit:{
-                    break;}
-                case GSetting.ObjTagName.EnemyUnit:{
-                    weaponVelocity = 0.7f * weaponVelocity;
-                    break;
-                }
-                default:break;
+            WeaponLook(InstWeapon, TargetPosition);
+            Vector2 weaponVelocity = (Vector2)FR.GetTargetDelta() * 10 * ChargeWeapon.GetVelocityEfficiency() + this.transform.root.GetComponent<Rigidbody2D>().velocity;
+            switch ((GSetting.ObjTagName)Enum.Parse(typeof(GSetting.ObjTagName), this.gameObject.tag, true))
+            {
+                case GSetting.ObjTagName.PlayerUnit:
+                    {
+                        break;
+                    }
+                case GSetting.ObjTagName.EnemyUnit:
+                    {
+                        weaponVelocity = 0.7f * weaponVelocity;
+                        break;
+                    }
+                default: break;
             }
             InstWeapon.SetVelocity(weaponVelocity);
         }
     }
-    private void WeaponLook(WeaponBase weapon, Vector3 TargetPosition){
+    private void WeaponLook(WeaponBase weapon, Vector3 TargetPosition)
+    {
         Transform myTransform = weapon.transform;
         Vector2 direction = TargetPosition - myTransform.position;
         myTransform.up = direction;
     }
-    public virtual void DestroyFRMesh(){
+    public virtual void DestroyFRMesh()
+    {
         FR?.DestroyRMM();
+    }
+    public bool InRange()
+    {
+        return FR.InRange(targetPosition);
     }
 }
