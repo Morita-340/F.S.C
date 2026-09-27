@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class SpriteHUD : HUD
 {
     [SerializeField] Image image;
+    GameObject posTraceObj;
     public void SetSprite(Sprite sprite)
     {
         image.sprite = sprite;
@@ -17,9 +18,30 @@ public class SpriteHUD : HUD
     {
         image.sprite = null;
     }
+    public void SetColor(Color color,float alpha)
+    {
+        image.color = new Color(color.r,color.g,color.b,alpha);
+    }
     public void SetColor(Color color)
     {
-        image.color = color;
+        image.color = new Color(color.r,color.g,color.b,image.color.a);
+    }
+    public Color GetColor()
+    {
+        return image.color;
+    }
+    public void SetLocalPosition(Vector3 position)
+    {
+        transform.localPosition = position;
+    }
+    public void SetLocalPosition(GameObject localPosObj)
+    {
+        posTraceObj = localPosObj;
+    }
+    protected override void Update()
+    {
+        base.Update();
+        if(posTraceObj != null){ transform.position = posTraceObj.transform.position; }
     }
     /// <summary>
     /// スプライトを引数のサイズ・角度に指定時間で変形・回転。必要なタイミングでのみ呼び出す
@@ -30,12 +52,12 @@ public class SpriteHUD : HUD
     /// <param name="colorStretchGradually">色が指定時間をかけて変わるか否か。falseなら呼び出し時にすぐ変わる</param>
     /// <param name="time">変形・回転に掛かる時間</param>
     /// <returns></returns>
-    public IEnumerator UIStretch(Vector3 scale, float eulerAngleZ,Color color,bool colorStretchGradually, float time)
+    public IEnumerator UIStretch(Vector3 scale, float eulerAngleZ, Color color, bool colorStretchGradually, float time)
     {
         transform.DOScale(scale, time);
         transform.DORotate(new Vector3(0, 0, eulerAngleZ), time);
-        if(!colorStretchGradually){ image.color = color; }
-        else{ image.DOColor(color, time); }
+        if (!colorStretchGradually) { image.color = color; }
+        else { image.DOColor(color, time); }
         yield return new WaitForSeconds(time);
     }
     public IEnumerator UI_PingPongStretch(Vector3 scale, float eulerAngleZ,Color color,bool colorStretchGradually, float time)

@@ -7,5 +7,8 @@ using UnityEngine;
 
 public class ActiveJointUnit : JointUnit
 {
-
+    public void PurgeProcess()
+    {
+        DestroyUnit();
+    }
 }

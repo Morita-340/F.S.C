@@ -40,6 +40,10 @@ public class RefineEnemyUnitDestroyManagementScript : RefineAbstractUnitDestroyM
             ThisUnitSCore?.OutCoreDestroyProcess();
         }
         StartCoroutine(PAFBUIC?.Wait(0.1f,ParentObjectList));
+        foreach (AbstractPartsController abParts in PartsList)
+        {
+            Debug.LogAssertion(abParts.name);
+        }
         return ParentObjectList;
     }
     public override int CaluculateCombatPower(){

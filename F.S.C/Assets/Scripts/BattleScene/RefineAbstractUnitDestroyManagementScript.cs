@@ -49,10 +49,12 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     List<UnitData> StackCopy = new List<UnitData>();
     float time = 0;
     [SerializeField] protected SoundController SCer;
+    protected RefineAbstractUnitAttackManagementScript ReAUAMS;
     protected virtual void Awake()
     {
         ThisGameObject = gameObject;
         initPrimeUnitHP = primeUnitsHP;
+        ReAUAMS = GetComponent<RefineAbstractUnitAttackManagementScript>();
     }
     // Start is called before the first frame update
     protected virtual void Start()
@@ -71,9 +73,11 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
     /// <summary>
     /// 子オブジェクトのUnitDataをまとめて格納する関数
     /// 合体時や分離時や初期生成時に呼ばれる
+    /// 分離や合体で確実にオブジェクトが生成・破壊されたあとに呼び出す必要があるためコルーチン
     /// </summary>
-    public virtual void SetUnitData()
+    public virtual IEnumerator SetUnitData()
     {
+        yield return null;
         //if (this is RefineEnemyUnitDestroyManagementScript) GSetting.RefineDebugAssertinLog(transform, "AAAAAA");
         //オブジェクト構造が変わったため変更
         PartsList.Clear();
@@ -155,9 +159,9 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             //ジョイントユニットが無いならそもそも再生成する必要が無い
             if (!(abParts is ReversibleConnectionPartsController)) { continue; }
             ReversibleConnectionPartsController Parts = abParts as ReversibleConnectionPartsController;
-            Debug.LogWarning("FFF"+Parts.AllUnitSearched(true,0)+Parts.gameObject.name);
+            Debug.LogWarning("FFF" + Parts.AllUnitSearched(true, 0) + Parts.gameObject.name);
             //falseになったユニットが存在しない=全てtrueなパーツ=コアと繋がっている=分離対象ではないパーツはあとの処理を飛ばす＝分離対象でないパーツの除外
-            if (Parts.AllUnitSearched(true,0)) { continue; }
+            if (Parts.AllUnitSearched(true, 0)) { continue; }
             //分離対象が存在するパーツは分離対象のユニットを全てリストにまとめておく
             Parts.SetNotResearchUnitList();
             Debug.LogWarning(Parts.name);
@@ -176,7 +180,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             foreach (ReversibleConnectionPartsController Parts in NotResearchPartsList)
             {
                 //分離対象のうち、今回の探索でtrueになったユニットが存在しない＝すぐに分離しないパーツはあとの処理を飛ばす＝今回まとめる分離対象だけ選別
-                if (Parts.AllUnitSearched(false,1)) { continue; }
+                if (Parts.AllUnitSearched(false, 1)) { continue; }
                 //二度目のBFSでtrue＝今回分離対象になったUnitはフラグが立っているので、これをリストにまとめる
                 Parts.SetRegeneUnitList();
                 RegenePartsList.Add(Parts);
@@ -199,7 +203,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
             foreach (ReversibleConnectionPartsController Parts in RegenePartsList)
             {
                 //パーツ制御オブジェクトを生成
-                GameObject PartsObj = Parts.DuplicateParentOnly(basePosition,ParentObject.transform);
+                GameObject PartsObj = Parts.DuplicateParentOnly(basePosition, ParentObject.transform);
                 //ユニットオブジェクトをパーツ制御オブジェクトの下に生成
                 //二度目のBFSで分離対象になったものだけがリストにまとめられている
                 List<UnitData> RegeneUnitList = Parts.GetRegeneUnitList();
@@ -208,7 +212,7 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                 {
                     GameObject RegeneObj = Instantiate(
                         unitData.ReturnThisUnit().gameObject, PartsObj.transform)
-                        .GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(),(int)GSetting.UniqueLayerName.DestroyedUnit);
+                        .GetComponent<UnitBase>().UnitSetting(GSetting.ObjTagName.DestroyedUnit.ToString(), (int)GSetting.UniqueLayerName.DestroyedUnit);
                     //RegeneObj.transform.parent = PartsObj.transform;
                     //複製元の消去（オブジェクトとデータ）
                     unitData.ReturnThisUnit()?.GetAPC().DeleteChildUnitData(unitData);
@@ -221,18 +225,22 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
                 RCPC.RegeneProcess();
             }
             //パーツのうち、今回の探索ですべてのUnitがtrueになったものを除外する（APCのDeleteChildUnitData()で既に探索済みかつ再生成済みのオブジェクトはデータもオブジェクトも消去済み）
-            foreach (AbstractPartsController Parts in NotResearchPartsList)
+            foreach (ReversibleConnectionPartsController Parts in NotResearchPartsList)
             {
-                if (Parts.transform.childCount == 0 && !(Parts is BodyPartsController))
+                //Debug.LogWarning("AAZ"+Parts.gameObject.name + (Parts.transform.childCount == 0).ToString()+(Parts is BodyPartsController).ToString());
+                //foreach (Transform transform in Parts.transform)
+                //{
+                //    Debug.LogAssertion("AAZ" +transform.name);
+                //}
+                if (Parts.GetChildUnitDataList().Count == 0 && !(Parts is BodyPartsController))
                 {
-                    Debug.LogWarning("AAZ"+Parts.gameObject.name);
                     PartsList.Remove(Parts);
                     Destroy(Parts.gameObject);
                 }
             }
-            NotResearchPartsList.RemoveAll(AbstractPartsController => AbstractPartsController.AllUnitSearched(true,0) == true);
+            NotResearchPartsList.RemoveAll(AbstractPartsController => AbstractPartsController.AllUnitSearched(true, 0) == true);
             StartCoroutine(ParentObject.GetComponent<RefineDestroyedUnitManagementScript>().InitialSetting());
-            ParentObject.GetComponent<RefineDestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x,transform.position.y);
+            ParentObject.GetComponent<RefineDestroyedUnitManagementScript>().SetMoveAndRotateVector(transform.position.x, transform.position.y);
             if (ParentObject.transform.childCount <= 0) { DestroyImmediate(ParentObject); }
             else { ParentObjectList.Add(ParentObject); }
         }
@@ -242,6 +250,11 @@ public class RefineAbstractUnitDestroyManagementScript : MonoBehaviour
         {
             unitData.AlreadySearch = false;
         }
+        foreach (AbstractPartsController abParts in PartsList)
+        {
+            Debug.LogAssertion(abParts.name);
+        }
+        //ReAUAMS.SetPartList();
         return ParentObjectList;
     }
     public GSetting.ObjTagName GetChildObjTagName()

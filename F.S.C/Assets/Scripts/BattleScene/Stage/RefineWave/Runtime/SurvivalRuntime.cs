@@ -36,6 +36,7 @@ public class SurvivalRuntime : IWaveRuntime
     {
         base.Update();
         nowTime += Time.deltaTime;
+        sucessTrigger.Update();
         //敵全滅と違い、クリア時に敵が残っている可能性があるため、クリア時に敵を消す処理が必要
         if (sucessTrigger.Rising())
         {

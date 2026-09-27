@@ -30,6 +30,7 @@ public abstract class IWaveRuntime : MonoBehaviour
     public void DestroyProcess() { if (GetComponent<RefineSpawnSystem>()) Destroy(ReSpS); }
     protected virtual void Update()
     {
+        sucessTrigger.Update();
         if (initialSettingFlag) DetermineSuccessORFailure();
         //クリア時に敵が残っている可能性があるため、クリア時に敵を消す処理が必要
         if (sucessTrigger.Rising())

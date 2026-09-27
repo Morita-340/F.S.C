@@ -35,6 +35,25 @@ namespace FSCGeneral{
             /// </summary>
             ObtusePentagon = 5,
         }
+        /// <summary>
+        /// 右クリックのモード
+        /// </summary>
+        public enum RightPointedMode
+        {
+            None = 0,
+            /// <summary>
+            /// 回復モード。右クリックのみを長押し
+            /// </summary>
+            RepairMode = 1,
+            /// <summary>
+            /// 合体モード。シフトを押しながら右クリックを押す
+            /// </summary>
+            CaptureMode = 2,
+            /// <summary>
+            /// パージモード。スペースを押しながら右クリックを押す
+            /// </summary>
+            PurgeMode = 3,
+        }
         public enum PartsDamageStatus
         {
             NotSet = 0,

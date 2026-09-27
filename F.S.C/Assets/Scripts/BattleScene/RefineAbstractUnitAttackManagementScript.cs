@@ -14,7 +14,7 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     private float normalAttackInterval = 1;
     [SerializeField,Range(0.1f,10f)]
     protected float chargeAttackInterval =1;
-    [SerializeField]protected List<AbstractPartsController> PartsList;
+    [SerializeField,ReadOnly]protected List<AbstractPartsController> PartsList;
     bool inTimeRangeOFNormalAttack = true;
     float NextNormalAttack = 0f;
     bool inTimeRangeOFChargeAttack = false;
@@ -26,6 +26,7 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
         TargetPosition = inputTargetPosion;
         foreach (AbstractPartsController Parts in PartsList)
         {
+            if(Parts == null){ continue; }
             bool flag = Parts.SetTargetPosition(TargetPosition,enemyHit2D);
             if (flag) { rockONFlag = true; }
         }
@@ -33,8 +34,20 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
     }
     protected virtual void Awake(){
     }
-    protected virtual void Start(){
+    protected virtual void Start()
+    {
         PartsList = ReAUDMS.GetPartsList();
+        
+    }
+    public void SetPartList()
+    {
+        PartsList = ReAUDMS.GetPartsList();
+        // ReAUAMS側、Update()などで随時ログ出力
+
+    }
+    void Update()
+    {
+        
     }
     /// <summary>
     /// 呼び出されたら一定時間おきに各ユニットの通常攻撃を"毎フレームではなく一度だけ"実行する
@@ -49,6 +62,7 @@ public class RefineAbstractUnitAttackManagementScript : MonoBehaviour
             Debug.Log("AUAMS normal timeA" + time + " " + NextNormalAttack);
             foreach (AbstractPartsController Parts in PartsList)
             {
+                if (Parts == null) { continue; }
                 Debug.Log("QQQQ");
                 Parts.NormalAttack(TargetPosition);
             }

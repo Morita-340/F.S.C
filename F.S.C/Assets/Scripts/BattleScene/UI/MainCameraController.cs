@@ -44,10 +44,13 @@ public class MainCameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Setting && isPlayerHoming) {
+        isPlayerHomingTrigger.Update();
+        if (!Setting && isPlayerHoming)
+        {
             SetCursolToPlayerOffset();
             this.transform.position = Player.transform.position + cursolToPlayerOffset + new Vector3(0, 0, -5);
-            Debug.LogAssertion("WWWHHHWWWW"); }
+            Debug.LogAssertion("WWWHHHWWWW");
+        }
         //ZoomRatioControll(maxDistanse);
     }
     private void SetCursolToPlayerOffset()

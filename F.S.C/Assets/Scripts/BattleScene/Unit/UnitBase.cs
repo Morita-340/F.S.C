@@ -77,6 +77,7 @@ public class UnitBase : MonoBehaviour
     {
         tag = tagName;
         if (tagName == GSetting.ObjTagName.PlayerUnit.ToString()) { isPrime = true; }
+        else{ isPrime = false; }
         this.gameObject.layer = layerNum;
         //GSetting.RefineDebugAssertinLog(transform,tag);
         return this.gameObject;
@@ -194,43 +195,47 @@ public class UnitBase : MonoBehaviour
         int distanseFromCore = (int)Math.Sqrt(Math.Pow(RegeneUnitsPosition.x, 2) + Math.Pow(RegeneUnitsPosition.y, 2));
         return distanseFromCore;
     }
-    private UnitBase GetUpLink(string SelectedObjTag)
+    protected virtual UnitBase GetUpLink(string SelectedObjTag)
     {
         UnitBase upperUnit;
         GameObject UpperObj = GetUpperGameObject(SelectedObjTag);
         if (UpperObj == null) { return null; }
         upperUnit = UpperObj.GetComponent<UnitBase>();
-        if (upperUnit == null) Debug.LogAssertion("UpperUnit is null;");
+        if (upperUnit == null){ Debug.LogAssertion("UpperUnit is null;");}
+        else{ if (upperUnit.GetAPC() != APC) upperUnit = null; }
         return upperUnit;
     }
-    private UnitBase GetDownLink(string SelectedObjTag)
+    protected virtual UnitBase GetDownLink(string SelectedObjTag)
     {
         UnitBase downerUnit;
         GameObject DownerObj = GetDownerGameObject(SelectedObjTag);
         if (DownerObj == null) { return null; }
         downerUnit = DownerObj.GetComponent<UnitBase>();
-        if (downerUnit == null) Debug.LogAssertion("DownerUnit is null;");
+        if (downerUnit == null) {Debug.LogAssertion("DownerUnit is null;");}
+        else{ if (downerUnit.GetAPC() != APC) downerUnit= null; }
         return downerUnit;
     }
-    private UnitBase GetRightLink(string SelectedObjTag)
+    protected virtual UnitBase GetRightLink(string SelectedObjTag)
     {
         UnitBase rightUnit;
         GameObject RightObj = GetRightGameObject(SelectedObjTag);
         if (RightObj == null) { return null; }
         rightUnit = RightObj.GetComponent<UnitBase>();
-        if (rightUnit == null) Debug.LogAssertion("RightUnit is null;");
+        if (rightUnit == null){ Debug.LogAssertion("RightUnit is null;");}
+        else{ if (rightUnit.GetAPC() != APC) rightUnit = null; }
         return rightUnit;
     }
-    private UnitBase GetLeftLink(string SelectedObjTag)
+    protected virtual UnitBase GetLeftLink(string SelectedObjTag)
     {
         UnitBase leftUnit;
         GameObject LeftObj = GetLeftGameObject(SelectedObjTag);
         if (LeftObj == null) { return null; }
         leftUnit = LeftObj.GetComponent<UnitBase>();
-        if (leftUnit == null) Debug.LogAssertion("LeftUnit is null;");
+        if (leftUnit == null) {Debug.LogAssertion("LeftUnit is null;");}
+        else{ if (leftUnit.GetAPC() != APC) leftUnit = null; }
         return leftUnit;
     }
-    private GameObject GetUpperGameObject(string SelectedObjTag)
+    protected GameObject GetUpperGameObject(string SelectedObjTag)
     {
         foreach (RaycastHit2D hit2D in RayCalculateAndCast(Vector3.up))
         {
@@ -239,7 +244,7 @@ public class UnitBase : MonoBehaviour
         }
         return null;
     }
-    private GameObject GetDownerGameObject(string SelectedObjTag)
+    protected GameObject GetDownerGameObject(string SelectedObjTag)
     {
         //if (this is JointUnit) { Debug.LogAssertion(transform.root.gameObject.name+this.gameObject.transform.root.rotation.eulerAngles.z + " " + transform.parent.gameObject.name+ this.gameObject.transform.parent.localRotation.z + " " + gameObject.name + this.gameObject.transform.localRotation.eulerAngles.z + " " + offsetRotation+ "\n" + (this.gameObject.transform.root.rotation.eulerAngles.z + this.gameObject.transform.parent.localRotation.eulerAngles.z + this.gameObject.transform.localRotation.eulerAngles.z + offsetRotation)); }
         foreach (RaycastHit2D hit2D in RayCalculateAndCast(Vector3.down))
@@ -249,7 +254,7 @@ public class UnitBase : MonoBehaviour
         }
         return null;
     }
-    private GameObject GetRightGameObject(string SelectedObjTag)
+    protected GameObject GetRightGameObject(string SelectedObjTag)
     {
         foreach (RaycastHit2D hit2D in RayCalculateAndCast(Vector3.right))
         {
@@ -258,7 +263,7 @@ public class UnitBase : MonoBehaviour
         }
         return null;
     }
-    private GameObject GetLeftGameObject(string SelectedObjTag)
+    protected GameObject GetLeftGameObject(string SelectedObjTag)
     {
         foreach (RaycastHit2D hit2D in RayCalculateAndCast(Vector3.left))
         {

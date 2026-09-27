@@ -349,7 +349,7 @@ public class AbstractPartsController : MonoBehaviour
     public virtual void NormalAttack(Vector3 inputTargetPosion)
     {
         NotifyThisIsPreviewPart();
-        if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない"+childObjTagName.ToString()); }
+        if (childObjTagName == GSetting.ObjTagName.DestroyedUnit) { GSetting.RefineDebugAssertinLog(transform, "DestroyedUnitは攻撃しない" + childObjTagName.ToString()); }
         //Listの操作による影響を受けない
         foreach (Transform TF in transform)
         {
@@ -370,7 +370,7 @@ public class AbstractPartsController : MonoBehaviour
             //Debug.Log("AUAMS normal unit" + child.ReturnThisUnit().name);
             if (unitBase is AttackUnit AU)
             {
-                if(AU.InRange()){return true;}
+                if (AU.InRange()) { return true; }
             }
         }
         return false;
@@ -389,5 +389,9 @@ public class AbstractPartsController : MonoBehaviour
         {
             childUnitData.ReturnThisUnit().SetInvincible(flag);
         }
+    }
+    public List<UnitData> GetChildUnitDataList()
+    {
+        return ChildUnitDataList;
     }
 }

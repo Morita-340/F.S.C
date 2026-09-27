@@ -5,6 +5,7 @@ public class BoolEdgeTrigger
 {
     readonly System.Func<bool> getter;
     bool prev;
+    bool curr;
     bool initialized;
 
     public BoolEdgeTrigger(System.Func<bool> getter)
@@ -12,41 +13,23 @@ public class BoolEdgeTrigger
         this.getter = getter;
     }
     /// <summary>
-    /// false → trueを検知
+    /// フレームの最初に1回だけ呼ぶ。内部状態を更新する。
     /// </summary>
-    /// <returns></returns>
-    public bool Rising()
+    public void Update()
     {
-        bool curr = getter();
-
+        bool newCurr = getter();
         if (!initialized)
         {
-            prev = curr;
+            prev = newCurr;
             initialized = true;
-            return false;
         }
-
-        bool result = !prev && curr;
-        prev = curr;
-        return result;
-    }
-    /// <summary>
-    /// true → falseを検知
-    /// </summary>
-    /// <returns></returns>
-    public bool Falling()
-    {
-        bool curr = getter();
-
-        if (!initialized)
+        else
         {
             prev = curr;
-            initialized = true;
-            return false;
         }
-
-        bool result = prev && !curr;
-        prev = curr;
-        return result;
+        curr = newCurr;
     }
+
+    public bool Rising() => !prev && curr;
+    public bool Falling() => prev && !curr;
 }

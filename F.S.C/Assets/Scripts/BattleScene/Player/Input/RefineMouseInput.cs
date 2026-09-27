@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FSCGeneral;
 using Unity.VisualScripting;
+using System.Linq;
 
 public class RefineMouseInput : MonoBehaviour
 {
@@ -19,8 +20,12 @@ public class RefineMouseInput : MonoBehaviour
     private float normalAttackTimer = 0;
     [SerializeField] GameObject ReDUMSObj;
     private RefineDestroyedUnitManagementScript ReDUMS;
-    private float WheelInputWhenSelected = 0;
-    private bool isSelected = false;
+    private float captureWheelInputWhenSelected = 0;
+    private bool caputurePart_IsSelected = false;
+    private float purgeWheelInputWhenSelected = 0;
+    private bool purgePart_ISSelected = false;
+    List<PartSlot> PurgablePart_List = new List<PartSlot>();
+    ReversibleConnectionPartsController purgeRCPC;
     private bool isRockON = false;
     /// <summary>
     /// isRockONの切り替わり検知
@@ -33,6 +38,12 @@ public class RefineMouseInput : MonoBehaviour
     [SerializeField]
     PlayerSActionFeedBackUIController PSAFBUIC;
     [SerializeField] MachineStatusHUDController MSHUDC;
+    [SerializeField,ReadOnly]GSetting.RightPointedMode rightPointedMode = GSetting.RightPointedMode.None;
+    bool ModeRock = false;
+    public GSetting.RightPointedMode GetRightPointedMode()
+    {
+        return rightPointedMode;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -58,13 +69,10 @@ public class RefineMouseInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isRockONtrigger.Update();
         //マウスホイールの入力を取得
         WheelInput += Input.GetAxis("Mouse ScrollWheel");
-        //合体位置選択後は合体位置をロック
-        if (!isSelected)
-        {
-            WheelInputWhenSelected = WheelInput * 3;
-        }
+        target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         if (isRockON)
         {
             Cursor.SetCursor(RockONCursorImage, new Vector2(40, 40), CursorMode.Auto);
@@ -73,15 +81,12 @@ public class RefineMouseInput : MonoBehaviour
         {
             //カーソル変更処理
             Cursor.SetCursor(NormalCursorImage, new Vector2(40, 40), CursorMode.Auto);
-
         }
         if (isRockONtrigger.Rising())
-        {   
+        {
             //ロックオン時の「ピピッ」って感じの音を鳴らす
             SCer.PlaySE(0);
         }
-        RePC.SetPreviewInfo(RePUDMS, WheelInputWhenSelected, ReDUMS);
-        target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10));
         if (!RePUDMS.GetIsDead())//プレイヤーが死んでいないならば
         {
             //カーソルを動かす諸々の処理を繰り返す
@@ -101,10 +106,102 @@ public class RefineMouseInput : MonoBehaviour
         NormalAttack();
         //パーツの情報を閲覧可能
         PartsInfoDisplay(Hit2DList.Item1, Hit2DList.Item2, Hit2DList.Item1);
-        //右クリックで鹵獲処理開始
-        if (Input.GetMouseButtonDown(1))
+        if (!Input.GetKey(KeyCode.Space)
+            && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.LeftShift))
+            && !ModeRock)
         {
-            PartsCapture(Hit2DList.Item2);
+            rightPointedMode = GSetting.RightPointedMode.CaptureMode;
+            ModeRock = true;
+        }
+        else if (Input.GetKey(KeyCode.Space)
+            && (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftShift))
+            && !ModeRock)
+        {
+            rightPointedMode = GSetting.RightPointedMode.PurgeMode;
+            ModeRock = true;
+            //UIなどの見た目表示などをUpdateで動かす設定をする
+            //フラグをtrueに
+            //対象のリストを入手
+            //デフォルトの武装はリストに含めない
+            PurgablePart_List.Clear();
+            foreach (PartSlot partSlot in RePUDMS.GetPartSlotList())
+            {
+                if (partSlot.GetPart() is ReversibleConnectionPartsController)
+                {
+                    //ここから選んだやつをMSHUDCで強調表示
+                    PurgablePart_List.Add(partSlot);
+                }
+            }
+        }
+        else if (Input.GetMouseButton(1)
+            && !Input.GetKey(KeyCode.Space)
+            && (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftShift))
+            && !ModeRock)
+        {
+            rightPointedMode = GSetting.RightPointedMode.RepairMode;
+            ModeRock = true;
+        }
+        else if (!Input.GetMouseButton(1)
+            && !Input.GetKey(KeyCode.Space)
+            && (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.LeftShift)))
+        {
+            rightPointedMode = GSetting.RightPointedMode.None;
+            ModeRock = false;
+        }
+        else
+        {
+            //同時押しの時は先に押した方を優先しつつ、同時押しから片方を放すと即時もう片方に移行する
+            ModeRock = false;
+        }
+        MSHUDC.SetRightPointedMode(rightPointedMode);
+        switch (rightPointedMode)
+        {
+            case GSetting.RightPointedMode.None: {
+                    MSHUDC.SetPurgingPartSelectIcon(false, null);
+                    break; }
+            case GSetting.RightPointedMode.RepairMode: {
+                    MSHUDC.SetPurgingPartSelectIcon(false, null);
+                    break; }
+            case GSetting.RightPointedMode.CaptureMode:
+                {
+                    MSHUDC.SetPurgingPartSelectIcon(false, null);
+                    //合体位置選択後は合体位置をロック
+                    if (!caputurePart_IsSelected)
+                    {
+                        captureWheelInputWhenSelected = WheelInput * 3;
+                    }
+                    RePC.SetPreviewInfo(RePUDMS, captureWheelInputWhenSelected, ReDUMS);
+                    //右クリックで鹵獲処理開始
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        PartsCapture(Hit2DList.Item2);
+                    }
+                    break;
+                }
+            case GSetting.RightPointedMode.PurgeMode:
+                {
+                    //パージするパーツを選択後はロック
+                    if (!purgePart_ISSelected)
+                    {
+                        purgeWheelInputWhenSelected = WheelInput * 3;
+                    }
+                    int a = PurgablePart_List.Count() == 0 ? 1 : PurgablePart_List.Count();
+                    //Debug.LogAssertion(Math.Abs((int)purgeWheelInputWhenSelected % a)+" "+purgeWheelInputWhenSelected+" "+a);
+                    if (PurgablePart_List.Count() == 0) { MSHUDC.SetPurgingPartSelectIcon(false, null); }
+                    else
+                    {MSHUDC.SetPurgingPartSelectIcon(!purgePart_ISSelected,PurgablePart_List[Math.Abs((int)purgeWheelInputWhenSelected % a)]);
+                    }
+                    //右クリックでパージ処理開始
+                    if (Input.GetMouseButtonDown(1))
+                    {
+                        PartsPurge();
+                    }
+                    break;
+                }
+            default:
+                {
+                    break;
+                }
         }
     }
     private void NormalAttack()
@@ -308,7 +405,7 @@ public class RefineMouseInput : MonoBehaviour
             }
             else//被らない
             {
-                isSelected = true;
+                caputurePart_IsSelected = true;
                 /*
                 //空きのある機体側のパッシブジョイントユニットの座標をリストにまとめる
                 List<Vector3> passiveJointList = RePUDMS.GetAllEmptyPassiveJointSPositionList();
@@ -355,10 +452,10 @@ public class RefineMouseInput : MonoBehaviour
                 }
                 //合体時に回復
                 RePUDMS.RepairMachine(ReDUMS.GetHP());
-                RePUDMS.SetUnitData();
+                StartCoroutine(RePUDMS.SetUnitData());
                 RePC.DeletePreviewInfo();
                 Destroy(ReDUMS.gameObject);
-                isSelected = false;
+                caputurePart_IsSelected = false;
                 Debug.LogAssertion("CCC");
                 SCer.PlaySE(1);
             }
@@ -415,6 +512,42 @@ public class RefineMouseInput : MonoBehaviour
         RePC.DeletePreviewInfo();
         StartCoroutine(ReDUMS.ColliderAndSpriteProcess(2));
         this.ReDUMS = null;
+    }
+    private void PartsPurge()
+    {
+        //手順
+        //パージ対象を選ぶ（HUDやパーツの透明度などで表示）
+        //パージ対象を決定（パージするにあたっての内部処理）
+        //パージ（分離）
+        //後処理（UIなど）
+
+        //パージ対象を選ぶ（HUDやパーツの透明度などで表示）
+        StartCoroutine(PurgePartsSelect());
+    }
+    private IEnumerator PurgePartsSelect()
+    {
+
+        //パージ対象を選べるようにする
+        //UIにパージ対象を表示する
+        //アクションするまで待つ
+        //yield return new WaitUntil(() => Input.GetMouseButtonDown(1));
+        purgePart_ISSelected = true;
+        //右クリックでパージ処理開始
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        Debug.LogAssertion("MMMMM");
+        purgePart_ISSelected = true;
+        PartSlot selectPart = PurgablePart_List[Math.Abs((int)purgeWheelInputWhenSelected % PurgablePart_List.Count())];
+        ReversibleConnectionPartsController RCPC = selectPart.GetPart() as ReversibleConnectionPartsController;
+        RCPC.GetActiveJointLink().PurgeProcess();
+        //}
+        //パージ対象選択モジュールから選択したパーツ参照を貰う
+        //ジョイントユニットを破壊（内部的に再生成処理を行う）
+        //パージ
+        //UIを非表示
+        purgePart_ISSelected = false;
+        StartCoroutine(RePUDMS.SetUnitData());
+        yield return null;
     }
     public void SetPlayer(GameObject Unit)
     {

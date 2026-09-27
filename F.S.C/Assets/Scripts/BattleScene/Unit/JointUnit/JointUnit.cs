@@ -11,6 +11,42 @@ public class JointUnit : UnitBase
     {
         return offsetRotation + transform.localRotation.eulerAngles.z;
     }
+    protected override UnitBase GetUpLink(string SelectedObjTag)
+    {
+        UnitBase upperUnit;
+        GameObject UpperObj = GetUpperGameObject(SelectedObjTag);
+        if (UpperObj == null) { return null; }
+        upperUnit = UpperObj.GetComponent<UnitBase>();
+        if (upperUnit == null){ Debug.LogAssertion("UpperUnit is null;");}
+        return upperUnit;
+    }
+    protected override UnitBase GetDownLink(string SelectedObjTag)
+    {
+        UnitBase downerUnit;
+        GameObject DownerObj = GetDownerGameObject(SelectedObjTag);
+        if (DownerObj == null) { return null; }
+        downerUnit = DownerObj.GetComponent<UnitBase>();
+        if (downerUnit == null) {Debug.LogAssertion("DownerUnit is null;");}
+        return downerUnit;
+    }
+    protected override UnitBase GetRightLink(string SelectedObjTag)
+    {
+        UnitBase rightUnit;
+        GameObject RightObj = GetRightGameObject(SelectedObjTag);
+        if (RightObj == null) { return null; }
+        rightUnit = RightObj.GetComponent<UnitBase>();
+        if (rightUnit == null){ Debug.LogAssertion("RightUnit is null;");}
+        return rightUnit;
+    }
+    protected override UnitBase GetLeftLink(string SelectedObjTag)
+    {
+        UnitBase leftUnit;
+        GameObject LeftObj = GetLeftGameObject(SelectedObjTag);
+        if (LeftObj == null) { return null; }
+        leftUnit = LeftObj.GetComponent<UnitBase>();
+        if (leftUnit == null) {Debug.LogAssertion("LeftUnit is null;");}
+        return leftUnit;
+    }
     protected override void GetAdjacentObjLink(string SelectedObjTag)
     {
         base.GetAdjacentObjLink(SelectedObjTag);

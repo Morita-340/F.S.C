@@ -137,16 +137,25 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
         dir8partSlots[7] = frontRightSlot;
         base.Awake();
     }
-    public override void SetUnitData()
+    public override IEnumerator SetUnitData()
     {
         childObjTagName = GSetting.ObjTagName.PlayerUnit;
-        base.SetUnitData();
+        yield return StartCoroutine(base.SetUnitData());
         //
         foreach (PartSlot partSlot in dir8partSlots)
         {
             partSlot.ReloadSlot();
         }
         MSHUDC.SetPart(dir8partSlots);
+    }
+    protected override void Update()
+    {
+        base.Update();
+        foreach (AbstractPartsController abParts in PartsList)
+        {
+            Debug.LogAssertion(abParts.name);
+        }
+        Debug.LogAssertion($"ReAUAMS.PartsList hash: {PartsList.GetHashCode()}");
     }
     public List<Vector3> GetAllEmptyPassiveJointSPositionList()
     {
@@ -249,7 +258,7 @@ public class RefinePlayerUnitDestroyManagementScript : RefineAbstractUnitDestroy
     {
         noDamageFlag = false;
         base.DestroyProcess(DeleteData, inputIsDead);
-        SetUnitData();
+        //SetUnitData();
     }
     /// <summary>
     /// HP回復　初期値以上には増えない
